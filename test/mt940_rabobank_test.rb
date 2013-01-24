@@ -4,7 +4,8 @@ class TestMt940Rabobank < Test::Unit::TestCase
 
   def setup
     @file_name = File.dirname(__FILE__) + '/fixtures/rabobank.txt'
-    @transactions = MT940::Base.transactions(@file_name)
+    @info = MT940::Base.parse_mt940(@file_name)["129199348"]
+    @transactions = @info.transactions
     @transaction = @transactions.first
   end
 
@@ -14,15 +15,12 @@ class TestMt940Rabobank < Test::Unit::TestCase
 
   context 'Transaction' do
     should 'get the opening balance and date' do
-      @info = MT940::Base.transactions_with_info(@file_name)
-
       assert_equal 473.17, @info.opening_balance
       assert_equal Date.new(2011, 6, 14), @info.opening_date
     end
 
     should 'get the debet opening balance and date' do
-      @info = MT940::Base.transactions_with_info(File.dirname(__FILE__) + '/fixtures/rabobank_with_debet_opening_balance.txt')
-
+      @info = MT940::Base.parse_mt940(File.dirname(__FILE__) + '/fixtures/rabobank_with_debet_opening_balance.txt')["129199348"]
       assert_equal -12, @info.opening_balance
       assert_equal Date.new(2012, 10, 4), @info.opening_date
       assert_not_nil @info.transactions

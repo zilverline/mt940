@@ -4,7 +4,8 @@ class TestMt940Ing < Test::Unit::TestCase
 
   def setup
     @file_name = File.dirname(__FILE__) + '/fixtures/ing.txt'
-    @transactions = MT940::Base.transactions(@file_name)
+    @info = MT940::Base.parse_mt940(@file_name)["001234567"]
+    @transactions = @info.transactions
     @transaction = @transactions.first
   end
   
@@ -14,8 +15,6 @@ class TestMt940Ing < Test::Unit::TestCase
 
   context 'Transaction' do
     should 'get the opening balance and date' do
-      @info = MT940::Base.transactions_with_info(@file_name)
-
       assert_equal 0, @info.opening_balance
       assert_equal Date.new(2010, 7, 22), @info.opening_date
     end

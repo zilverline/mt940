@@ -1,34 +1,19 @@
 module MT940
-  ParseResult = Struct.new(:transactions, :opening_balance, :opening_date)
+  BankParseResults = Struct.new(:opening_balance, :opening_date, :transactions)
   class Base
 
     attr_accessor :bank, :opening_balance, :opening_date
 
-    def self.transactions(file)
-      file  = File.open(file) if file.is_a?(String) 
+    def self.parse_mt940(file)
+      file = File.open(file) if file.is_a?(String)
       if file.is_a?(File) || file.is_a?(Tempfile)
-        first_line  = file.readline
+        first_line = file.readline
         second_line = file.readline unless file.eof?
-        klass       = determine_bank(first_line, second_line)
+        klass = determine_bank(first_line, second_line)
         file.rewind
         instance = klass.new(file)
         file.close
         instance.parse
-      else
-        raise ArgumentError.new('No file is given!')
-      end
-    end
-
-    def self.transactions_with_info(file)
-      file  = File.open(file) if file.is_a?(String)
-      if file.is_a?(File) || file.is_a?(Tempfile)
-        first_line  = file.readline
-        second_line = file.readline unless file.eof?
-        klass       = determine_bank(first_line, second_line)
-        file.rewind
-        instance = klass.new(file)
-        file.close
-        ParseResult.new(instance.parse, instance.opening_balance, instance.opening_date)
       else
         raise ArgumentError.new('No file is given!')
       end
@@ -40,7 +25,7 @@ module MT940
         @line = line
         @line.match(/^:(\d{2}F?):/) ? eval('parse_tag_'+ $1) : parse_line
       end
-      @transactions
+      @bank_accounts
     end
 
     private
@@ -48,8 +33,8 @@ module MT940
     def self.determine_bank(*args)
       Dir.foreach(File.dirname(__FILE__) + '/banks/') do |file|
         if file.match(/\.rb$/)
-          klass = eval(file.gsub(/\.rb$/,'').capitalize)
-          bank  = klass.determine_bank(*args)
+          klass = eval(file.gsub(/\.rb$/, '').capitalize)
+          bank = klass.determine_bank(*args)
           return bank if bank
         end
       end
@@ -57,16 +42,18 @@ module MT940
     end
 
     def initialize(file)
+      @bank_accounts = {}
       @transactions = []
-      @bank  = self.class.to_s.split('::').last
-      @bank  = 'Unknown' if @bank == 'Base'
+      @bank = self.class.to_s.split('::').last
+      @bank = 'Unknown' if @bank == 'Base'
       @lines = file.readlines
     end
 
     def parse_tag_25
-      @line.gsub!('.','')
+      @line.gsub!('.', '')
       if @line.match(/^:\d{2}:[^\d]*(\d*)/)
-        @bank_account = $1.gsub(/^0/,'')
+        @bank_account = $1.gsub(/^0/, '')
+        @bank_accounts[@bank_account] ||= BankParseResults.new(nil, nil, [])
         @tag86 = false
       end
     end
@@ -74,18 +61,16 @@ module MT940
     def parse_tag_60F
       @currency = @line[12..14]
       opening_date = parse_date(@line[6..11])
-      @opening_date ||= opening_date
+      @bank_accounts[@bank_account].opening_date ||= opening_date
 
       type = @line[5] == 'D' ? -1 : 1
       opening_balance = @line[15..-1].gsub(",", ".").to_f * type
-      @opening_balance ||= opening_balance
+      @bank_accounts[@bank_account].opening_balance ||= opening_balance
 
-
-      if opening_date < @opening_date
-        @opening_date = opening_date
-        @opening_balance = opening_balance
+      if opening_date < @bank_accounts[@bank_account].opening_date
+        @bank_accounts[@bank_account].opening_date = opening_date
+        @bank_accounts[@bank_account].opening_balance = opening_balance
       end
-
     end
 
     def parse_tag_61
@@ -93,7 +78,7 @@ module MT940
         type = $2 == 'D' ? -1 : 1
         @transaction = MT940::Transaction.new(:bank_account => @bank_account, :amount => type * ($3 + '.' + $4).to_f, :bank => @bank, :currency => @currency)
         @transaction.date = parse_date($1)
-        @transactions << @transaction
+        @bank_accounts[@bank_account].transactions << @transaction
         @tag86 = false
       end
     end
@@ -101,7 +86,7 @@ module MT940
     def parse_tag_86
       if !@tag86 && @line.match(/^:86:\s?(.*)$/)
         @tag86 = true
-        @transaction.description = $1.gsub(/>\d{2}/,'').strip
+        @transaction.description = $1.gsub(/>\d{2}/, '').strip
         parse_contra_account
       end
     end
@@ -109,7 +94,7 @@ module MT940
     def parse_line
       if @tag86 && @transaction.description
         @transaction.description.lstrip!
-        @transaction.description += ' ' + @line.gsub(/\n/,'').gsub(/>\d{2}\s*/,'').gsub(/\-XXX/,'').gsub(/-$/,'').strip
+        @transaction.description += ' ' + @line.gsub(/\n/, '').gsub(/>\d{2}\s*/, '').gsub(/\-XXX/, '').gsub(/-$/, '').strip
         @transaction.description.strip!
       end
     end

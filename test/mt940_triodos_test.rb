@@ -4,7 +4,8 @@ class TestMt940Triodos < Test::Unit::TestCase
 
   def setup
     @file_name = File.dirname(__FILE__) + '/fixtures/triodos.txt'
-    @transactions = MT940::Base.transactions(@file_name)
+    @info = MT940::Base.parse_mt940(@file_name)["390123456"]
+    @transactions = @info.transactions
     @transaction = @transactions.first
   end
   
@@ -14,8 +15,6 @@ class TestMt940Triodos < Test::Unit::TestCase
 
   context 'Transaction' do
     should 'get the opening balance and date' do
-      @info = MT940::Base.transactions_with_info(@file_name)
-
       assert_equal 4975.09, @info.opening_balance
       assert_equal Date.new(2011, 1, 1), @info.opening_date
     end

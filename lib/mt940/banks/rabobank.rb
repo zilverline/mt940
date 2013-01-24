@@ -11,7 +11,7 @@ class MT940::Rabobank < MT940::Base
       @transaction.date = parse_date($1)
       @transaction.contra_account = $5.strip
       @transaction.contra_account_owner = $6.strip
-      @transactions << @transaction
+      @bank_accounts[@bank_account].transactions << @transaction
     end
   end
 
