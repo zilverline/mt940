@@ -3,8 +3,8 @@ require 'helper'
 class TestMt940Rabobank < Test::Unit::TestCase
 
   def setup
-    file_name = File.dirname(__FILE__) + '/fixtures/rabobank.txt'
-    @transactions = MT940::Base.transactions(file_name)
+    @file_name = File.dirname(__FILE__) + '/fixtures/rabobank.txt'
+    @transactions = MT940::Base.transactions(@file_name)
     @transaction = @transactions.first
   end
 
@@ -13,6 +13,20 @@ class TestMt940Rabobank < Test::Unit::TestCase
   end
 
   context 'Transaction' do
+    should 'get the opening balance and date' do
+      @info = MT940::Base.transactions_with_info(@file_name)
+
+      assert_equal 473.17, @info.opening_balance
+      assert_equal Date.new(2011, 6, 14), @info.opening_date
+    end
+
+    should 'get the debet opening balance and date' do
+      @info = MT940::Base.transactions_with_info(File.dirname(__FILE__) + '/fixtures/rabobank_with_debet_opening_balance.txt')
+
+      assert_equal -12, @info.opening_balance
+      assert_equal Date.new(2012, 10, 4), @info.opening_date
+    end
+
     should 'have a bank_account' do
       assert_equal '129199348', @transaction.bank_account
     end

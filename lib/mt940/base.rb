@@ -1,8 +1,8 @@
 module MT940
-
+  ParseResult = Struct.new(:transactions, :opening_balance, :opening_date)
   class Base
 
-    attr_accessor :bank
+    attr_accessor :bank, :opening_balance, :opening_date
 
     def self.transactions(file)
       file  = File.open(file) if file.is_a?(String) 
@@ -14,6 +14,21 @@ module MT940
         instance = klass.new(file)
         file.close
         instance.parse
+      else
+        raise ArgumentError.new('No file is given!')
+      end
+    end
+
+    def self.transactions_with_info(file)
+      file  = File.open(file) if file.is_a?(String)
+      if file.is_a?(File) || file.is_a?(Tempfile)
+        first_line  = file.readline
+        second_line = file.readline unless file.eof?
+        klass       = determine_bank(first_line, second_line)
+        file.rewind
+        instance = klass.new(file)
+        file.close
+        ParseResult.new(instance.parse, instance.opening_balance, instance.opening_date)
       else
         raise ArgumentError.new('No file is given!')
       end
@@ -58,6 +73,19 @@ module MT940
 
     def parse_tag_60F
       @currency = @line[12..14]
+      opening_date = parse_date(@line[6..11])
+      @opening_date ||= opening_date
+
+      type = @line[5] == 'D' ? -1 : 1
+      opening_balance = @line[15..-1].gsub(",", ".").to_f * type
+      @opening_balance ||= opening_balance
+
+
+      if opening_date < @opening_date
+        @opening_date = opening_date
+        @opening_balance = opening_balance
+      end
+
     end
 
     def parse_tag_61

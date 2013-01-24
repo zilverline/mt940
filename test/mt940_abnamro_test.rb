@@ -1,18 +1,25 @@
 require 'helper'
 
 class TestMt940Abnamro < Test::Unit::TestCase
-
   def setup
-    file_name = File.dirname(__FILE__) + '/fixtures/abnamro.txt'
-    @transactions = MT940::Base.transactions(file_name)
+    @file_name = File.dirname(__FILE__) + '/fixtures/abnamro.txt'
+    @transactions = MT940::Base.transactions(@file_name)
     @transaction = @transactions.first
   end
-  
+
   should 'have the correct number of transactions' do
     assert_equal 10, @transactions.size
   end
 
+
   context 'Transaction' do
+    should 'get the opening balance and date' do
+      @info = MT940::Base.transactions_with_info(@file_name)
+
+      assert_equal 3236.28, @info.opening_balance
+      assert_equal Date.new(2011, 5, 22), @info.opening_date
+    end
+
     should 'have a bank_account' do
       assert_equal '517852257', @transaction.bank_account
     end
@@ -32,7 +39,7 @@ class TestMt940Abnamro < Test::Unit::TestCase
     end
 
     should 'have a date' do
-      assert_equal Date.new(2011,5,24), @transaction.date
+      assert_equal Date.new(2011, 5, 24), @transaction.date
     end
 
     should 'return its bank' do
