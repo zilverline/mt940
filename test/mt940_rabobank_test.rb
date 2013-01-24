@@ -25,6 +25,7 @@ class TestMt940Rabobank < Test::Unit::TestCase
 
       assert_equal -12, @info.opening_balance
       assert_equal Date.new(2012, 10, 4), @info.opening_date
+      assert_not_nil @info.transactions
     end
 
     should 'have a bank_account' do
