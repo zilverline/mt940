@@ -19,27 +19,43 @@ Usage
 
 With the file name as argument:
 
-    file_name = '/Users/dovadi/Downloads/ing.940'
+    file_name = '~/Downloads/ing.940'
 
-    @transactions = MT940::Base.transactions(file_name)
+    @parse_result = MT940::Base.parse_mt940(file_name)
 
 or with the file itself:
 
-    file_name = '/Users/dovadi/Downloads/ing.940'
+    file_name = '~/Downloads/ing.940'
 
     file = File.open(file_name)
 
-    @transactions = MT940::Base.transactions(file)
+    @parse_result = MT940::Base.parse_mt940(file)
 
+after parsing:
 
-* Independent of the bank, a transaction always consists of:
+    @parse_result.each do |accountnumber, info|
+      puts "Opening balance for #{accountnumber} per #{info.opening_date} is #{info.opening_balance}"
+      info.transactions.each do |transaction|
+        # do something with transaction
+      end
+      puts "Closing balance for #{accountnumber} per #{info.closing_date} is #{info.closing_balance}"
+    end
 
-  - accountnumber
-  - bank (for example Ing, Rabobank or Unknown)
-  - date
-  - amount (which is negative in case of a withdrawal)
-  - description
-  - contra account
+* Independent of the bank
+
+  - a parse_result consists of:
+
+    - a map with account numbers as key and a Struct as value
+    - the struct contains an opening date and balance, a closing date and balance and the transactions for that account number
+
+  - a transaction always consists of:
+
+    - accountnumber
+    - bank (for example Ing, Rabobank or Unknown)
+    - date
+    - amount (which is negative in case of a withdrawal)
+    - description
+    - contra account
 
 * With the Rabobank its owner is extracted as well.
 
