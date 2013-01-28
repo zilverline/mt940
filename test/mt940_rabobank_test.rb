@@ -61,7 +61,11 @@ class TestMt940Rabobank < Test::Unit::TestCase
     end
 
     should 'have a date' do
-      assert_equal Date.new(2011,5,27), @transaction.date
+      assert_equal Date.new(2011, 5, 27), @transaction.date
+    end
+
+    should 'have a type' do
+      assert_equal "Terugboeking incasso", @transaction.type
     end
 
     should 'return its bank' do
