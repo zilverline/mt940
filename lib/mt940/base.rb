@@ -1,5 +1,5 @@
 module MT940
-  BankParseResults = Struct.new(:opening_balance, :opening_date, :transactions)
+  BankParseResults = Struct.new(:opening_balance, :opening_date, :closing_balance, :closing_date, :transactions)
   class Base
 
     attr_accessor :bank, :opening_balance, :opening_date
@@ -54,7 +54,7 @@ module MT940
       @line.gsub!('.', '')
       if @line.match(/^:\d{2}:[^\d]*(\d*)/)
         @bank_account = $1.gsub(/^0/, '')
-        @bank_accounts[@bank_account] ||= BankParseResults.new(nil, nil, [])
+        @bank_accounts[@bank_account] ||= BankParseResults.new(nil, nil, nil, nil, [])
         @tag86 = false
       end
     end
@@ -71,6 +71,21 @@ module MT940
       if opening_date < @bank_accounts[@bank_account].opening_date
         @bank_accounts[@bank_account].opening_date = opening_date
         @bank_accounts[@bank_account].opening_balance = opening_balance
+      end
+    end
+
+    def parse_tag_62F
+      @currency = @line[12..14]
+      closing_date = parse_date(@line[6..11])
+      @bank_accounts[@bank_account].closing_date ||= closing_date
+
+      type = @line[5] == 'D' ? -1 : 1
+      balance = @line[15..-1].gsub(",", ".").to_f * type
+      @bank_accounts[@bank_account].closing_balance ||= balance
+
+      if closing_date > @bank_accounts[@bank_account].closing_date
+        @bank_accounts[@bank_account].closing_date = closing_date
+        @bank_accounts[@bank_account].closing_balance = balance
       end
     end
 

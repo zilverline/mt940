@@ -12,12 +12,17 @@ class TestMt940Abnamro < Test::Unit::TestCase
     assert_equal 10, @transactions.size
   end
 
+  should 'get the opening balance and date' do
+    assert_equal 3236.28, @info.opening_balance
+    assert_equal Date.new(2011, 5, 22), @info.opening_date
+  end
+
+  should 'get the closing balance and date' do
+    assert_equal 1849.75, @info.closing_balance
+    assert_equal Date.new(2011, 5, 24), @info.closing_date
+  end
 
   context 'Transaction' do
-    should 'get the opening balance and date' do
-      assert_equal 3236.28, @info.opening_balance
-      assert_equal Date.new(2011, 5, 22), @info.opening_date
-    end
 
     should 'have a bank_account' do
       assert_equal '517852257', @transaction.bank_account

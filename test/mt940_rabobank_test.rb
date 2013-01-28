@@ -13,18 +13,24 @@ class TestMt940Rabobank < Test::Unit::TestCase
     assert_equal 3, @transactions.size
   end
 
-  context 'Transaction' do
-    should 'get the opening balance and date' do
-      assert_equal 473.17, @info.opening_balance
-      assert_equal Date.new(2011, 6, 14), @info.opening_date
-    end
+  should 'get the opening balance and date' do
+    assert_equal 473.17, @info.opening_balance
+    assert_equal Date.new(2011, 6, 14), @info.opening_date
+  end
 
-    should 'get the debet opening balance and date' do
-      @info = MT940::Base.parse_mt940(File.dirname(__FILE__) + '/fixtures/rabobank_with_debet_opening_balance.txt')["129199348"]
-      assert_equal -12, @info.opening_balance
-      assert_equal Date.new(2012, 10, 4), @info.opening_date
-      assert_not_nil @info.transactions
-    end
+  should 'get the closing balance and date' do
+    assert_equal 1250.87, @info.closing_balance
+    assert_equal Date.new(2011, 6, 17), @info.closing_date
+  end
+
+  should 'get the debet opening balance and date' do
+    @info = MT940::Base.parse_mt940(File.dirname(__FILE__) + '/fixtures/rabobank_with_debet_opening_balance.txt')["129199348"]
+    assert_equal -12, @info.opening_balance
+    assert_equal Date.new(2012, 10, 4), @info.opening_date
+    assert_not_nil @info.transactions
+  end
+
+  context 'Transaction' do
 
     should 'have a bank_account' do
       assert_equal '129199348', @transaction.bank_account
