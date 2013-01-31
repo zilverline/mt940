@@ -50,7 +50,7 @@ class TestMt940Ing < Test::Unit::TestCase
     end
 
     should 'return the contra_account' do
-      assert_equal '123456789', @transactions.last.contra_account
+      assert_equal 'NONREF', @transactions.last.contra_account
     end
 
   end

@@ -5,10 +5,15 @@ class MT940::Ing < MT940::Base
   end
 
   def parse_contra_account
-    if @transaction && @transaction.description.match(/^\d(\d{9})(.+)/)
-       @transaction.contra_account = $1
-       @transaction.description = $2
-     end
+    if @transaction && @transaction.description.match(/([P|\d]\d{9})?(.+)/)
+      @transaction.description = $2
+      number = $1
+      unless number.nil?
+        @transaction.contra_account = number.gsub(/\D/, '').gsub(/^0+/, '')
+      else
+        @transaction.contra_account = "NONREF"
+      end
+    end
   end
 
 end
