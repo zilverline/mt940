@@ -5,7 +5,7 @@ class MT940::Ing < MT940::Base
   end
 
   def parse_tag_61
-    if @line.match(/^:61:(\d{6})(C|D)(\d+),(\d{0,2})N(\S+)\s(.{0,16}|NONREF)/)
+    if @line.match(/^:61:(\d{6})(C|D)(\d+),(\d{0,2})N(\S+)/)
       sign = $2 == 'D' ? -1 : 1
       @transaction = MT940::Transaction.new(:bank_account => @bank_account, :amount => sign * ($3 + '.' + $4).to_f, :bank => @bank, :currency => @currency)
       @transaction.type = human_readable_type($5.strip)
@@ -30,7 +30,7 @@ class MT940::Ing < MT940::Base
   end
 
   def human_readable_type(type)
-    ING_MAPPING[type.strip]
+    ING_MAPPING[type.strip] || type.strip
   end
 
   ING_MAPPING = {}
