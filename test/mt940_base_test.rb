@@ -5,14 +5,14 @@ class TestMt940Base < Test::Unit::TestCase
   context 'MT940::Base' do
     should 'read the transactions with the filename of the MT940 file' do
       file_name = File.dirname(__FILE__) + '/fixtures/ing.txt'
-      @transactions = MT940::Base.parse_mt940(file_name)["001234567"].transactions
+      @transactions = MT940::Base.parse_mt940(file_name)["1234567"].transactions
       assert_equal 6, @transactions.size
     end
 
     should 'read the transactions with the handle to the mt940 file itself' do
       file_name = File.dirname(__FILE__) + '/fixtures/ing.txt'
       file = File.open(file_name)
-      @transactions = MT940::Base.parse_mt940(file)["001234567"].transactions
+      @transactions = MT940::Base.parse_mt940(file)["1234567"].transactions
       assert_equal 6, @transactions.size
     end
 
@@ -44,7 +44,7 @@ class TestMt940Base < Test::Unit::TestCase
   context 'Unknown MT940 file' do
     should 'return its bank' do
       file_name = File.dirname(__FILE__) + '/fixtures/unknown.txt'
-      @transactions = MT940::Base.parse_mt940(file_name)["001234567"].transactions
+      @transactions = MT940::Base.parse_mt940(file_name)["1234567"].transactions
       assert_equal 'Unknown', @transactions.first.bank
     end
   end

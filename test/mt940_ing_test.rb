@@ -4,7 +4,7 @@ class TestMt940Ing < Test::Unit::TestCase
 
   def setup
     @file_name = File.dirname(__FILE__) + '/fixtures/ing.txt'
-    @info = MT940::Base.parse_mt940(@file_name)["001234567"]
+    @info = MT940::Base.parse_mt940(@file_name)["1234567"]
     @transactions = @info.transactions
     @transaction = @transactions.first
   end
@@ -26,7 +26,7 @@ class TestMt940Ing < Test::Unit::TestCase
   context 'Transaction' do
 
     should 'have a bank_account' do
-      assert_equal '001234567', @transaction.bank_account
+      assert_equal '1234567', @transaction.bank_account
     end
 
     should 'have an amount' do
