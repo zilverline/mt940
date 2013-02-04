@@ -8,7 +8,7 @@ class TestMt940Ing < Test::Unit::TestCase
     @transactions = @info.transactions
     @transaction = @transactions.first
   end
-  
+
   should 'have the correct number of transactions' do
     assert_equal 6, @transactions.size
   end
@@ -38,11 +38,15 @@ class TestMt940Ing < Test::Unit::TestCase
     end
 
     should 'have a date' do
-      assert_equal Date.new(2010,7,22), @transaction.date
+      assert_equal Date.new(2010, 7, 22), @transaction.date
     end
 
     should 'return its bank' do
       assert_equal 'Ing', @transaction.bank
+    end
+
+    should 'return its type' do
+      assert_equal 'Overschrijving', @transaction.type
     end
 
     should 'have a description' do
