@@ -74,6 +74,10 @@ class TestMt940Rabobank < Test::Unit::TestCase
       assert_equal "Terugboeking incasso", @transaction.type
     end
 
+    should 'have a type too' do
+      assert_equal "544", @transactions.last.type
+    end
+
     should 'return its bank' do
       assert_equal 'Rabobank', @transaction.bank
     end

@@ -30,7 +30,7 @@ class MT940::Rabobank < MT940::Base
   private
   def human_readable_type(type)
     if type.match(/\d+/)
-      MAPPING[type.to_i]
+      MAPPING[type.to_i] || type.to_s
     elsif type == "MSC"
       "MSC"
     else
