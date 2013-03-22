@@ -66,6 +66,14 @@ describe "Rabobank" do
       @transaction.description.should == 'Terugboeking NIET AKKOORD MET AFSCHRIJVING KOSTEN KINDEROPVANG JUNI 20095731'
     end
 
+    it "should return the type" do
+      @transaction.type.should == 'Overschrijving'
+    end
+
+    it "should return the type too" do
+      @transactions.last.type.should == 544
+    end
+
     it 'have a date' do
       @transaction.date.should == Date.new(2011, 5, 27)
     end

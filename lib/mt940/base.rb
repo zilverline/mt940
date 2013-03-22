@@ -52,8 +52,8 @@ module MT940
 
     def parse_tag_25
       @line.gsub!('.', '')
-      if @line.match(/^:\d{2}:[^\d]*(\d*)/)
-        @bank_account = $1.gsub(/^0/, '')
+      if @line.match(/^:\d{2}:\D*(\d*)/)
+        @bank_account = $1.gsub(/\D/, '').gsub(/^0+/, '')
         @bank_accounts[@bank_account] ||= BankParseResults.new(nil, nil, nil, nil, [])
         @tag86 = false
       end

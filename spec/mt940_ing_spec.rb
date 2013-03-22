@@ -45,6 +45,10 @@ describe "ING" do
       @transaction.bank.should == 'Ing'
     end
 
+    it "should return the type" do
+      @transaction.type.should == 'Overschrijving'
+    end
+
     it 'have a description' do
       @transactions.last.description.should == 'EJ46GREENP100610T1456 CLIEOP TMG GPHONGKONG AMSTERDAM'
     end
