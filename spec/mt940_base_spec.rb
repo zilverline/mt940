@@ -1,51 +1,47 @@
-require 'helper'
+require_relative 'spec_helper'
 
-class TestMt940Base < Test::Unit::TestCase
+describe "Base" do
 
   context 'MT940::Base' do
-    should 'read the transactions with the filename of the MT940 file' do
+    it 'read the transactions with the filename of the MT940 file' do
       file_name = File.dirname(__FILE__) + '/fixtures/ing.txt'
       @transactions = MT940::Base.parse_mt940(file_name)["001234567"].transactions
-      assert_equal 6, @transactions.size
+      @transactions.size.should == 6
     end
 
-    should 'read the transactions with the handle to the mt940 file itself' do
+    it 'read the transactions with the handle to the mt940 file itself' do
       file_name = File.dirname(__FILE__) + '/fixtures/ing.txt'
       file = File.open(file_name)
       @transactions = MT940::Base.parse_mt940(file)["001234567"].transactions
-      assert_equal 6, @transactions.size
+      @transactions.size.should == 6
     end
 
     #Tempfile is used by Paperclip, so the following will work:
     #MT940::Base.transactions(@mt940_file.attachment.to_file)
-    should 'read the transactions with the handle of a Tempfile' do
+    it 'read the transactions with the handle of a Tempfile' do
       file = Tempfile.new('temp')
       file.write(':940:')
       file.rewind
       @transactions = MT940::Base.parse_mt940(file)
-      assert_equal 0, @transactions.size
+      @transactions.size.should == 0
       file.unlink
     end
 
-    should 'raise an exception if the file does not exist' do
+    it 'raise an exception if the file does not exist' do
       file_name = File.dirname(__FILE__) + '/fixtures/123.txt'
-      assert_raise Errno::ENOENT do
-        @transactions = MT940::Base.parse_mt940(file_name)
-      end
+      expect {MT940::Base.parse_mt940(file_name)}.to raise_exception Errno::ENOENT
     end
 
-    should 'raise an ArgumentError if a wrong argument was given' do
-      assert_raise ArgumentError do
-        MT940::Base.parse_mt940(Hash.new)
-      end
+    it 'raise an ArgumentError if a wrong argument was given' do
+      expect {MT940::Base.parse_mt940(Hash.new)}.to raise_exception ArgumentError
     end
   end
 
   context 'Unknown MT940 file' do
-    should 'return its bank' do
+    it 'return its bank' do
       file_name = File.dirname(__FILE__) + '/fixtures/unknown.txt'
       @transactions = MT940::Base.parse_mt940(file_name)["001234567"].transactions
-      assert_equal 'Unknown', @transactions.first.bank
+      @transactions.first.bank.should == 'Unknown'
     end
   end
 

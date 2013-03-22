@@ -1,10 +1,8 @@
-$:.unshift(File.dirname(__FILE__)) unless
-  $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
-
 require 'tempfile'
-require 'mt940/base'
-require 'mt940/transaction'
-require 'mt940/banks/ing'
-require 'mt940/banks/rabobank'
-require 'mt940/banks/abnamro'
-require 'mt940/banks/triodos'
+require 'date'
+require_relative 'mt940/base'
+require_relative 'mt940/transaction'
+require_relative 'mt940/banks/ing'
+require_relative 'mt940/banks/rabobank'
+require_relative 'mt940/banks/abnamro'
+require_relative 'mt940/banks/triodos'

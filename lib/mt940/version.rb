@@ -1,3 +1,3 @@
 module MT940
-  VERSION = '0.6.6'
+  VERSION = '1.0'
 end
