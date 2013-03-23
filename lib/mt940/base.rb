@@ -63,6 +63,8 @@ module MT940
       @bank_statements[@bank_account] << @bank_statement
     end
 
+    alias_method :parse_tag_28C, :parse_tag_28
+
     def parse_tag_60F
       @currency = @line[12..14]
       balance_date = parse_date(@line[6..11])

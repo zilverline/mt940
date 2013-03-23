@@ -4,11 +4,6 @@ class MT940::Ing < MT940::Base
     self if args[0].match(/INGBNL/)
   end
 
-  def parse_tag_28C
-    @bank_statement = MT940::BankStatement.new([], @bank_account, 0, nil, nil)
-    @bank_statements[@bank_account] << @bank_statement
-  end
-
   def parse_tag_61
     if @line.match(/^:61:(\d{6})(C|D)(\d+),(\d{0,2})N(\S+)/)
       sign = $2 == 'D' ? -1 : 1

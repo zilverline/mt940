@@ -40,7 +40,7 @@ describe "Base" do
   context 'Unknown MT940 file' do
     it 'return its bank' do
       file_name = File.dirname(__FILE__) + '/fixtures/unknown.txt'
-      @transactions = MT940::Base.parse_mt940(file_name)["1234567"].transactions
+      @transactions = MT940::Base.parse_mt940(file_name)["1234567"].flat_map(&:transactions)
       @transactions.first.bank.should == 'Unknown'
     end
   end
