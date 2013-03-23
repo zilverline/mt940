@@ -4,8 +4,8 @@ describe "Triodos" do
 
   before :each do
     @file_name = File.dirname(__FILE__) + '/fixtures/triodos.txt'
-    @info = MT940::Base.parse_mt940(@file_name)["390123456"]
-    @transactions = @info.transactions
+    @bank_statements = MT940::Base.parse_mt940(@file_name)["390123456"]
+    @transactions = @bank_statements.flat_map(&:transactions)
     @transaction = @transactions.first
   end
   
@@ -14,13 +14,13 @@ describe "Triodos" do
   end
 
   it 'get the opening balance and date' do
-    @info.opening_balance.should ==4975.09
-    @info.opening_date.should == Date.new(2011, 1, 1)
+    @bank_statements.first.previous_balance.amount.should ==4975.09
+    @bank_statements.first.previous_balance.date.should == Date.new(2011, 1, 1)
   end
 
   it 'get the closing balance and date' do
-    @info.closing_balance.should == 4370.79
-    @info.closing_date.should == Date.new(2011, 2, 1)
+    @bank_statements.first.new_balance.amount.should == 4370.79
+    @bank_statements.first.new_balance.date.should == Date.new(2011, 2, 1)
   end
 
   context 'Transaction' do
