@@ -15,7 +15,7 @@ class MT940::Rabobank < MT940::Base
       number = number.gsub(/\D/, '').gsub(/^0+/, '') unless number == 'NONREF'
       @transaction.contra_account = number
       @transaction.contra_account_owner = name.strip
-      @bank_accounts[@bank_account].transactions << @transaction
+      @bank_statement.transactions << @transaction
     else
       raise @line
     end

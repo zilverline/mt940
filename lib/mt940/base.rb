@@ -1,5 +1,5 @@
 module MT940
-  BankParseResults = Struct.new(:opening_balance, :opening_date, :closing_balance, :closing_date, :transactions)
+
   class Base
 
     attr_accessor :bank, :opening_balance, :opening_date
@@ -26,7 +26,7 @@ module MT940
         @line.match(/^:61:/) ? parse_tag_61 : # for better debugging
             @line.match(/^:(\d{2}F?):/) ? send("parse_tag_#{$1}".to_sym) : parse_line
       end
-      @bank_accounts
+      @bank_statements
     end
 
     private
@@ -43,7 +43,7 @@ module MT940
     end
 
     def initialize(file)
-      @bank_accounts = {}
+      @bank_statements = {}
       @transactions = []
       @bank = self.class.to_s.split('::').last
       @bank = 'Unknown' if @bank == 'Base'
@@ -54,39 +54,33 @@ module MT940
       @line.gsub!('.', '')
       if @line.match(/^:\d{2}:\D*(\d*)/)
         @bank_account = $1.gsub(/\D/, '').gsub(/^0+/, '')
-        @bank_accounts[@bank_account] ||= BankParseResults.new(nil, nil, nil, nil, [])
+        @bank_statements[@bank_account] ||= []
         @tag86 = false
       end
     end
 
+    def parse_tag_28
+      @bank_statement = BankStatement.new([], @bank_account, 0, nil, nil)
+      @bank_statements[@bank_account] << @bank_statement
+    end
+
     def parse_tag_60F
       @currency = @line[12..14]
-      opening_date = parse_date(@line[6..11])
-      @bank_accounts[@bank_account].opening_date ||= opening_date
+      balance_date = parse_date(@line[6..11])
 
       type = @line[5] == 'D' ? -1 : 1
-      opening_balance = @line[15..-1].gsub(",", ".").to_f * type
-      @bank_accounts[@bank_account].opening_balance ||= opening_balance
-
-      if opening_date < @bank_accounts[@bank_account].opening_date
-        @bank_accounts[@bank_account].opening_date = opening_date
-        @bank_accounts[@bank_account].opening_balance = opening_balance
-      end
+      amount = @line[15..-1].gsub(",", ".").to_f * type
+      @bank_statement.previous_balance = Balance.new(amount, balance_date, @currency)
     end
 
     def parse_tag_62F
       @currency = @line[12..14]
-      closing_date = parse_date(@line[6..11])
-      @bank_accounts[@bank_account].closing_date ||= closing_date
+      balance_date = parse_date(@line[6..11])
 
       type = @line[5] == 'D' ? -1 : 1
-      balance = @line[15..-1].gsub(",", ".").to_f * type
-      @bank_accounts[@bank_account].closing_balance ||= balance
+      amount = @line[15..-1].gsub(",", ".").to_f * type
 
-      if closing_date > @bank_accounts[@bank_account].closing_date
-        @bank_accounts[@bank_account].closing_date = closing_date
-        @bank_accounts[@bank_account].closing_balance = balance
-      end
+      @bank_statement.new_balance = Balance.new(amount, balance_date, @currency)
     end
 
     def parse_tag_61
@@ -94,7 +88,7 @@ module MT940
         type = $2 == 'D' ? -1 : 1
         @transaction = MT940::Transaction.new(:bank_account => @bank_account, :amount => type * ($3 + '.' + $4).to_f, :bank => @bank, :currency => @currency)
         @transaction.date = parse_date($1)
-        @bank_accounts[@bank_account].transactions << @transaction
+        @bank_statement.transactions << @transaction
         @tag86 = false
       end
     end
