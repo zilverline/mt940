@@ -5,14 +5,14 @@ describe "Base" do
   context 'MT940::Base' do
     it 'read the transactions with the filename of the MT940 file' do
       file_name = File.dirname(__FILE__) + '/fixtures/ing.txt'
-      @transactions = MT940::Base.parse_mt940(file_name)["1234567"].transactions
+      @transactions = MT940::Base.parse_mt940(file_name)["1234567"].flat_map(&:transactions)
       @transactions.size.should == 6
     end
 
     it 'read the transactions with the handle to the mt940 file itself' do
       file_name = File.dirname(__FILE__) + '/fixtures/ing.txt'
       file = File.open(file_name)
-      @transactions = MT940::Base.parse_mt940(file)["1234567"].transactions
+      @transactions = MT940::Base.parse_mt940(file)["1234567"].flat_map(&:transactions)
       @transactions.size.should == 6
     end
 
