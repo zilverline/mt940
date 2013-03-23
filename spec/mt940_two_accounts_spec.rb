@@ -45,5 +45,5 @@ describe "two accounts" do
     @bank_statements["3462483153"].flat_map(&:transactions).size.should == 0
     @bank_statements["132576155"].flat_map(&:transactions).size.should == 1
   end
-  
+
 end

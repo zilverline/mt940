@@ -4,8 +4,8 @@ describe "ING" do
 
   before :each do
     @file_name = File.dirname(__FILE__) + '/fixtures/ing.txt'
-    @info = MT940::Base.parse_mt940(@file_name)["001234567"]
-    @transactions = @info.transactions
+    @bank_statements = MT940::Base.parse_mt940(@file_name)["1234567"]
+    @transactions = @bank_statements.flat_map(&:transactions)
     @transaction = @transactions.first
   end
   
@@ -14,19 +14,19 @@ describe "ING" do
   end
 
   it 'get the opening balance and date' do
-    @info.opening_balance.should == 0
-    @info.opening_date.should == Date.new(2010, 7, 22)
+    @bank_statements.first.previous_balance.amount.should == 0
+    @bank_statements.first.previous_balance.date.should == Date.new(2010, 7, 22)
   end
 
   it 'get the closing balance and date' do
-    @info.closing_balance.should == 3.47
-    @info.closing_date.should == Date.new(2010, 7, 23)
+    @bank_statements.last.new_balance.amount.should == 3.47
+    @bank_statements.last.new_balance.date.should == Date.new(2010, 7, 23)
   end
 
   context 'Transaction' do
 
     it 'have a bank_account' do
-      @transaction.bank_account.should == '001234567'
+      @transaction.bank_account.should == '1234567'
     end
 
     it 'have an amount' do
@@ -54,7 +54,7 @@ describe "ING" do
     end
 
     it 'return the contra_account' do
-      @transactions.last.contra_account.should == '123456789'
+      @transactions.last.contra_account.should == 'NONREF'
     end
 
   end

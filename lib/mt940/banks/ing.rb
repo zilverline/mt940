@@ -4,13 +4,18 @@ class MT940::Ing < MT940::Base
     self if args[0].match(/INGBNL/)
   end
 
+  def parse_tag_28C
+    @bank_statement = MT940::BankStatement.new([], @bank_account, 0, nil, nil)
+    @bank_statements[@bank_account] << @bank_statement
+  end
+
   def parse_tag_61
     if @line.match(/^:61:(\d{6})(C|D)(\d+),(\d{0,2})N(\S+)/)
       sign = $2 == 'D' ? -1 : 1
       @transaction = MT940::Transaction.new(:bank_account => @bank_account, :amount => sign * ($3 + '.' + $4).to_f, :bank => @bank, :currency => @currency)
       @transaction.type = human_readable_type($5.strip)
       @transaction.date = parse_date($1)
-      @bank_accounts[@bank_account].transactions << @transaction
+      @bank_statement.transactions << @transaction
       @tag86 = false
     else
       raise @line

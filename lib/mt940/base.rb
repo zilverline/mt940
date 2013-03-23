@@ -23,8 +23,7 @@ module MT940
       @tag86 = false
       @lines.each do |line|
         @line = line
-        @line.match(/^:61:/) ? parse_tag_61 : # for better debugging
-            @line.match(/^:(\d{2}F?):/) ? send("parse_tag_#{$1}".to_sym) : parse_line
+        @line.match(/^:(\d{2}(F|C)?):/) ? send("parse_tag_#{$1}".to_sym) : parse_line
       end
       @bank_statements
     end
