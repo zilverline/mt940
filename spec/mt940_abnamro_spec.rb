@@ -4,8 +4,8 @@ describe "MT940::Base" do
   
   before :each do
     @file_name = File.dirname(__FILE__) + '/fixtures/abnamro.txt'
-    @info = MT940::Base.parse_mt940(@file_name)["517852257"]
-    @transactions = @info.transactions
+    @bank_statements = MT940::Base.parse_mt940(@file_name)["517852257"]
+    @transactions = @bank_statements.flat_map(&:transactions)
     @transaction = @transactions.first
   end
 
@@ -14,13 +14,13 @@ describe "MT940::Base" do
   end
 
   it 'get the opening balance and date' do
-    @info.opening_balance.should == 3236.28
-    @info.opening_date.should == Date.new(2011, 5, 22)
+    @bank_statements.first.previous_balance.amount.should == 3236.28
+    @bank_statements.first.previous_balance.date.should == Date.new(2011, 5, 22)
   end
 
   it 'get the closing balance and date' do
-    @info.closing_balance.should == 1849.75
-    @info.closing_date.should == Date.new(2011, 5, 24)
+    @bank_statements.last.new_balance.amount.should == 1849.75
+    @bank_statements.last.new_balance.date.should == Date.new(2011, 5, 24)
   end
 
   context 'Transaction' do

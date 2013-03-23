@@ -9,7 +9,7 @@ class MT940::Abnamro < MT940::Base
       type = $2 == 'D' ? -1 : 1
       @transaction = MT940::Transaction.new(:bank_account => @bank_account, :amount => type * ($3 + '.' + $4).to_f, :bank => @bank, :currency => @currency)
       @transaction.date = parse_date($1)
-      @bank_accounts[@bank_account].transactions << @transaction
+      @bank_statement.transactions << @transaction
       @tag86 = false
     end
   end
