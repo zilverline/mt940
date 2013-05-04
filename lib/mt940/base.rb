@@ -46,16 +46,40 @@ module MT940
       @transactions = []
       @bank = self.class.to_s.split('::').last
       @bank = 'Unknown' if @bank == 'Base'
-      @lines = file.readlines
+      temp_lines = file.readlines
+      @lines = []
+      index_of_temp_lines = 0
+      index_in_lines = 0
+      while index_of_temp_lines < temp_lines.size do
+        line = temp_lines[index_of_temp_lines]
+        if mt_940_start_line?(line)
+          @lines << line
+          index_in_lines+=1
+        else
+          @lines[index_in_lines-1] += line
+        end
+        index_of_temp_lines+=1
+      end
+    end
+
+    def mt_940_start_line?(line)
+      line.match /^:?\d{2}(\D?|\d?):?.*$/
     end
 
     def parse_tag_25
       @line.gsub!('.', '')
-      if @line.match(/^:\d{2}:\D*(\d*)/)
-        @bank_account = $1.gsub(/\D/, '').gsub(/^0+/, '')
-        @bank_statements[@bank_account] ||= []
-        @tag86 = false
+      case @line
+        when /^:\d{2}:NL/
+          @bank_account = @line[4, 18]
+          @is_structured_format = true
+        when /^:\d{2}:\D*(\d*)/
+          @bank_account = $1.gsub(/\D/, '').gsub(/^0+/, '')
+          @is_structured_format = false
+        else
+          raise "Unknown format for tag 25: #{@line}"
       end
+      @bank_statements[@bank_account] ||= []
+      @tag86 = false
     end
 
     def parse_tag_28
@@ -95,9 +119,9 @@ module MT940
     end
 
     def parse_tag_86
-      if !@tag86 && @line.match(/^:86:\s?(.*)$/)
+      if !@tag86 && @line.match(/^:86:\s?(.*)\Z/m)
         @tag86 = true
-        @transaction.description = $1.gsub(/>\d{2}/, '').strip
+        @transaction.description = $1.gsub(/\n/, ' ').gsub(/>\d{2}/, '').strip
         parse_contra_account
       end
     end
@@ -105,7 +129,7 @@ module MT940
     def parse_line
       if @tag86 && @transaction.description
         @transaction.description.lstrip!
-        @transaction.description += ' ' + @line.gsub(/\n/, '').gsub(/>\d{2}\s*/, '').gsub(/\-XXX/, '').gsub(/-$/, '').strip
+        @transaction.description += ' ' + @line.gsub(/\n/, ' ').gsub(/>\d{2}\s*/, '').gsub(/\-XXX/, '').gsub(/-$/, '').strip
         @transaction.description.strip!
       end
     end

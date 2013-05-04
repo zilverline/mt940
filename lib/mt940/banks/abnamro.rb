@@ -4,6 +4,10 @@ class MT940::Abnamro < MT940::Base
     self if args[0].match(/ABNANL/)
   end
 
+  def mt_940_start_line?(line)
+    super || line.match(/ABNANL/)
+  end
+
   def parse_tag_61
     if @line.match(/^:61:(\d{6})\d{4}(C|D)(\d+),(\d{0,2})/)
       type = $2 == 'D' ? -1 : 1
@@ -20,7 +24,7 @@ class MT940::Abnamro < MT940::Base
         @transaction.contra_account = $2.rjust(9, '000000000')
         @transaction.description    = $3
       elsif @transaction.description.match(/^(\d{2}.\d{2}.\d{2}.\d{3})(.+)/)
-        @transaction.description    = $2
+        @transaction.description    = $2.strip
         @transaction.contra_account = $1.gsub('.','')
       end
     end

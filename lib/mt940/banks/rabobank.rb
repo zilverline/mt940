@@ -5,7 +5,15 @@ class MT940::Rabobank < MT940::Base
   end
 
   def parse_tag_61
-    if @line.match(/^:61:(\d{6})(C|D)(\d+),(\d{0,2})N(.{3})([P|\d]\d{9}|NONREF)\s*(.+)?$/)
+    if @is_structured_format
+      valuta_date = parse_date(@line[4, 6])
+      sign = @line[10, 1] == 'D' ? -1 : 1
+      amount = sign * @line[11, 15].gsub(',', '.').to_f
+      transaction_type = human_readable_type(@line[27, 3])
+      parts = @line.split("\n")
+      number = parts.size > 1 ? parts.last.gsub(/^[P]{0,1}0*/, '') : "NONREF"
+      @transaction = MT940::Transaction.new(:bank_account => @bank_account, amount: amount, bank: @bank, :currency => @currency, type: transaction_type, date: valuta_date, contra_account: number)
+    elsif @line.match(/^:61:(\d{6})(C|D)(\d+),(\d{0,2})N(.{3})([P|\d]\d{9}|NONREF)\s*(.+)?$/)
       sign = $2 == 'D' ? -1 : 1
       @transaction = MT940::Transaction.new(:bank_account => @bank_account, :amount => sign * ($3 + '.' + $4).to_f, :bank => @bank, :currency => @currency)
       @transaction.type = human_readable_type($5)
@@ -15,14 +23,18 @@ class MT940::Rabobank < MT940::Base
       number = number.gsub(/\D/, '').gsub(/^0+/, '') unless number == 'NONREF'
       @transaction.contra_account = number
       @transaction.contra_account_owner = name.strip
-      @bank_statement.transactions << @transaction
     else
       raise @line
     end
+    @bank_statement.transactions << @transaction
   end
 
   def parse_tag_86
-    if @line.match(/^:86:(.*)$/)
+    if @is_structured_format
+      description_parts = @line[4..-1].split('/')
+      @transaction.description = description_parts[description_parts.index{|part|part == "REMI"} + 1].gsub("\n", '')
+      @transaction.contra_account_owner = description_parts[description_parts.index{|part|part == "NAME"} + 1].gsub("\n", '') if description_parts.index{|part|part == "NAME"}
+    elsif @line.match(/^:86:(.*)$/)
       @transaction.description = [@transaction.description, $1].join(" ").strip
     end
   end
