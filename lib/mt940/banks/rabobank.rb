@@ -12,7 +12,7 @@ class MT940::Rabobank < MT940::Base
       transaction_type = human_readable_type(@line[27, 3])
       parts = @line.split("\n")
       contra_account_iban = parts.size > 1 ? parts.last.gsub(/^[P]{0,1}0*/, '') : nil
-      number = contra_account_iban.nil? ? "NONREF" : contra_account_iban.split(//).last(9).join
+      number = contra_account_iban.nil? ? "NONREF" : contra_account_iban.strip.split(//).last(9).join
       @transaction = MT940::Transaction.new(:bank_account => @bank_account,
                                             :bank_account_iban => @bank_account_iban,
                                             amount: amount, bank: @bank,
