@@ -262,15 +262,11 @@ describe "Rabobank" do
         end
       end
 
-      pending "with a unknown contra account" do
-        let(:transaction) { bank_statements_for_account[3].transactions.first }
+      context "with a unknown contra account" do
+        let(:transaction) { bank_statements_for_account[1].transactions[3] }
 
         it "should have a NONREF as contra account" do
           transaction.contra_account.should == "NONREF"
-        end
-
-        it "should have a contra account owner" do
-          transaction.contra_account_owner.should == "Kosten"
         end
 
         it "should have a type" do
