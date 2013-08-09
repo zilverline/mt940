@@ -70,7 +70,8 @@ module MT940
       @line.gsub!('.', '')
       case @line
         when /^:\d{2}:NL/
-          @bank_account = @line[4, 18]
+          @bank_account_iban = @line[4, 18]
+          @bank_account = @bank_account_iban.split(//).last(9).join
           @is_structured_format = true
         when /^:\d{2}:\D*(\d*)/
           @bank_account = $1.gsub(/\D/, '').gsub(/^0+/, '')

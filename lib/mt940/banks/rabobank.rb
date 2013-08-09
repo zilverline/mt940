@@ -11,8 +11,16 @@ class MT940::Rabobank < MT940::Base
       amount = sign * @line[11, 15].gsub(',', '.').to_f
       transaction_type = human_readable_type(@line[27, 3])
       parts = @line.split("\n")
-      number = parts.size > 1 ? parts.last.gsub(/^[P]{0,1}0*/, '') : "NONREF"
-      @transaction = MT940::Transaction.new(:bank_account => @bank_account, amount: amount, bank: @bank, :currency => @currency, type: transaction_type, date: valuta_date, contra_account: number)
+      contra_account_iban = parts.size > 1 ? parts.last.gsub(/^[P]{0,1}0*/, '') : nil
+      number = contra_account_iban.nil? ? "NONREF" : contra_account_iban.split(//).last(9).join
+      @transaction = MT940::Transaction.new(:bank_account => @bank_account,
+                                            :bank_account_iban => @bank_account_iban,
+                                            amount: amount, bank: @bank,
+                                            :currency => @currency,
+                                            type: transaction_type,
+                                            date: valuta_date,
+                                            contra_account_iban: contra_account_iban,
+                                            contra_account: number)
     elsif @line.match(/^:61:(\d{6})(C|D)(\d+),(\d{0,2})N(.{3})([P|\d]\d{9}|NONREF)\s*(.+)?$/)
       sign = $2 == 'D' ? -1 : 1
       @transaction = MT940::Transaction.new(:bank_account => @bank_account, :amount => sign * ($3 + '.' + $4).to_f, :bank => @bank, :currency => @currency)
@@ -32,8 +40,8 @@ class MT940::Rabobank < MT940::Base
   def parse_tag_86
     if @is_structured_format
       description_parts = @line[4..-1].split('/')
-      @transaction.description = description_parts[description_parts.index{|part|part == "REMI"} + 1].gsub("\n", '')
-      @transaction.contra_account_owner = description_parts[description_parts.index{|part|part == "NAME"} + 1].gsub("\n", '') if description_parts.index{|part|part == "NAME"}
+      @transaction.description = description_parts[description_parts.index { |part| part == "REMI" } + 1].gsub("\n", '')
+      @transaction.contra_account_owner = description_parts[description_parts.index { |part| part == "NAME" } + 1].gsub("\n", '') if description_parts.index { |part| part == "NAME" }
     elsif @line.match(/^:86:(.*)$/)
       @transaction.description = [@transaction.description, $1].join(" ").strip
     end

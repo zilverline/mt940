@@ -157,11 +157,11 @@ describe "Rabobank" do
     end
 
     it "should have the correct number of bank statements per bank account" do
-      bank_statements["NL50RABO0123456789"].size.should == 2
+      bank_statements["123456789"].size.should == 2
     end
 
     context MT940::BankStatement do
-      let(:bank_statements_for_account) { bank_statements["NL50RABO0123456789"] }
+      let(:bank_statements_for_account) { bank_statements["123456789"] }
 
       it "should have the correct number of transactions per bank statement" do
         bank_statements_for_account[0].transactions.size.should == 2
@@ -198,11 +198,19 @@ describe "Rabobank" do
           end
 
           it "should have an account number" do
-            transaction.bank_account.should == "NL50RABO0123456789"
+            transaction.bank_account.should == "123456789"
+          end
+
+          it "should have an iban number" do
+            transaction.bank_account_iban.should == "NL50RABO0123456789"
           end
 
           it "should have a contra account number" do
-            transaction.contra_account.should == "NL96RBOS0523149468"
+            transaction.contra_account.should == "523149468"
+          end
+
+          it "should have a contra account iban" do
+            transaction.contra_account_iban.should == "NL96RBOS0523149468"
           end
 
           it "should have a contra account owner" do
@@ -244,6 +252,10 @@ describe "Rabobank" do
           transaction.contra_account.should == "NONREF"
         end
 
+        it "should have the correct contra account iban" do
+          transaction.contra_account_iban.should be_nil
+        end
+
         it "should have the correct contra account owner" do
           transaction.contra_account_owner.should == "Bedrijf B.V."
         end
@@ -257,6 +269,10 @@ describe "Rabobank" do
           transaction.contra_account.should == "4500018"
         end
 
+        it "should have the correct contra account iban" do
+          transaction.contra_account_iban.should == "4500018"
+        end
+
         it "should have the correct contra account owner" do
           transaction.contra_account_owner.should == "DIVV afd parkeergebouwewn"
         end
@@ -267,6 +283,10 @@ describe "Rabobank" do
 
         it "should have a NONREF as contra account" do
           transaction.contra_account.should == "NONREF"
+        end
+
+        it "should have a nil as contra account iban" do
+          transaction.contra_account_iban.should be_nil
         end
 
         it "should have a type" do
