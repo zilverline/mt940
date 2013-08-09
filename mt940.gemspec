@@ -4,7 +4,7 @@ $:.push File.expand_path('../lib', __FILE__)
 require 'mt940/version'
 
 Gem::Specification.new do |s|
-  s.name        = 'mt940-extended'
+  s.name        = 'mt940'
   s.version     = MT940::VERSION
   s.authors     = ['Lars Vonk', 'Michael Franken']
   s.description = %q{An extended MT940 parser with implementations for Dutch banks. Based on basic parser from http://github.com/dovadi/mt940}
@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
      'README.md'
    ]
 
-  s.rubyforge_project = 'mt940-extended'
+  s.rubyforge_project = 'mt940'
 
   s.add_development_dependency 'rspec'
   
