@@ -484,6 +484,7 @@ class MT940::Rabobank < MT940::Base
   MAPPING[538]="Overboeking naar spaarrekening (Telebankieren)(periodiek)"
   MAPPING[540]="Bijschrijving Eurobetaling SHA"
   MAPPING[543]="Bijschrijving Eurobetaling SHA spoed"
+  MAPPING[544]="Eurobetaling (Internetbankieren)"
   MAPPING[552]="Wereldbetaling SHA"
   MAPPING[553]="Wereldbetaling OUR"
   MAPPING[554]="Wereldbetaling BEN"
