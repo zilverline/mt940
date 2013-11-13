@@ -14,7 +14,7 @@ module MT940
       @date                = attributes[:date]
       @contra_account      = attributes[:contra_account]
       @contra_account_iban = attributes[:contra_account_iban]
-      @contra_account_name = attributes[:contra_account_owner]
+      @contra_account_owner = attributes[:contra_account_owner]
       @currency            = attributes[:currency]
     end
 
