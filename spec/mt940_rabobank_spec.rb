@@ -148,6 +148,16 @@ describe "Rabobank" do
 
   end
 
+  context "savings account" do
+    let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank_mt940_structured_savings_account.txt' }
+    let(:bank_statements) { MT940::Base.parse_mt940(file_name) }
+
+    it "should have the correct accountnumber" do
+      bank_statements["9123456789"].size.should == 1
+    end
+
+  end
+
   context "mt 940 structured" do
     let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank_mt940_structured.txt' }
     let(:bank_statements) { MT940::Base.parse_mt940(file_name) }

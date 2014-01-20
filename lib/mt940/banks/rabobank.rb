@@ -13,10 +13,11 @@ class MT940::Rabobank < MT940::Base
       parts = @line.split(/\r?\n/)
       contra_account_iban = parts.size > 1 ? parts.last.gsub(/^[P]{0,1}0*/, '') : nil
       number = contra_account_iban.nil? ? "NONREF" : contra_account_iban.strip.split(//).last(9).join
-      @transaction = MT940::Transaction.new(:bank_account => @bank_account,
-                                            :bank_account_iban => @bank_account_iban,
-                                            amount: amount, bank: @bank,
-                                            :currency => @currency,
+      @transaction = MT940::Transaction.new(bank_account: @bank_account,
+                                            bank_account_iban: @bank_account_iban,
+                                            amount: amount,
+                                            bank: @bank,
+                                            currency: @currency,
                                             type: transaction_type,
                                             date: valuta_date,
                                             contra_account_iban: contra_account_iban,
