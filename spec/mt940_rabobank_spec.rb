@@ -40,6 +40,11 @@ describe "Rabobank" do
           balance.currency.should == "EUR"
         end
 
+        it "should have an iban" do
+          bank_statement.bank_account_iban.should be_nil
+        end
+
+
         context "debit transaction" do
 
           let(:transaction) { bank_statement.transactions.first }
@@ -193,6 +198,10 @@ describe "Rabobank" do
           balance.amount.should == 1190.35
           balance.date.should == Date.new(2013, 4, 3)
           balance.currency.should == "EUR"
+        end
+
+        it "should have an iban" do
+          bank_statement.bank_account_iban.should == "NL50RABO0123456789"
         end
 
         context "debit transaction" do

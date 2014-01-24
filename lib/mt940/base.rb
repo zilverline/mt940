@@ -84,7 +84,7 @@ module MT940
     end
 
     def parse_tag_28
-      @bank_statement = BankStatement.new([], @bank_account, 0, nil, nil)
+      @bank_statement = BankStatement.new([], @bank_account, @bank_account_iban, 0, nil, nil)
       @bank_statements[@bank_account] << @bank_statement
     end
 

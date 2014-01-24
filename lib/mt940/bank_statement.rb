@@ -4,7 +4,7 @@ module MT940
   # It is the equivalent of an actual real life gold old paper bank statement
   # as we used to get them via post in the old days.
   #
-  BankStatement = Struct.new(:transactions, :bank_account, :page_number, :previous_balance, :new_balance)
+  BankStatement = Struct.new(:transactions, :bank_account, :bank_account_iban, :page_number, :previous_balance, :new_balance)
 
   ##
   # A Balance describes the amount of money you have on your bank account
