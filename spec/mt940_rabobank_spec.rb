@@ -163,6 +163,17 @@ describe "Rabobank" do
 
   end
 
+  context "structured betalingskenmerk" do
+    let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank_mt940_structured_dutch_tax.txt' }
+    let(:bank_statements) { MT940::Base.parse_mt940(file_name) }
+
+    it "should put a structuted betalingskenmerk in the description" do
+      bank_statement = bank_statements["123456789"][0]
+      transaction = bank_statement.transactions.first
+      transaction.description.should == "BETALINGSKENMERK 1234567899874563"
+    end
+  end
+
   context "mt 940 structured" do
     let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank_mt940_structured.txt' }
     let(:bank_statements) { MT940::Base.parse_mt940(file_name) }

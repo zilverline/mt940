@@ -41,11 +41,10 @@ class MT940::Rabobank < MT940::Base
   def parse_tag_86
     if @is_structured_format
       description_parts = @line[4..-1].split('/')
-      description_start_index = description_parts.index { |part| part == "REMI" }
-      if description_start_index
-        @transaction.description = description_parts[description_start_index + 1].gsub(/\r|\n/, '')
-      else
-        @transaction.description = ''
+      @transaction.description = parse_description_after_tag description_parts, "REMI"
+      if @transaction.description == ''
+        structured_betalingskenmerk = parse_description_after_tag(description_parts, "CDTRREF")
+        @transaction.description = "BETALINGSKENMERK #{structured_betalingskenmerk}" unless structured_betalingskenmerk == ''
       end
       @transaction.contra_account_owner = description_parts[description_parts.index { |part| part == "NAME" } + 1].gsub(/\r|\n/, '') if description_parts.index { |part| part == "NAME" }
     elsif @line.match(/^:86:(.*)$/)
@@ -54,6 +53,15 @@ class MT940::Rabobank < MT940::Base
   end
 
   private
+  def parse_description_after_tag(description_parts, tag)
+    description_start_index = description_parts.index { |part| part == tag }
+    if description_start_index
+      description_parts[description_start_index + 1].gsub(/\r|\n/, '')
+    else
+      ''
+    end
+  end
+
   def human_readable_type(type)
     if type.match(/\d+/)
       MAPPING[type.to_i] || type.to_s
