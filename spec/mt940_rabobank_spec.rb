@@ -153,6 +153,19 @@ describe "Rabobank" do
 
   end
 
+  context "deposit from savings account" do
+    let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank_mt940_structured_to_savings_account.txt' }
+    let(:bank_statements) { MT940::Base.parse_mt940(file_name) }
+
+    it "should have the correct contra account number" do
+      bank_statement = bank_statements["123456789"][0]
+      transaction = bank_statement.transactions.first
+      transaction.contra_account.should == "1098765432"
+      transaction.contra_account_iban.should == "NL03RABO1098765432"
+    end
+
+  end
+
   context "savings account" do
     let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank_mt940_structured_savings_account.txt' }
     let(:bank_statements) { MT940::Base.parse_mt940(file_name) }
