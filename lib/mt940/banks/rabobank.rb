@@ -52,16 +52,6 @@ class MT940::Rabobank < MT940::Base
     end
   end
 
-  private
-  def parse_description_after_tag(description_parts, tag)
-    description_start_index = description_parts.index { |part| part == tag }
-    if description_start_index
-      description_parts[description_start_index + 1].gsub(/\r|\n/, '')
-    else
-      ''
-    end
-  end
-
   def human_readable_type(type)
     if type.match(/\d+/)
       MAPPING[type.to_i] || type.to_s

@@ -28,6 +28,18 @@ module MT940
       @bank_statements
     end
 
+    protected
+    def parse_description_after_tag(description_parts, tag)
+      description_start_index = description_parts.index { |part| part == tag }
+      if description_start_index
+        description_parts[description_start_index + 1].gsub(/\r|\n/, '')
+      else
+        ''
+      end
+    end
+
+
+
     private
 
     def self.determine_bank(*args)
@@ -51,7 +63,7 @@ module MT940
       index_of_temp_lines = 0
       index_in_lines = 0
       while index_of_temp_lines < temp_lines.size do
-        line = temp_lines[index_of_temp_lines]
+        line = temp_lines[index_of_temp_lines].encode('UTF-8', 'binary', :invalid => :replace, :undef => :replace) # remove invalid chars
         if mt_940_start_line?(line)
           @lines << line
           index_in_lines+=1
@@ -107,6 +119,7 @@ module MT940
       amount = @line[15..-1].gsub(",", ".").to_f * type
 
       @bank_statement.new_balance = Balance.new(amount, balance_date, @currency)
+      @tag86 = false
     end
 
     def parse_tag_61

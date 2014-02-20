@@ -24,6 +24,11 @@ class MT940::Ing < MT940::Base
     end
   end
 
+  def parse_tag_62F
+    super
+    @tag86 = true
+  end
+
   def parse_contra_account
     if @is_structured_format && @transaction && @transaction.description.match(IBAN_BIC_R)
       parse_structured_description $1, $3
