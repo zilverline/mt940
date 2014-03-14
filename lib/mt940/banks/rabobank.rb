@@ -1,4 +1,5 @@
 class MT940::Rabobank < MT940::Base
+  include MT940::StructuredFormat
 
   def self.determine_bank(*args)
     self if args[0].match(/^:940:/)
@@ -40,7 +41,10 @@ class MT940::Rabobank < MT940::Base
 
   def parse_tag_86
     if @is_structured_format
-      description_parts = @line[4..-1].split('/')
+      @transaction.description = @line[4..-1]
+      read_all_description_lines!
+      @skip_parse_line = false
+      description_parts = @transaction.description.split('/')
       @transaction.description = parse_description_after_tag description_parts, "REMI"
       if @transaction.description == ''
         structured_betalingskenmerk = parse_description_after_tag(description_parts, "CDTRREF")
@@ -65,27 +69,6 @@ class MT940::Rabobank < MT940::Base
   #PAYMENT_TYPES MUT.TXT: {"AC" => "Acceptgiro", "BA" => "Betaalautomaat", "BG" => "Bankgiro", "BY" => "Bijschrijving", "CB" => "Crediteuren betaling", "CK" => "Chipknip", "DA" => "Diverse afboekingen", "DB" => "Diverse Boekingen", "GA" => "Geldautomaat", "ID" => "Ideal", "KO" => "Kasopname", "MA" => "Machtiging", "OV" => "Overschrijving", "PB" => "Periodieke betaling", "TB" => "Telebankieren", "TG" => "Telegiro"}
 
   #popular types: "MSC", "013", "023", "030", "034", "060", "062", "070", "071", "084", "088", "093", "102", "121", "122", "127", "131", "133", "404", "411", "501", "504", "505", "508", "541", "544", "578", "689", "690", "691"
-
-  SIMPLE_MAPPING = {}
-  SIMPLE_MAPPING[13] = "Betaalautomaat"
-  SIMPLE_MAPPING[23] = "Geldautomaat"
-  SIMPLE_MAPPING[30] = "Betaalautomaat"
-  SIMPLE_MAPPING[34] = "Internetbankieren"
-  SIMPLE_MAPPING[60] = "Machtiging"
-  SIMPLE_MAPPING[62] = "Machtiging"
-  SIMPLE_MAPPING[70] = "Machtiging"
-  SIMPLE_MAPPING[71] = "Internetbankieren"
-  SIMPLE_MAPPING[84] = "Internetbankieren"
-  SIMPLE_MAPPING[88] = "Internetbankieren"
-  SIMPLE_MAPPING[93] = "Rente"
-  SIMPLE_MAPPING[102] = "Ideal"
-  SIMPLE_MAPPING[121] = "Pinbetaling"
-  SIMPLE_MAPPING[122] = "Crediteurenbetaling"
-  SIMPLE_MAPPING[127] = "Betaalopdracht"
-  SIMPLE_MAPPING[131] = "Bijschrijving"
-  SIMPLE_MAPPING[133] = "Bijschrijving"
-  SIMPLE_MAPPING[404] = "Bijschrijving"
-  SIMPLE_MAPPING[411] = "Bijschrijving"
 
   MAPPING = {}
   MAPPING[1]="Betaalopdracht NotaBox"

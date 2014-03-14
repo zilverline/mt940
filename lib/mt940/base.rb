@@ -2,6 +2,8 @@ module MT940
 
   class Base
 
+    MT_940_TAG_LINE = /^:(\d{2}(F|C)?):/
+
     attr_accessor :bank, :opening_balance, :opening_date
 
     def self.parse_mt940(file)
@@ -23,7 +25,7 @@ module MT940
       @tag86 = false
       @lines.each do |line|
         @line = line
-        @line.match(/^:(\d{2}(F|C)?):/) ? send("parse_tag_#{$1}".to_sym) : parse_line
+        @line.match(MT_940_TAG_LINE) ? send("parse_tag_#{$1}".to_sym) : parse_line
       end
       @bank_statements
     end
@@ -37,7 +39,6 @@ module MT940
         ''
       end
     end
-
 
 
     private

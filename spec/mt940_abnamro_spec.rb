@@ -171,7 +171,7 @@ describe "MT940::Base" do
       end
 
       it 'have the correct description in case of a regular bank' do
-        transaction.description.should == %Q{4851430136 0030000 735822580 NS E-TICKET(S) KENMERK: 26-01-2014 18:14 003000 0735822580}
+        transaction.description.should == %Q{4851430136 0030000 735822580 NS E-TICKET(S)KENMERK: 26-01-2014 18:14 003000 0735822580}
       end
 
       it 'have a date' do

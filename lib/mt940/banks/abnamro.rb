@@ -1,4 +1,5 @@
 class MT940::Abnamro < MT940::Base
+  include MT940::StructuredFormat
 
   def self.determine_bank(*args)
     self if args[0].match(/ABNANL/)
@@ -17,11 +18,6 @@ class MT940::Abnamro < MT940::Base
       @tag86 = false
     end
   end
-
-  def parse_line
-    super unless @skip_parse_line
-  end
-
 
   def parse_contra_account
     if @transaction
@@ -72,17 +68,6 @@ class MT940::Abnamro < MT940::Base
   end
 
   private
-
-  def read_all_description_lines!
-    @skip_parse_line = true
-    index = @lines.index(@line)
-    @lines[index+1..-1].each do |line|
-      break if line.match /^:(\d{2}(F|C)?):/
-      @transaction.description.lstrip!
-      @transaction.description += ' ' + line.gsub(/\n/, ' ').gsub(/>\d{2}\s*/, '').gsub(/\-XXX/, '').gsub(/-$/, '').strip
-      @transaction.description.strip!
-    end
-  end
 
   def iban_to_account(iban)
     !iban.nil? ? iban.split(//).last(10).join.gsub(/^0+/, '') : nil
