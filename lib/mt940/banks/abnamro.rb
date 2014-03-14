@@ -68,14 +68,6 @@ class MT940::Abnamro < MT940::Base
         else
           @skip_parse_line = false
       end
-
-      #if @transaction.description.match(/^(GIRO)\s+(\d+)(.+)/)
-      #  @transaction.contra_account = $2.rjust(9, '000000000')
-      #  @transaction.description = $3
-      #elsif @transaction.description.match(/^(\d{2}.\d{2}.\d{2}.\d{3})(.+)/)
-      #  @transaction.description = $2.strip
-      #  @transaction.contra_account = $1.gsub('.', '')
-      #end
     end
   end
 
