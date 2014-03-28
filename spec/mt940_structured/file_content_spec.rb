@@ -1,4 +1,4 @@
-require_relative 'spec_helper'
+require 'spec_helper'
 
 describe MT940Structured::FileContent do
 
@@ -14,19 +14,29 @@ describe MT940Structured::FileContent do
   context "two :86: lines" do
     let(:raw_lines) { [":20:940A121001", ":86:2121.21.211EUR", "belongs to first :86:", ":61:bla"] }
     it "groups them" do
-      expect(subject[1]).to eq(":86:2121.21.211EUR belongs to first :86:")
+      expect(subject[1]).to eq(":86:2121.21.211EURbelongs to first :86:")
     end
 
     its(:last) { should eq ":61:bla" }
   end
 
-  context "multiple :86: lines" do
+  context "multiple :86: lines divided by newline" do
     let(:raw_lines) { [":20:940A121001", ":86:2121.21.211EUR", "belongs to first :86:", "also belongs to first :86:", ":61:bla"] }
     it "groups them" do
-      expect(subject[1]).to eq(":86:2121.21.211EUR belongs to first :86: also belongs to first :86:")
+      expect(subject[1]).to eq(":86:2121.21.211EURbelongs to first :86:also belongs to first :86:")
     end
 
     its(:last) { should eq ":61:bla" }
+  end
+
+  context "multiple :86: lines divided by :86:" do
+    let(:raw_lines) { [":20:940A121001", ":86:2121.21.211EUR", ":86:belongs to first :86:", ":86:also belongs to first :86:", ":61:bla"] }
+    it "groups them" do
+      expect(subject[1]).to eq(":86:2121.21.211EURbelongs to first :86:also belongs to first :86:")
+    end
+
+    its(:last) { should eq ":61:bla" }
+
   end
 
   context "stops at end of file character for ING" do

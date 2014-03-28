@@ -14,17 +14,26 @@ class MT940Structured::FileContent
   def group_lines
     body_lines = @raw_lines[start_index..(end_index-1)]
     grouped_lines = []
+    previous_tag = nil
     body_lines.each do |line|
-      if line.match /^:\d{2}(D|C|F)?:/
+      mt940_line = line.match /^(:\d{2}[D|C|F]?:)/
+      if mt940_line && previous_tag != $1
+        previous_tag = $1
         grouped_lines << line
       else
-        grouped_lines[-1] = "#{grouped_lines.last}#{line}"
+        next_line = if line.match /^(:\d{2}[D|C|F]?:)(.*)/
+                      $2
+                    else
+                      line
+                    end
+        grouped_lines[-1] = "#{grouped_lines.last}#{next_line}"
       end
     end
     grouped_lines
   end
 
   private
+
   def start_index
     @raw_lines.index { |line| line.match /^:20:/ }
   end

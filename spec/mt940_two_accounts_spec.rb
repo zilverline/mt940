@@ -3,7 +3,7 @@ require_relative 'spec_helper'
 describe "two accounts" do
   before :each do
     @file_name = File.dirname(__FILE__) + '/fixtures/two_accounts.txt'
-    @bank_statements = MT940::Base.parse_mt940(@file_name)
+    @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)
   end
 
   it 'have the correct number of bank accounts' do
