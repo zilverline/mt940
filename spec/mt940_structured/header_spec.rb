@@ -6,22 +6,22 @@ describe MT940Structured::Header do
 
   context "Rabobank" do
     let(:lines) { [":940:", ":20:940A121001", ":25:2121.21.211EUR"] }
-    it { should be_kind_of(MT940Structured::LineParsers::Rabobank) }
+    it { should be_kind_of(MT940Structured::Parsers::Rabobank) }
   end
 
   context "ING" do
     let(:lines) { ["0000 01INGBNL2AXXXX00001", "0000 01INGBNL2AXXXX00001", "940 00", ":20:MPBZ", ":25:0001234567"] }
-    it { should be_kind_of(MT940Structured::LineParsers::Ing) }
+    it { should be_kind_of(MT940Structured::Parsers::Ing) }
   end
 
   context "ABN Amro" do
     let(:lines) { ["ABNANL2A", "940", "ABNANL2A", ":20:ABN AMRO BANK NV", ":25:517852257"] }
-    it { should be_kind_of(MT940Structured::LineParsers::AbnAmro) }
+    it { should be_kind_of(MT940Structured::Parsers::AbnAmro) }
   end
 
   context "Triodos bank" do
     let(:lines) { [":20:1308728725026/1", ":25:TRIODOSBANK/0390123456", ":28:1"] }
-    it { should be_kind_of(MT940Structured::LineParsers::Triodos) }
+    it { should be_kind_of(MT940Structured::Parsers::Triodos) }
   end
 
   context "Unknown bank" do

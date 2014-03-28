@@ -1,8 +1,5 @@
 module MT940Structured
-  module LineParsers
-    class Rabobank
-    end
-
+  module Parsers
     class Ing
 
     end
@@ -17,3 +14,4 @@ module MT940Structured
   end
 end
 
+require_relative 'rabobank/rabobank'

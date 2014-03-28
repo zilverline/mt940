@@ -4,7 +4,7 @@ describe "Rabobank" do
 
   context "parse whole file" do
     let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank.txt' }
-    let(:bank_statements) { MT940::Base.parse_mt940(file_name) }
+    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
 
     it "should have the correct number of bank account's" do
       bank_statements.keys.size.should == 1
@@ -155,7 +155,7 @@ describe "Rabobank" do
 
   context "deposit from savings account" do
     let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank_mt940_structured_to_savings_account.txt' }
-    let(:bank_statements) { MT940::Base.parse_mt940(file_name) }
+    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
 
     it "should have the correct contra account number" do
       bank_statement = bank_statements["123456789"][0]
@@ -168,7 +168,7 @@ describe "Rabobank" do
 
   context "savings account" do
     let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank_mt940_structured_savings_account.txt' }
-    let(:bank_statements) { MT940::Base.parse_mt940(file_name) }
+    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
 
     it "should have the correct accountnumber" do
       bank_statements["9123456789"].size.should == 1
@@ -178,7 +178,7 @@ describe "Rabobank" do
 
   context "structured betalingskenmerk" do
     let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank_mt940_structured_dutch_tax.txt' }
-    let(:bank_statements) { MT940::Base.parse_mt940(file_name) }
+    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
 
     it "should put a structuted betalingskenmerk in the description" do
       bank_statement = bank_statements["123456789"][0]
@@ -189,7 +189,7 @@ describe "Rabobank" do
 
   context "structured multiline description" do
     let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank_mt940_structured_multi_line.txt' }
-    let(:bank_statements) { MT940::Base.parse_mt940(file_name) }
+    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
 
     it "handles multiline in the description" do
       bank_statement = bank_statements["123456789"][0]
@@ -201,7 +201,7 @@ describe "Rabobank" do
 
   context "mt 940 structured" do
     let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank_mt940_structured.txt' }
-    let(:bank_statements) { MT940::Base.parse_mt940(file_name) }
+    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
 
     it "should have the correct number of bank account's" do
       bank_statements.keys.size.should == 1
@@ -304,7 +304,7 @@ describe "Rabobank" do
         end
 
         it "should have the correct contra account" do
-          transaction.contra_account.should == "NONREF"
+          transaction.contra_account.should == "663616476"
         end
 
         it "should have the correct contra account iban" do
@@ -325,7 +325,7 @@ describe "Rabobank" do
         end
 
         it "should have the correct contra account iban" do
-          transaction.contra_account_iban.should == "4500018"
+          transaction.contra_account_iban.should == nil
         end
 
         it "should have the correct contra account owner" do
@@ -362,7 +362,7 @@ describe "Rabobank" do
 
   it "should be able to handle a debet current balance" do
     debet_file_name = File.dirname(__FILE__) + '/fixtures/rabobank_with_debet_previous_balance.txt'
-    bank_statement = MT940::Base.parse_mt940(debet_file_name)["129199348"].first
+    bank_statement = MT940Structured::Parser.parse_mt940(debet_file_name)["129199348"].first
 
     bank_statement.previous_balance.amount.should == -12
     bank_statement.previous_balance.currency.should == "EUR"
