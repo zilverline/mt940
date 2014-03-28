@@ -1,12 +1,16 @@
 class MT940::Ing < MT940::Base
+  include MT940::StructuredFormat
 
-  IBAN_BIC_R = /^([a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{0,30})(?:\s)([a-zA-Z0-9]{8,11})(?:\s)(.*)/
+  IBAN = %Q{[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{0,30}}
+  BIC = %Q{[a-zA-Z0-9]{8,11}}
+  IBAN_BIC_R = /^(#{IBAN})(?:\s)(#{BIC})(?:\s)(.*)/
   CONTRA_ACCOUNT_DESCRIPTION_R = /^(.*)(?:\s)(?:NOTPROVIDED)(?:\s)(.*)/
 
 
   def self.determine_bank(*args)
     self if args[0].match(/INGBNL/)
   end
+
 
   def parse_tag_61
 
@@ -29,11 +33,31 @@ class MT940::Ing < MT940::Base
     @tag86 = true
   end
 
-  def parse_contra_account
-    if @is_structured_format && @transaction && @transaction.description.match(IBAN_BIC_R)
-      parse_structured_description $1, $3
-    elsif @transaction && @transaction.description.match(/([P|\d]\d{9})?(.+)/)
-      parse_description $1, $2
+  def parse_tag_86
+    if !@tag86 && @line.match(/^:86:\s?(.*)\Z/m)
+      @tag86 = true
+      description = $1.gsub(/\n/, ' ').gsub(/>\d{2}/, '').strip
+      puts description
+      transaction_has_structured_description = @is_structured_format && @transaction
+      @transaction.description = description
+      if transaction_has_structured_description && description.match(IBAN_BIC_R)
+        parse_structured_description $1, $3
+      elsif transaction_has_structured_description && description.match(/^Europese Incasso, doorlopend(.*)/)
+        read_all_description_lines!
+        @transaction.description.match(/^Europese Incasso, doorlopend\s(#{IBAN})\s(#{BIC})(.*)\s([a-zA-Z0-9[:space:]]{19,30})\sSEPA(.*)/)
+        @transaction.contra_account_iban=$1
+        @transaction.contra_account_owner=$3.strip
+        @transaction.description = "#{$4.strip} #{$5.strip}"
+        if @transaction.contra_account_iban.match /^NL/
+          @transaction.contra_account=@transaction.contra_account_iban[8..-1].sub(/^0+/, '')
+        else
+          @transaction.contra_account=@transaction.contra_account_iban
+        end
+      elsif @transaction && @transaction.description.match(/([P|\d]\d{9})?(.+)/)
+        parse_description $1, $2
+      else
+        @skip_parse_line = false
+      end
     end
   end
 
@@ -61,7 +85,7 @@ class MT940::Ing < MT940::Base
   ING_MAPPING["TRF"]= "Overboeking buitenland"
 
   private
-  # introduced by IBAN
+# introduced by IBAN
   def parse_structured_description(iban, description)
     @transaction.contra_account_iban=iban
     @transaction.description=description
@@ -81,4 +105,5 @@ class MT940::Ing < MT940::Base
       @transaction.contra_account = "NONREF"
     end
   end
+
 end
