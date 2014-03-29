@@ -241,5 +241,7 @@ describe MT940Structured::Parser do
       end
 
     end
+
+    pending 'SEPA INCASSO ALGEMEEN DOORLOPEND'
   end
 end
