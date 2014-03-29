@@ -2,7 +2,7 @@ module MT940Structured::Parsers::Rabobank
   class StructuredTransactionParser
     include MT940Structured::Parsers::DateParser,
             Types,
-            StructuredDescriptionParser,
+            MT940Structured::Parsers::StructuredDescriptionParser,
             MT940Structured::Parsers::IbanSupport
 
 
@@ -13,7 +13,7 @@ module MT940Structured::Parsers::Rabobank
       transaction_type = human_readable_type(line_61[27, 3])
       parts = line_61.split(/\s/)
       potential_iban = parts.size > 1 ? parts.last.gsub(/^[P]{0,1}0*/, '').strip : nil
-      number = potential_iban.nil? ? "NONREF" : potential_iban.strip.split(//).last(10).join.gsub(/^0+/, '')
+      number = potential_iban.nil? ? "NONREF" : iban_to_account(potential_iban)
       contra_account_iban = iban?(potential_iban) ? potential_iban : nil
       MT940::Transaction.new(amount: amount,
                              type: transaction_type,

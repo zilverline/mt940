@@ -1,8 +1,6 @@
-module MT940Structured::Parsers::Abnamro
+module MT940Structured::Parsers::Triodos
   class TransactionParser
     include MT940Structured::Parsers::DateParser
-    include MT940Structured::Parsers::IbanSupport
-    include MT940Structured::Parsers::StructuredDescriptionParser
 
     def parse_transaction(line_61)
       if line_61.match(/^:61:(\d{6})\d{4}(C|D)(\d+),(\d{0,2})/)

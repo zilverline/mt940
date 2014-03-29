@@ -5,6 +5,11 @@ module MT940Structured::Parsers
     def iban?(string)
       !string.nil? and string.match(IBAN_R)
     end
+
+    def iban_to_account(iban)
+      !iban.nil? ? iban.split(//).last(10).join.gsub(/^0+/, '') : nil
+    end
+
   end
 
 end
