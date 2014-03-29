@@ -194,7 +194,7 @@ describe "Rabobank" do
     it "handles multiline in the description" do
       bank_statement = bank_statements["123456789"][0]
       transaction = bank_statement.transactions.first
-      transaction.description.should == "Factuur 2014-002"
+      transaction.description.should == "Factuur 20 14-002"
     end
 
   end
@@ -269,7 +269,7 @@ describe "Rabobank" do
           end
 
           it "should have a contra account owner" do
-            transaction.contra_account_owner.should == "Nespresso Nederland B.V."
+            transaction.contra_account_owner.should == "Nespresso Nede rland B.V."
           end
 
           it "should have a bank" do

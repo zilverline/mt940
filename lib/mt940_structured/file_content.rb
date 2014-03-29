@@ -4,7 +4,7 @@ class MT940Structured::FileContent
   R_EOF_TRIODOS = /^-$/
 
   def initialize(raw_lines)
-    @raw_lines = raw_lines
+    @raw_lines = raw_lines.map{|line|line.strip}
   end
 
   def get_header
@@ -26,7 +26,7 @@ class MT940Structured::FileContent
                     else
                       line
                     end
-        grouped_lines[-1] = "#{grouped_lines.last}#{next_line}"
+        grouped_lines[-1] = "#{grouped_lines.last} #{next_line}"
       end
     end
     grouped_lines

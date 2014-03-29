@@ -1,4 +1,4 @@
-require_relative 'spec_helper'
+require 'spec_helper'
 
 describe MT940Structured::Header do
 
@@ -6,7 +6,7 @@ describe MT940Structured::Header do
 
   context "Rabobank" do
     let(:lines) { [":940:", ":20:940A121001", ":25:2121.21.211EUR"] }
-    it { should be_kind_of(MT940Structured::Parsers::Rabobank) }
+    it { should be_kind_of(MT940Structured::Parsers::Rabobank::Parser) }
   end
 
   context "ING" do

@@ -11,7 +11,7 @@ module MT940Structured::Parsers::Rabobank
       sign = line_61[10, 1] == 'D' ? -1 : 1
       amount = sign * line_61[11, 15].gsub(',', '.').to_f
       transaction_type = human_readable_type(line_61[27, 3])
-      parts = line_61.split(/\r?\n/)
+      parts = line_61.split(/\s/)
       potential_iban = parts.size > 1 ? parts.last.gsub(/^[P]{0,1}0*/, '').strip : nil
       number = potential_iban.nil? ? "NONREF" : potential_iban.strip.split(//).last(10).join.gsub(/^0+/, '')
       contra_account_iban = iban?(potential_iban) ? potential_iban : nil
