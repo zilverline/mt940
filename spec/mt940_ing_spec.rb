@@ -228,13 +228,13 @@ describe "ING" do
   context 'europese incasso' do
     before :each do
       @file_name = File.dirname(__FILE__) + '/fixtures/ing/eu_incasso.txt'
-      @bank_statements = MT940::Base.parse_mt940(@file_name)["1234567"]
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1234567"]
       @transactions = @bank_statements.flat_map(&:transactions)
       @transaction = @transactions.first
     end
 
     it 'has a description' do
-      @transaction.description.should == 'NL10XXX100020000000 0100000000000 000000000000-AAAA12345678 Premie xxxxxxxxxxxxxxxxxxxxxxx'
+      @transaction.description.should == 'NL10XXX100020000000 01000 00000000 000000000000-AAAA12345678 Premie xxxxxxxxxxxxxxxxxxxxxxx'
     end
 
     it 'has a contra account' do
@@ -246,20 +246,20 @@ describe "ING" do
     end
 
     it 'has a contra account owner' do
-      @transaction.contra_account_owner.should == "JAAPJAAP  FIETS PAPIER QWDFDFGGASDFGDSFGS NV"
+      @transaction.contra_account_owner.should == "JAAPJAAP FIETS PAPIER QWDFDFGGASDFGDSFGS NV"
     end
   end
 
   context 'foreign transaction' do
     before :each do
       @file_name = File.dirname(__FILE__) + '/fixtures/ing/eu_incasso_foreign_transaction.txt'
-      @bank_statements = MT940::Base.parse_mt940(@file_name)["1234567"]
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1234567"]
       @transactions = @bank_statements.flat_map(&:transactions)
       @transaction = @transactions.first
     end
 
     it 'has a description' do
-      @transaction.description.should == 'GB40G01SDDCITI00000011091334 9087653421 NL0001MKXD ADWORDS:3455667788:NL0001MKXD'
+      @transaction.description.should == 'GB40G01SDDCITI00000011091334 9087653421 NL0 001MKXD ADWORDS:3455667788:NL0001MKXD'
     end
 
     it 'has a contra account' do
@@ -271,32 +271,32 @@ describe "ING" do
     end
 
     it 'has a contra account owner' do
-      @transaction.contra_account_owner.should == "Google  Ireland Limited"
+      @transaction.contra_account_owner.should == "Google Ireland Limited"
     end
   end
 
-  pending 'new line in reference after company name' do
+  describe 'new line in reference after company name' do
     before :each do
       @file_name = File.dirname(__FILE__) + '/fixtures/ing/failing.txt'
-      @bank_statements = MT940::Base.parse_mt940(@file_name)["1234567"]
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1234567"]
       @transactions = @bank_statements.flat_map(&:transactions)
       @transaction = @transactions.first
     end
 
     it 'has a description' do
-      @transaction.description.should == 'GB40G01SDDCITI00000011091334 9087653421 NL0001MKXD ADWORDS:3455667788:NL0001MKXD'
+      @transaction.description.should == 'NL72 BOB998877665544 BOB213654789387485940392049 1234567898765432 Kenmerk: 3333.1111.2222.3333 Omschrijving: 987654321 01-01-2012 3 MND 9878878787 Servicecontract'
     end
 
     it 'has a contra account' do
-      @transaction.contra_account.should == "BB123456789876567898"
+      @transaction.contra_account.should == "123456789"
     end
 
     it 'has a contra account iban' do
-      @transaction.contra_account_iban.should == "BB123456789876567898"
+      @transaction.contra_account_iban.should == "NL80RABO0123456789"
     end
 
     it 'has a contra account owner' do
-      @transaction.contra_account_owner.should == "Google  Ireland Limited"
+      @transaction.contra_account_owner.should == "BOB"
     end
 
   end

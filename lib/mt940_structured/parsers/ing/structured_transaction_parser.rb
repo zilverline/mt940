@@ -17,7 +17,7 @@ module MT940Structured::Parsers::Ing
           when IBAN_BIC_R
             parse_structured_description transaction, $1, $3
           when /^Europese Incasso, doorlopend(.*)/
-            transaction.description.match(/^Europese Incasso, doorlopend\s(#{IBAN})\s(#{BIC})(.*)\s([a-zA-Z0-9[:space:]]{19,30})\sSEPA(.*)/)
+            description.match(/^Europese Incasso, doorlopend\s(#{IBAN})\s(#{BIC})(.*)\s([a-zA-Z0-9[:space:]]{19,30})\sSEPA(.*)/)
             transaction.contra_account_iban=$1
             transaction.contra_account_owner=$3.strip
             transaction.description = "#{$4.strip} #{$5.strip}"
