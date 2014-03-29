@@ -8,7 +8,7 @@ module MT940Structured::Parsers::Ing
     IBAN = %Q{[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{0,30}}
     BIC = %Q{[a-zA-Z0-9]{8,11}}
     IBAN_BIC_R = /^(#{IBAN})(?:\s)(#{BIC})(?:\s)(.*)/
-    CONTRA_ACCOUNT_DESCRIPTION_R = /^(.*)(?:\s)(?:NOTPROVIDED)(?:\s)(.*)/
+    CONTRA_ACCOUNT_DESCRIPTION_R = /^(.*)\sN\s?O\s?T\s?P\s?R\s?O\s?V\s?I\s?D\s?E\s?D\s?(.*)/
 
     def enrich_transaction(transaction, line_86)
       if line_86.match(/^:86:\s?(.*)\Z/m)
