@@ -3,14 +3,10 @@ module MT940Structured::Parsers::Abnamro
     include MT940Structured::Parsers::DateParser
     include MT940Structured::Parsers::IbanSupport
     include MT940Structured::Parsers::StructuredDescriptionParser
+    include MT940Structured::Parsers::DefaultLine61Parser
 
-    def parse_transaction(line_61)
-      if line_61.match(/^:61:(\d{6})\d{4}(C|D)(\d+),(\d{0,2})/)
-        type = $2 == 'D' ? -1 : 1
-        transaction = MT940::Transaction.new(amount: type * ($3 + '.' + $4).to_f)
-        transaction.date = parse_date($1)
-        transaction
-      end
+    def get_regex_for_line_61
+      /^:61:(\d{6})\d{4}(C|D)(\d+),(\d{0,2})/
     end
 
     def enrich_transaction(transaction, line_86)

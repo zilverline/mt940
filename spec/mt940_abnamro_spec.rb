@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe "MT940::Base" do
+describe MT940Structured::Parser do
 
   context 'classic mt940' do
     before :each do
@@ -67,10 +67,11 @@ describe "MT940::Base" do
       end
     end
   end
+
   context 'sepa mt940' do
     before :each do
       @file_name = File.dirname(__FILE__) + '/fixtures/abnamro_structured.txt'
-      @bank_statements = MT940::Base.parse_mt940(@file_name)["123212321"]
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["123212321"]
       @transactions = @bank_statements.flat_map(&:transactions)
     end
 
@@ -131,7 +132,7 @@ describe "MT940::Base" do
       end
 
       it 'have the correct description in case of a regular bank' do
-        transaction.description.should == "SAVINGS 3798473"
+        transaction.description.should == "SAVINGS"
       end
 
       it 'have a date' do
@@ -171,7 +172,7 @@ describe "MT940::Base" do
       end
 
       it 'have the correct description in case of a regular bank' do
-        transaction.description.should == %Q{4851430136 0030000 735822580 NS E-TICKET(S)KENMERK: 26-01-2014 18:14 003000 0735822580}
+        transaction.description.should == %Q{4851430136 0030000 735822580 NS E-TICKET(S) KENMERK: 26-01-2014 18:14 003000 0735822580}
       end
 
       it 'have a date' do

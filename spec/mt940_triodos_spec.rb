@@ -4,7 +4,7 @@ describe "Triodos" do
 
   before :each do
     @file_name = File.dirname(__FILE__) + '/fixtures/triodos.txt'
-    @bank_statements = MT940::Base.parse_mt940(@file_name)["390123456"]
+    @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["390123456"]
     @transactions = @bank_statements.flat_map(&:transactions)
     @transaction = @transactions.first
   end

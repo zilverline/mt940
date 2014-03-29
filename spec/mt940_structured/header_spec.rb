@@ -21,7 +21,7 @@ describe MT940Structured::Header do
 
   context "Triodos bank" do
     let(:lines) { [":20:1308728725026/1", ":25:TRIODOSBANK/0390123456", ":28:1"] }
-    it { should be_kind_of(MT940Structured::Parsers::Triodos) }
+    it { should be_kind_of(MT940Structured::Parsers::Triodos::Parser) }
   end
 
   context "Unknown bank" do
