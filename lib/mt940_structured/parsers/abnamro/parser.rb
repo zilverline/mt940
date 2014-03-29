@@ -6,6 +6,7 @@ module MT940Structured::Parsers::Abnamro
   end
 
   class TransactionParsers
+
     def for_format(_)
       TransactionParser.new
     end

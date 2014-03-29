@@ -37,7 +37,6 @@ class MT940::Ing < MT940::Base
     if !@tag86 && @line.match(/^:86:\s?(.*)\Z/m)
       @tag86 = true
       description = $1.gsub(/\n/, ' ').gsub(/>\d{2}/, '').strip
-      puts description
       transaction_has_structured_description = @is_structured_format && @transaction
       @transaction.description = description
       if transaction_has_structured_description && description.match(IBAN_BIC_R)

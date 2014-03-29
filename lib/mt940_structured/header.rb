@@ -17,7 +17,7 @@ module MT940Structured
       elsif @raw_lines[1] && @raw_lines[1].match(R_TRIODOS)
         MT940Structured::Parsers::Triodos::Parser.new
       elsif @raw_lines[0].match(R_ING)
-        Parsers::Ing.new
+        MT940Structured::Parsers::Ing::Parser.new
       else
         raise UnsupportedBankError.new
       end

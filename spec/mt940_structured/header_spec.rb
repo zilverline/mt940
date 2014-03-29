@@ -11,7 +11,7 @@ describe MT940Structured::Header do
 
   context "ING" do
     let(:lines) { ["0000 01INGBNL2AXXXX00001", "0000 01INGBNL2AXXXX00001", "940 00", ":20:MPBZ", ":25:0001234567"] }
-    it { should be_kind_of(MT940Structured::Parsers::Ing) }
+    it { should be_kind_of(MT940Structured::Parsers::Ing::Parser) }
   end
 
   context "ABN Amro" do

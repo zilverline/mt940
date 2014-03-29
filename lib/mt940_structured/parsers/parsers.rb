@@ -1,9 +1,5 @@
 module MT940Structured
   module Parsers
-    class Ing
-
-    end
-
   end
 end
 
@@ -15,5 +11,6 @@ require_relative 'default_line61_parser'
 require_relative 'bank_statement_parser'
 require_relative 'base'
 require_relative 'tridios/triodos'
+require_relative 'ing/ing'
 require_relative 'abnamro/abnamro'
 require_relative 'rabobank/rabobank'

@@ -19,9 +19,14 @@ module MT940Structured::Parsers
     def group_lines_by_tag(lines)
       result = []
       while !lines.empty? do
-        group_size = (lines.drop(1).index { |line| line.match(/^:20:/) } || lines.length) + 1
-        result << lines.take(group_size)
-        lines = lines.drop(group_size)
+        start_index = lines.index { |line| line.match(/^:20:/)}
+        end_index = lines.index { |line| line.match(/^:62F:/)}
+        if start_index && end_index > start_index
+          result << lines[start_index..end_index]
+          lines = lines.drop(end_index + 1)
+        else
+          lines = []
+        end
       end
       result
     end

@@ -1,6 +1,6 @@
 module MT940Structured::Parsers
   class BankStatementParser
-    include DateParser, BalanceParser
+    include DateParser, BalanceParser, IbanSupport
     attr_reader :bank_statement
 
     def initialize(bank, transaction_parsers, lines)
@@ -22,7 +22,7 @@ module MT940Structured::Parsers
       case line
         when /^:\d{2}:NL/
           @bank_statement.bank_account_iban = line[4, 18]
-          @bank_statement.bank_account = @bank_statement.bank_account_iban.strip.split(//).last(10).join.sub(/^[0]*/, "")
+          @bank_statement.bank_account = iban_to_account(@bank_statement.bank_account_iban)
           @is_structured_format = true
         when /^:\d{2}:\D*(\d*)/
           @bank_statement.bank_account = $1.gsub(/\D/, '').gsub(/^0+/, '')
@@ -36,9 +36,10 @@ module MT940Structured::Parsers
       @bank_statement.previous_balance = parse_balance(line)
     end
 
-    def parse_line_61(line)
+    def parse_line_61(line_61)
+      @is_structured_format = @transaction_parsers.structured?(line_61) if @transaction_parsers.respond_to?(:structured?)
       @transaction_parser = @transaction_parsers.for_format @is_structured_format
-      transaction = @transaction_parser.parse_transaction(line)
+      transaction = @transaction_parser.parse_transaction(line_61)
       transaction.bank_account = @bank_statement.bank_account
       transaction.bank_account_iban = @bank_statement.bank_account_iban
       transaction.currency = @bank_statement.previous_balance.currency

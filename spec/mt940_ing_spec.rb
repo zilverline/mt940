@@ -5,7 +5,7 @@ describe "ING" do
   context 'old mt940' do
     before :each do
       @file_name = File.dirname(__FILE__) + '/fixtures/ing.txt'
-      @bank_statements = MT940::Base.parse_mt940(@file_name)["1234567"]
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1234567"]
       @transactions = @bank_statements.flat_map(&:transactions)
       @transaction = @transactions.first
     end
@@ -66,7 +66,7 @@ describe "ING" do
 
     before :each do
       @file_name = File.dirname(__FILE__) + '/fixtures/ing_structured.txt'
-      @bank_statements = MT940::Base.parse_mt940(@file_name)["1234567"]
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1234567"]
       @transactions = @bank_statements.flat_map(&:transactions)
       @transaction = @transactions.first
     end
