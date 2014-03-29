@@ -13,7 +13,7 @@ module MT940Structured
       if @raw_lines[0].match(R_RABOBANK)
         MT940Structured::Parsers::Rabobank::Parser.new
       elsif @raw_lines[0].match(R_ABN_AMRO)
-        Parsers::AbnAmro.new
+        MT940Structured::Parsers::Abnamro::Parser.new
       elsif @raw_lines[1] && @raw_lines[1].match(R_TRIODOS)
         Parsers::Triodos.new
       elsif @raw_lines[0].match(R_ING)

@@ -1,9 +1,11 @@
-module MT940Structured::Parsers::Rabobank
+module MT940Structured::Parsers
   class BankStatementParser
     include DateParser, BalanceParser
     attr_reader :bank_statement
 
-    def initialize(lines)
+    def initialize(bank, transaction_parsers, lines)
+      @bank = bank
+      @transaction_parsers = transaction_parsers
       @bank_statement = MT940::BankStatement.new([])
       lines.each do |line|
         if line.match /^:(\d{2}(F|C)?):/
@@ -35,12 +37,12 @@ module MT940Structured::Parsers::Rabobank
     end
 
     def parse_line_61(line)
-      @transaction_parser = @is_structured_format ? StructuredTransactionParser.new : TransactionParser.new
+      @transaction_parser = @transaction_parsers.for_format @is_structured_format
       transaction = @transaction_parser.parse_transaction(line)
       transaction.bank_account = @bank_statement.bank_account
       transaction.bank_account_iban = @bank_statement.bank_account_iban
       transaction.currency = @bank_statement.previous_balance.currency
-      transaction.bank = "Rabobank"
+      transaction.bank = @bank
       @bank_statement.transactions << transaction
     end
 

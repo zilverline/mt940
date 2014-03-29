@@ -1,4 +1,4 @@
-module MT940Structured::Parsers::Rabobank
+module MT940Structured::Parsers
   module BalanceParser
     def parse_balance(line)
       currency = line[12..14]

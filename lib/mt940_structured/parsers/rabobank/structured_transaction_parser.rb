@@ -1,9 +1,9 @@
 module MT940Structured::Parsers::Rabobank
   class StructuredTransactionParser
-    include DateParser,
+    include MT940Structured::Parsers::DateParser,
             Types,
             StructuredDescriptionParser,
-            IbanSupport
+            MT940Structured::Parsers::IbanSupport
 
 
     def parse_transaction(line_61)

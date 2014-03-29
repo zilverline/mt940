@@ -2,10 +2,10 @@ require_relative 'spec_helper'
 
 describe "MT940::Base" do
 
-  context 'classis mt940' do
+  context 'classic mt940' do
     before :each do
       @file_name = File.dirname(__FILE__) + '/fixtures/abnamro.txt'
-      @bank_statements = MT940::Base.parse_mt940(@file_name)["517852257"]
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["517852257"]
       @transactions = @bank_statements.flat_map(&:transactions)
       @transaction = @transactions.first
     end

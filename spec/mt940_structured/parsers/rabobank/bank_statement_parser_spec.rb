@@ -1,8 +1,9 @@
 require 'spec_helper'
 
-describe MT940Structured::Parsers::Rabobank::BankStatementParser do
+describe MT940Structured::Parsers::BankStatementParser do
 
-  subject { MT940Structured::Parsers::Rabobank::BankStatementParser.new(lines).bank_statement }
+  let(:transaction_parsers) { MT940Structured::Parsers::Rabobank::TransactionParsers.new }
+  subject { MT940Structured::Parsers::BankStatementParser.new("Rabobank", transaction_parsers, lines).bank_statement }
 
   context "structured" do
     let(:lines) do

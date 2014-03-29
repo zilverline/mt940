@@ -16,7 +16,7 @@ describe MT940Structured::Header do
 
   context "ABN Amro" do
     let(:lines) { ["ABNANL2A", "940", "ABNANL2A", ":20:ABN AMRO BANK NV", ":25:517852257"] }
-    it { should be_kind_of(MT940Structured::Parsers::AbnAmro) }
+    it { should be_kind_of(MT940Structured::Parsers::Abnamro::Parser) }
   end
 
   context "Triodos bank" do
