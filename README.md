@@ -1,8 +1,9 @@
 MT940
 ======
 
-Full parser for MT940 files, see [MT940](http://nl.wikipedia.org/wiki/MT940). This is based on
-the original gem of [Frank Oxener - Agile Dovadi BV](http://github.com/dovadi/mt940) but completely redesigned and extended.
+Full parser for MT940 files, see [MT940](http://nl.wikipedia.org/wiki/MT940).
+Initially this is based on the original gem of [Frank Oxener - Agile Dovadi BV](http://github.com/dovadi/mt940)
+but as of version 2.0 completely rewritten in order to support MT940-structured format introduced by SEPA.
 
 The following Dutch banks are implemented:
 
@@ -18,7 +19,7 @@ With the file name as argument:
 
     file_name = '~/Downloads/ing.940'
 
-    @parse_result = MT940::Base.parse_mt940(file_name)
+    @parse_result = MT940Structured::Parser.parse_mt940(file_name)
 
 or with the file itself:
 
@@ -26,7 +27,7 @@ or with the file itself:
 
     file = File.open(file_name)
 
-    @parse_result = MT940::Base.parse_mt940(file)
+    @parse_result = MT940Structured::Parser.parse_mt940(file)
 
 after parsing:
 
