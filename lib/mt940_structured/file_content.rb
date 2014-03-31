@@ -3,8 +3,9 @@ class MT940Structured::FileContent
   R_EOF_ABN_AMRO = /^-$/
   R_EOF_TRIODOS = /^-$/
 
-  def initialize(raw_lines)
+  def initialize(raw_lines, join_lines_by = ' ')
     @raw_lines = raw_lines.map{|line|line.strip}
+    @join_lines_by = join_lines_by
   end
 
   def get_header
@@ -26,7 +27,7 @@ class MT940Structured::FileContent
                     else
                       line
                     end
-        grouped_lines[-1] = "#{grouped_lines.last} #{next_line}"
+        grouped_lines[-1] = [grouped_lines.last, @join_lines_by, next_line].join
       end
     end
     grouped_lines
