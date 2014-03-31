@@ -8,7 +8,7 @@ module MT940Structured::Parsers
       @transaction_parsers = transaction_parsers
       @bank_statement = MT940::BankStatement.new([])
       lines.each do |line|
-        if line.match /^:(\d{2}(F|C)?):/
+        if line.match /^:(\d{2})(F|C|M)?:/
           parse_method = "parse_line_#{$1}".to_sym
           send(parse_method, line) if respond_to? parse_method
         else
@@ -32,7 +32,7 @@ module MT940Structured::Parsers
       end
     end
 
-    def parse_line_60F(line)
+    def parse_line_60(line)
       @bank_statement.previous_balance = parse_balance(line)
     end
 
@@ -51,7 +51,7 @@ module MT940Structured::Parsers
       @transaction_parser.enrich_transaction(@bank_statement.transactions.last, line)
     end
 
-    def parse_line_62F(line)
+    def parse_line_62(line)
       @bank_statement.new_balance = parse_balance(line)
     end
   end
