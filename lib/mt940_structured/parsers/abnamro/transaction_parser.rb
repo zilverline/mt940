@@ -10,6 +10,7 @@ module MT940Structured::Parsers::Abnamro
     end
 
     def enrich_transaction(transaction, line_86)
+      transaction.contra_account = "NONREF" #default
       line_86 = line_86.gsub(/:86:/, '')
       case line_86
         when /^(GIRO)\s+(\d+)(.+)/

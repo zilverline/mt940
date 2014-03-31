@@ -89,6 +89,15 @@ describe MT940Structured::Parser do
       @bank_statements.last.new_balance.date.should == Date.new(2014, 1, 27)
     end
 
+    context 'nonref' do
+      let(:transaction) { @transactions.first }
+
+      it 'has a NONREF when contraaccount is unknown' do
+        transaction.contra_account.should == 'NONREF'
+      end
+
+    end
+
     context 'Transaction' do
 
       let(:transaction) { @transactions[1] }
