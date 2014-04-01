@@ -66,4 +66,12 @@ describe MT940Structured::FileContent do
     its(:last) { should eq ":86:2121.21.211EUR" }
   end
 
+  context "custom grouping divider" do
+    let(:raw_lines) { [":20:940A121001", ":86:2121.21.211EUR", "belongs to first :86:", ":61:bla"] }
+    it "groups them using the custom divider" do
+      custom = MT940Structured::FileContent.new(raw_lines, "\n").group_lines
+      expect(custom[1]).to eq(":86:2121.21.211EUR\nbelongs to first :86:")
+    end
+  end
+
 end
