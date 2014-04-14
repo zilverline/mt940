@@ -1,6 +1,8 @@
 MT940
 ======
 
+[![Build Status](https://travis-ci.org/zilverline/mt940.svg)](https://travis-ci.org/zilverline/mt940)
+
 Full parser for MT940 files, see [MT940](http://nl.wikipedia.org/wiki/MT940).
 Initially this is based on the original gem of [Frank Oxener - Agile Dovadi BV](http://github.com/dovadi/mt940)
 but as of version 2.0 completely rewritten in order to support MT940-structured format introduced by SEPA.
