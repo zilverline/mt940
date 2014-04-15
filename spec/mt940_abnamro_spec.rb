@@ -177,7 +177,7 @@ describe MT940Structured::Parser do
       end
 
       it 'have an amount' do
-        transaction.amount.should == -4
+        transaction.amount.should == 4
       end
 
       it 'have the correct description in case of a regular bank' do
