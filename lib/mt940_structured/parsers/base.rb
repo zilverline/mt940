@@ -20,7 +20,7 @@ module MT940Structured::Parsers
       result = []
       while !lines.empty? do
         start_index = lines.index { |line| line.match(/^:20:/)}
-        end_index = lines.index { |line| line.match(/^:62F:/)}
+        end_index = lines.index { |line| line.match(/^:62(F|M):/)}
         if start_index && end_index > start_index
           result << lines[start_index..end_index]
           lines = lines.drop(end_index + 1)
