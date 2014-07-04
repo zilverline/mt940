@@ -373,4 +373,22 @@ describe "Rabobank" do
     bank_statement.new_balance.date.should == Date.new(2012, 10, 5)
   end
 
+  context "handle EREF" do
+    let(:file_name) { File.dirname(__FILE__) + '/fixtures/import-16-06-2014.txt' }
+    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
+
+    it "should have the correct number of bank accounts" do
+      bank_statements.keys.size.should == 1
+    end
+
+    it "should have the correct number of bank statements per bank account" do
+      bank_statements["156750961"].size.should == 1
+    end
+
+    it "should parse EREF banktransaction" do
+      bank_statements["156750961"][0].transactions[0].contra_account_owner.should == "ECOMMERCE INDUSTRIES INC EUROPE B.V "
+      bank_statements["156750961"][0].transactions[0].eref.should == "201405-258"
+    end
+  end
+
 end

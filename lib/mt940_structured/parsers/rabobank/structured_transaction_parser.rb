@@ -27,6 +27,7 @@ module MT940Structured::Parsers::Rabobank
       transaction.description = line_86[4..-1]
       description_parts = transaction.description.split('/')
       transaction.description = parse_description_after_tag description_parts, "REMI"
+      transaction.eref = parse_description_after_tag description_parts, "EREF"
       if transaction.description == ''
         structured_betalingskenmerk = parse_description_after_tag(description_parts, "CDTRREF")
         transaction.description = "BETALINGSKENMERK #{structured_betalingskenmerk}" unless structured_betalingskenmerk == ''
