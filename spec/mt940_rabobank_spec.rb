@@ -386,7 +386,7 @@ describe "Rabobank" do
     end
 
     it "should parse EREF banktransaction" do
-      bank_statements["156750961"][0].transactions[0].contra_account_owner.should == "ECOMMERCE INDUSTRIES INC EUROPE B.V "
+      bank_statements["156750961"][0].transactions[0].contra_account_owner.should == "ECOMMERCE INDUSTRIES INC EUROPE B.V"
       bank_statements["156750961"][0].transactions[0].eref.should == "201405-258"
     end
   end

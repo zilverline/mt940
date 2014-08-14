@@ -24,16 +24,29 @@ module MT940Structured::Parsers::Rabobank
     end
 
     def enrich_transaction(transaction, line_86)
-      transaction.description = line_86[4..-1]
-      description_parts = transaction.description.split('/')
-      transaction.description = parse_description_after_tag description_parts, "REMI"
-      transaction.eref = parse_description_after_tag description_parts, "EREF"
-      if transaction.description == ''
-        structured_betalingskenmerk = parse_description_after_tag(description_parts, "CDTRREF")
-        transaction.description = "BETALINGSKENMERK #{structured_betalingskenmerk}" unless structured_betalingskenmerk == ''
+      description = line_86[4..-1]
+      transaction.description = ""
+      keywords = ["BENM", "NAME", "ISDT", "REMI", "CSID", "MARF", "EREF", "ORDP", "ADDR", "CDTRREF", "CDTRREFTP"]
+      keywords.each do |keyword|
+        keyword_with_slashes = "/" + keyword + "/"
+        parts = description.split(keyword_with_slashes)
+        if parts.length > 1
+          part = parts[1].split(/\/BENM\/|\/NAME\/|\/ISDT\/|\/REMI\/|\/CSID\/|\/MARF\/|\/EREF\/|\/ORDP\/|\/ADDR\/|\/CDTRREF\/|\/CDTRREFTP\//)
+          info = part[0].strip.gsub(/\r|\n/, '')
+          if info.length > 0
+            case keyword
+              when "REMI"
+                transaction.description = info
+              when "NAME"
+                transaction.contra_account_owner = info
+              when "EREF"
+                transaction.eref = info
+              when "CDTRREF"
+                transaction.description = "BETALINGSKENMERK #{info}" if transaction.description == ''
+            end
+          end
+        end
       end
-      transaction.contra_account_owner = description_parts[description_parts.index { |part| part == "NAME" } + 1].gsub(/\r|\n/, '') if description_parts.index { |part| part == "NAME" }
-      transaction.description.strip!
     end
 
   end
