@@ -333,6 +333,11 @@ describe "ING" do
       @transactions[18].description.should == "Mijn fee"
     end
 
+    it 'has parses transaction no 9 correclty' do
+      @transactions[8].description.should == "Factuurnr: 123456789.00. Kijk voor meer informatie op KPN.com of Hi.nl"
+      @transactions[8].contra_account_iban.should == "NL75INGB0000012345"
+    end
+
 
   end
 end
