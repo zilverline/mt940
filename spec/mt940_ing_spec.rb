@@ -300,4 +300,35 @@ describe "ING" do
     end
 
   end
+
+  context 'iban mt940' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/mt940_iban.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["12345"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it 'has the correct number of transactions' do
+      @transactions.size.should == 21
+    end
+
+    it 'has a description' do
+      @transaction.description.should == '22-08 -2014 Omschrijving'
+    end
+
+    it 'has a contra account' do
+      @transaction.contra_account.should == "876543211"
+    end
+
+    it 'has a contra account iban' do
+      @transaction.contra_account_iban.should == "NL57ABNA0876543211"
+    end
+
+    it 'has a contra account owner' do
+      @transaction.contra_account_owner.should == "B Bert"
+    end
+
+
+  end
 end

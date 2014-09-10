@@ -8,12 +8,23 @@ module MT940Structured::Parsers::Ing
     IBAN = %Q{[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{0,30}}
     BIC = %Q{[a-zA-Z0-9]{8,11}}
     IBAN_BIC_R = /^(#{IBAN})(?:\s)(#{BIC})(?:\s)(.*)/
+    MT940_IBAN_R = /(\/CNTP\/)|(\/EREF\/)|(\/REMI\/)/
     CONTRA_ACCOUNT_DESCRIPTION_R = /^(.*)\sN\s?O\s?T\s?P\s?R\s?O\s?V\s?I\s?D\s?E\s?D\s?(.*)/
 
     def enrich_transaction(transaction, line_86)
       if line_86.match(/^:86:\s?(.*)\Z/m)
         description = $1.gsub(/>\d{2}/, '').strip
         case description
+          when MT940_IBAN_R
+            description_parts = description.split('/')
+            if not $1.nil?
+              transaction.contra_account_iban = parse_description_after_tag description_parts, "CNTP", 1
+              transaction.contra_account = iban_to_account(transaction.contra_account_iban) if transaction.contra_account_iban.match /^NL/
+              transaction.contra_account_owner = parse_description_after_tag description_parts, "CNTP", 3
+              transaction.contra_bic = parse_description_after_tag description_parts, "CNTP", 2
+              transaction.description = parse_description_after_tag description_parts, "REMI", 3
+            else
+            end
           when IBAN_BIC_R
             parse_structured_description transaction, $1, $3
           when /^Europese Incasso, doorlopend(.*)/

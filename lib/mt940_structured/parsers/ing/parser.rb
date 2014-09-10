@@ -7,7 +7,7 @@ module MT940Structured::Parsers::Ing
 
   class TransactionParsers
     def structured?(line_61)
-      line_61.match /EREF|PREF|MARF|\d{16}/
+      line_61.match(/EREF|PREF|MARF|TRFNONREF|\d{16}/)
     end
 
     def for_format(is_structured)
