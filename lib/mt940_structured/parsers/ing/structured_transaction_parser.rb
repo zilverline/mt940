@@ -16,7 +16,7 @@ module MT940Structured::Parsers::Ing
         description = $1.gsub(/>\d{2}/, '').strip
         case description
           when MT940_IBAN_R
-            description_parts = description.split('/')
+            description_parts = description.split('/').map(&:strip)
             if not $1.nil?
               transaction.contra_account_iban = parse_description_after_tag description_parts, "CNTP", 1
               transaction.contra_account = iban_to_account(transaction.contra_account_iban) if transaction.contra_account_iban.match /^NL/
@@ -24,6 +24,7 @@ module MT940Structured::Parsers::Ing
               transaction.contra_bic = parse_description_after_tag description_parts, "CNTP", 2
               transaction.description = parse_description_after_tag description_parts, "REMI", 3
             else
+              transaction.description = description
             end
           when IBAN_BIC_R
             parse_structured_description transaction, $1, $3

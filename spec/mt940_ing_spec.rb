@@ -329,6 +329,10 @@ describe "ING" do
       @transaction.contra_account_owner.should == "B Bert"
     end
 
+    it 'has parses transaction no 19 correclty' do
+      @transactions[18].description.should == "Mijn fee"
+    end
+
 
   end
 end
