@@ -24,6 +24,9 @@ module MT940Structured::Parsers
           @bank_statement.bank_account_iban = line[4, 18]
           @bank_statement.bank_account = iban_to_account(@bank_statement.bank_account_iban)
           @is_structured_format = true
+        when /^:\d{2}:\d+\/(\d+)$/
+          @bank_statement.bank_account = $1.gsub(/^0+/, '')
+          @is_structured_format = true
         when /^:\d{2}:\D*(\d*)/
           @bank_statement.bank_account = $1.gsub(/\D/, '').gsub(/^0+/, '')
           @is_structured_format = false
