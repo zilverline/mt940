@@ -8,7 +8,7 @@ describe "Triodos" do
     @transactions = @bank_statements.flat_map(&:transactions)
     @transaction = @transactions.first
   end
-  
+
   it 'have the correct number of transactions' do
     @transactions.size.should == 2
   end
