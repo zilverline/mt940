@@ -5,6 +5,7 @@ module MT940Structured
     R_TRIODOS = /^:25:TRIODOSBANK/
     R_ING = /INGBNL/
     R_DEUTSCHE_BANK = /:20:DEUTDE/
+    R_KNAB = /KNABNL/
 
     def initialize(raw_lines)
       @raw_lines = raw_lines
@@ -21,6 +22,8 @@ module MT940Structured
         MT940Structured::Parsers::Ing::Parser.new
       elsif @raw_lines[0].match(R_DEUTSCHE_BANK)
          MT940Structured::Parsers::DeutscheBank::Parser.new
+      elsif @raw_lines[0].match(R_KNAB)
+        MT940Structured::Parsers::Knab::Parser.new
       else
         raise UnsupportedBankError.new
       end
