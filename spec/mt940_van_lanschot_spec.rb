@@ -178,9 +178,132 @@ describe "Knab" do
 
       end
 
+    end
+
+  end
+
+
+  context "booking to private van lanschot account" do
+    let(:file_name) { File.dirname(__FILE__) + '/fixtures/van_lanschot/to_private_account_86.txt' }
+    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
+
+    it "should have the correct number of bank account's" do
+      bank_statements.keys.size.should == 1
+    end
+
+    it "should have the correct number of bank statements per bank account" do
+      bank_statements["878787878"].size.should == 1
+    end
+
+    context MT940::BankStatement do
+      let(:bank_statements_for_account) { bank_statements["878787878"] }
+
+      it "should have the correct number of transactions per bank statement" do
+        bank_statements_for_account[0].transactions.size.should == 1
+      end
+
+      context "first bankstatement" do
+
+        let(:bank_statement) { bank_statements_for_account[0] }
+
+        it "has the correct previous balance" do
+          balance = bank_statement.previous_balance
+          balance.amount.should == 2737.51
+          balance.date.should == Date.new(2014, 2, 24)
+          balance.currency.should == "EUR"
+        end
+
+        it "has the correct next balance" do
+          balance = bank_statement.new_balance
+          balance.amount.should == 2584.37
+          balance.date.should == Date.new(2014, 3, 3)
+          balance.currency.should == "EUR"
+        end
+
+
+        context MT940::Transaction do
+          let(:transaction) { bank_statement.transactions.first }
+
+          it "should have a description" do
+            transaction.description.should == "A.B.C NAME declaratie 2014"
+          end
+
+          it "should have an account number" do
+            transaction.bank_account.should == "878787878"
+          end
+
+          it "should have a contra account number" do
+            transaction.contra_account.should == "111111110"
+          end
+
+
+        end
+
+      end
 
     end
 
   end
 
+  context "unspecified contra account" do
+    let(:file_name) { File.dirname(__FILE__) + '/fixtures/van_lanschot/unspecified_contra_account.txt' }
+    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
+
+    it "should have the correct number of bank account's" do
+      bank_statements.keys.size.should == 1
+    end
+
+    it "should have the correct number of bank statements per bank account" do
+      bank_statements["878787878"].size.should == 1
+    end
+
+    context MT940::BankStatement do
+      let(:bank_statements_for_account) { bank_statements["878787878"] }
+
+      it "should have the correct number of transactions per bank statement" do
+        bank_statements_for_account[0].transactions.size.should == 1
+      end
+
+      context "first bankstatement" do
+
+        let(:bank_statement) { bank_statements_for_account[0] }
+
+        it "has the correct previous balance" do
+          balance = bank_statement.previous_balance
+          balance.amount.should == 3592.00
+          balance.date.should == Date.new(2014, 4, 1)
+          balance.currency.should == "EUR"
+        end
+
+        it "has the correct next balance" do
+          balance = bank_statement.new_balance
+          balance.amount.should == 3571.08
+          balance.date.should == Date.new(2014, 4, 3)
+          balance.currency.should == "EUR"
+        end
+
+
+        context MT940::Transaction do
+          let(:transaction) { bank_statement.transactions.first }
+
+          it "should have a description" do
+            transaction.description.should == "AAAAAAAAA SFDADSFG         asdfASDFASDF     ASDFASFAS ERIODE: 01-01-2014 / 31-03-2014"
+          end
+
+          it "should have an account number" do
+            transaction.bank_account.should == "878787878"
+          end
+
+          it "should have a contra account number" do
+            transaction.contra_account.should be_nil
+          end
+
+
+        end
+
+      end
+
+    end
+
+  end
 end

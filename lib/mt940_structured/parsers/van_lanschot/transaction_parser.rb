@@ -13,25 +13,35 @@ module MT940Structured::Parsers::VanLanschot
       description = line_86[4..-1]
       transaction.description = ""
       keywords = ["BENM", "NAME", "ISDT", "REMI", "CSID", "MARF", "EREF", "ORDP", "ADDR", "CDTRREF", "CDTRREFTP", "IBAN", "BIC"]
-      keywords.each do |keyword|
-        keyword_with_slashes = "/" + keyword + "/"
-        parts = description.split(keyword_with_slashes)
-        if parts.length > 1
-          part = parts[1].split(/\/BENM\/|\/NAME\/|\/ISDT\/|\/REMI\/|\/CSID\/|\/MARF\/|\/EREF\/|\/ORDP\/|\/ADDR\/|\/CDTRREF\/|\/CDTRREFTP\/|\/IBAN\/|\/BIC\//)
-          info = part[0].strip.gsub(/\r|\n/, '')
-          if info.length > 0
-            case keyword
-              when "REMI"
-                transaction.description = info
-              when "IBAN"
-                transaction.contra_account_iban = info
-                transaction.contra_account = iban_to_account(info) if iban?(info)
-              when "NAME"
-                transaction.contra_account_owner = info
-              when "EREF"
-                transaction.eref = info
-              when "CDTRREF"
-                transaction.description = "BETALINGSKENMERK #{info}" if transaction.description == ''
+      unless keywords.map { |key| "/#{key}/" }.any? { |key| description.include? key }
+        if description.match /^(\d{10})/
+          transaction.contra_account= description[0..9].gsub(/^0+/, '')
+          transaction.description = description[10..-1].strip
+        else
+          transaction.description = description
+        end
+      else
+
+        keywords.each do |keyword|
+          keyword_with_slashes = "/" + keyword + "/"
+          parts = description.split(keyword_with_slashes)
+          if parts.length > 1
+            part = parts[1].split(/\/BENM\/|\/NAME\/|\/ISDT\/|\/REMI\/|\/CSID\/|\/MARF\/|\/EREF\/|\/ORDP\/|\/ADDR\/|\/CDTRREF\/|\/CDTRREFTP\/|\/IBAN\/|\/BIC\//)
+            info = part[0].strip.gsub(/\r|\n/, '')
+            if info.length > 0
+              case keyword
+                when "REMI"
+                  transaction.description = info
+                when "IBAN"
+                  transaction.contra_account_iban = info
+                  transaction.contra_account = iban_to_account(info) if iban?(info)
+                when "NAME"
+                  transaction.contra_account_owner = info
+                when "EREF"
+                  transaction.eref = info
+                when "CDTRREF"
+                  transaction.description = "BETALINGSKENMERK #{info}" if transaction.description == ''
+              end
             end
           end
         end
