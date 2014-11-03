@@ -1,4 +1,4 @@
-module MT940Structured::Parsers::Abnamro
+module MT940Structured::Parsers::Generic
 end
 
 require_relative 'parser'

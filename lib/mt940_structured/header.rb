@@ -22,7 +22,8 @@ module MT940Structured
       elsif @raw_lines[0].match(R_DEUTSCHE_BANK)
          MT940Structured::Parsers::DeutscheBank::Parser.new
       else
-        raise UnsupportedBankError.new
+         MT940Structured::Parsers::Generic::Parser.new
+        #raise UnsupportedBankError.new
       end
     end
 
