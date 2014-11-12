@@ -18,7 +18,7 @@ module MT940Structured::Parsers
     end
 
     def parse_line_25(line)
-      puts "Line 25: #{line}"
+      puts "Line 25: #{line} -New"
       line.gsub!('.', '')
       case line
         when /^:\d{2}:NL/
@@ -32,8 +32,7 @@ module MT940Structured::Parsers
         else
           @bank_statement.bank_account = line[4, 18]
           @is_structured_format = false
-        else
-          raise "Unknown format for tag 25: #{line}"
+        
       end
     end
 
