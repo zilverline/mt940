@@ -17,6 +17,9 @@ module MT940Structured::Parsers::Ing
         case description
           when MT940_IBAN_R
             description_parts = description.split('/').map(&:strip)
+            if description_parts.index("REMI") && description_parts.index("REMI")+3 < description_parts.size-1
+              description_parts = description_parts[0..(description_parts.index("REMI")+2)] + [description_parts[(description_parts.index("REMI")+3)..description_parts.size-1].join('/')]
+            end
             if description =~ /\/CNTP\//
               transaction.contra_account_iban = parse_description_after_tag description_parts, "CNTP", 1
               transaction.contra_account = iban_to_account(transaction.contra_account_iban) if transaction.contra_account_iban.match /^NL/
