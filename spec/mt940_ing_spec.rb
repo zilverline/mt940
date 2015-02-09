@@ -250,6 +250,31 @@ describe "ING" do
     end
   end
 
+  context 'europese incasso with spaces in regex keyword' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/eu_incasso_with_spaces_in_sepa.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1234567"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it 'has a description' do
+      @transaction.description.should == 'NL10XXX100020000000 01000 00000000 000000000000-AAAA12345678 Premie xxxxxxxxxxxxxxxxxxxxxxx'
+    end
+
+    it 'has a contra account' do
+      @transaction.contra_account.should == "3000"
+    end
+
+    it 'has a contra account iban' do
+      @transaction.contra_account_iban.should == "NL58INGB0000003000"
+    end
+
+    it 'has a contra account owner' do
+      @transaction.contra_account_owner.should == "JAAPJAAP FIETS PAPIER QWDFDFGGASDFGDSFGS NV"
+    end
+  end
+
   context 'foreign transaction' do
     before :each do
       @file_name = File.dirname(__FILE__) + '/fixtures/ing/eu_incasso_foreign_transaction.txt'
@@ -340,4 +365,5 @@ describe "ING" do
 
 
   end
+
 end

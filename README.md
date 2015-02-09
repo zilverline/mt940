@@ -7,12 +7,16 @@ Full parser for MT940 files, see [MT940](http://nl.wikipedia.org/wiki/MT940).
 Initially this is based on the original gem of [Frank Oxener - Agile Dovadi BV](http://github.com/dovadi/mt940)
 but as of version 2.0 completely rewritten in order to support MT940-structured format introduced by SEPA.
 
-The following Dutch banks are implemented:
+The following (Dutch) banks are implemented:
 
 * ABN Amro
 * ING
 * Rabobank
 * Triodos
+* Knab
+* van Lanschot
+* SNS Reaal
+* Deutsche Bank
 
 Usage
 =====
