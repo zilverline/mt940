@@ -18,7 +18,7 @@ module MT940Structured::Parsers
     end
 
     def parse_line_25(line)
-      puts "Line 25: #{line} -New"
+#      puts "Line 25: #{line} -New"
       line.gsub!('.', '')
       case line
         when /^:\d{2}:NL/

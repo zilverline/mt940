@@ -1,6 +1,7 @@
 module MT940Structured::Parsers::Generic
   class Parser < MT940Structured::Parsers::Base
     def initialize
+      #puts "IN GENERIC<<<<<<<<<<<<<<<<<<<<<<<<<"
       super "Generic", TransactionParsers.new
     end
   end
