@@ -10,6 +10,7 @@ module MT940Structured::Parsers::Ing
     IBAN_BIC_R = /^(#{IBAN})(?:\s)(#{BIC})(?:\s)(.*)/
     MT940_IBAN_R = /(\/CNTP\/)|(\/EREF\/)|(\/REMI\/)/
     CONTRA_ACCOUNT_DESCRIPTION_R = /^(.*)\sN\s?O\s?T\s?P\s?R\s?O\s?V\s?I\s?D\s?E\s?D\s?(.*)/
+    SEPA = "S\s?E\s?P\s?A"
 
     def enrich_transaction(transaction, line_86)
       if line_86.match(/^:86:\s?(.*)\Z/m)
@@ -29,7 +30,7 @@ module MT940Structured::Parsers::Ing
           when IBAN_BIC_R
             parse_structured_description transaction, $1, $3
           when /^Europese Incasso, doorlopend(.*)/
-            description.match(/^Europese Incasso, doorlopend\s(#{IBAN})\s(#{BIC})(.*)\s([a-zA-Z0-9[:space:]]{19,30})\sSEPA(.*)/)
+            description.match(/^Europese Incasso, doorlopend\s(#{IBAN})\s(#{BIC})(.*)\s([a-zA-Z0-9[:space:]]{19,30})\s#{SEPA}(.*)/)
             transaction.contra_account_iban=$1
             transaction.contra_account_owner=$3.strip
             transaction.description = "#{$4.strip} #{$5.strip}"

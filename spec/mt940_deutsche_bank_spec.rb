@@ -4,7 +4,7 @@ describe "Deutsche Bank" do
 
   before :all do
     @file_name       = File.dirname(__FILE__) + '/fixtures/deutsche_bank.txt'
-    @bank_statements = MT940Structured::Parser.parse_mt940(@file_name, "\n")["233025"]
+    @bank_statements = MT940Structured::Parser.parse_mt940(@file_name, "\n")["40069462"]
     @transactions    = @bank_statements.flat_map(&:transactions)
     @credit_transfer = @transactions[0]
     @direct_debit    = @transactions[1]
@@ -30,7 +30,7 @@ describe "Deutsche Bank" do
     end
 
     it 'have a bank_account' do
-      expect(@credit_transfer.bank_account).to eq '233025'
+      expect(@credit_transfer.bank_account).to eq '40069462'
     end
 
     it 'have an amount' do
@@ -79,7 +79,7 @@ describe "Deutsche Bank" do
     end
 
     it 'have a bank_account' do
-      expect(@direct_debit.bank_account).to eq '233025'
+      expect(@direct_debit.bank_account).to eq '40069462'
     end
 
     it 'have an amount' do
