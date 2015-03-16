@@ -380,4 +380,27 @@ describe "ING" do
     end
   end
 
+  context 'unscructured remi' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/unstructured_remi.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1234500"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+
+    it "has the correct number of transactions" do
+      @transactions.size.should == 2
+    end
+
+    it 'has a contra account owner' do
+      @transaction.contra_account_owner.should == "Bedrijf Die.Foobar123 AA VBBBBB NLD"
+    end
+
+    it 'has a description' do
+      @transaction.description.should == "13-03-2015 09:47 TERMINALID: AA1001 PASVOLGNR: 001 TRANSACTIENR: 1234F7"
+    end
+
+  end
+
 end

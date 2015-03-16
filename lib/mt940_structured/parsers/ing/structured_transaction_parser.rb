@@ -8,6 +8,7 @@ module MT940Structured::Parsers::Ing
     IBAN = %Q{[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{0,30}}
     BIC = %Q{[a-zA-Z0-9]{8,11}}
     IBAN_BIC_R = /^(#{IBAN})(?:\s)(#{BIC})(?:\s)(.*)/
+    MT940_UNSTRUCTURED_REMI = /\/REMI\/USTD\/\//
     MT940_IBAN_R = /(\/CNTP\/)|(\/EREF\/)|(\/REMI\/)/
     CONTRA_ACCOUNT_DESCRIPTION_R = /^(.*)\sN\s?O\s?T\s?P\s?R\s?O\s?V\s?I\s?D\s?E\s?D\s?(.*)/
     SEPA = "S\s?E\s?P\s?A"
@@ -27,6 +28,14 @@ module MT940Structured::Parsers::Ing
               transaction.contra_account_owner = parse_description_after_tag description_parts, "CNTP", 3
               transaction.contra_bic = parse_description_after_tag description_parts, "CNTP", 2
               transaction.description = parse_description_after_tag description_parts, "REMI", 3
+            elsif description =~ MT940_UNSTRUCTURED_REMI
+              unstructured_description = parse_description_after_tag description_parts, "USTD", 2
+              if unstructured_description.match(/(.*)(\d\d-\d\d-\d\d\d\d\s\d\d:\d\d.*$)/)
+                transaction.contra_account_owner = $1.strip
+                transaction.description = $2.strip
+              else
+                transaction.description = description
+              end
             else
               transaction.description = description
             end
