@@ -366,4 +366,18 @@ describe "ING" do
 
   end
 
+  context 'CNTP without description' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/cntp_without_description.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1234500"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+
+    it "has the correct number of transactions" do
+      @transactions.size.should == 1
+    end
+  end
+
 end
