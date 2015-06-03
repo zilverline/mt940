@@ -14,10 +14,10 @@ module MT940Structured::Parsers::Generic
      line.gsub!('.', '')
      @bank_statement.bank_account = line.gsub(/\D/, '').gsub(/^0+/, '')
   end
-    def parse_transaction(line_61)
-      super
-      transaction.type= $3
-    end  
+      
+    def enrich_transaction(transaction, line_86)
+    end
+
     def enrich_transaction(transaction, line_86)
       if line_86.match(/^:86:(.*)$/)
         transaction.description = [transaction.description, $1].join(" ").strip

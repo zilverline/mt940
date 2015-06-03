@@ -25,6 +25,7 @@ module MT940Structured::Parsers
         transaction.bank_reference = references[:bank]
         transaction.date = parse_date($1)
         transaction.date_accounting = $2 ? parse_date($1[0..1] + $2) : transaction.date
+        transaction.type = $3
         transaction
       end
     end
