@@ -8,8 +8,8 @@ module MT940Structured::Parsers::Ing
     IBAN = %Q{[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{0,30}}
     BIC = %Q{[a-zA-Z0-9]{8,11}}
     IBAN_BIC_R = /^(#{IBAN})(?:\s)(#{BIC})(?:\s)(.*)/
-    MT940_UNSTRUCTURED_REMI = /\/REMI\/USTD\/\//
-    MT940_IBAN_R = /(\/CNTP\/)|(\/EREF\/)|(\/REMI\/)/
+    MT940_UNSTRUCTURED_REMI = /\/#{REMI}\/USTD\/\//
+    MT940_IBAN_R = /(\/CNTP\/)|(\/EREF\/)|(\/#{REMI}\/)/
     CONTRA_ACCOUNT_DESCRIPTION_R = /^(.*)\sN\s?O\s?T\s?P\s?R\s?O\s?V\s?I\s?D\s?E\s?D\s?(.*)/
     SEPA = "S\s?E\s?P\s?A"
 
@@ -19,17 +19,17 @@ module MT940Structured::Parsers::Ing
         case description
           when MT940_IBAN_R
             description_parts = description.split('/').map(&:strip)
-            if description_parts.index("REMI") && description_parts.index("REMI")+3 < description_parts.size-1
-              description_parts = description_parts[0..(description_parts.index("REMI")+2)] + [description_parts[(description_parts.index("REMI")+3)..description_parts.size-1].join('/')]
+            if description_parts.index { |d| d =~ REMI_R } && (description_parts.index { |d| d =~ REMI_R } + 3) < description_parts.size-1
+              description_parts = description_parts[0..(description_parts.index { |d| d =~ REMI_R } + 2)] + [description_parts[(description_parts.index { |d| d =~ REMI_R } +3 )..description_parts.size-1].join('/')]
             end
-            if description =~ /\/CNTP\//
-              transaction.contra_account_iban = parse_description_after_tag description_parts, "CNTP", 1
+            if description =~ /\/#{CNTP}\//
+              transaction.contra_account_iban = parse_description_after_tag description_parts, CNTP_R, 1
               transaction.contra_account = iban_to_account(transaction.contra_account_iban) if transaction.contra_account_iban.match /^NL/
-              transaction.contra_account_owner = parse_description_after_tag description_parts, "CNTP", 3
-              transaction.contra_bic = parse_description_after_tag description_parts, "CNTP", 2
-              transaction.description = parse_description_after_tag description_parts, "REMI", 3
+              transaction.contra_account_owner = parse_description_after_tag description_parts, CNTP_R, 3
+              transaction.contra_bic = parse_description_after_tag description_parts, CNTP_R, 2
+              transaction.description = parse_description_after_tag description_parts, REMI_R, 3
             elsif description =~ MT940_UNSTRUCTURED_REMI
-              unstructured_description = parse_description_after_tag description_parts, "USTD", 2
+              unstructured_description = parse_description_after_tag description_parts, USTD_R, 2
               if unstructured_description.match(/(.*)(\d\d-\d\d-\d\d\d\d\s\d\d:\d\d.*$)/)
                 transaction.contra_account_owner = $1.strip
                 transaction.description = $2.strip

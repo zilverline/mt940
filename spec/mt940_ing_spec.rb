@@ -403,4 +403,25 @@ describe "ING" do
 
   end
 
+  context 'unscructured remi with space in keyword' do
+      before :each do
+        @file_name = File.dirname(__FILE__) + '/fixtures/ing/unstructured_remi_with_space_in_remi.txt'
+        @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1234567"]
+        @transactions = @bank_statements.flat_map(&:transactions)
+        @transaction = @transactions.first
+      end
+
+      it "has the correct number of transactions" do
+        @transactions.size.should == 1
+      end
+
+      it 'has a contra account owner' do
+        @transaction.contra_account_owner.should == "B ASDGF Netherlands BV"
+      end
+
+      it 'has a description' do
+        @transaction.description.should == "Factuurnummer 987654321098//PURP/OTHR"
+      end
+
+    end
 end
