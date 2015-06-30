@@ -21,10 +21,10 @@ module MT940Structured::Parsers::Abnamro
           transaction.contra_account = $1.gsub('.', '')
         when /\/TRTP\/SEPA OVERBOEKING/
           description_parts = line_86[4..-1].split('/')
-          transaction.contra_account_iban = parse_description_after_tag description_parts, "IBAN"
+          transaction.contra_account_iban = parse_description_after_tag description_parts, IBAN_R
           transaction.contra_account = iban_to_account transaction.contra_account_iban
-          transaction.contra_account_owner = parse_description_after_tag description_parts, "NAME"
-          transaction.description = parse_description_after_tag description_parts, "REMI"
+          transaction.contra_account_owner = parse_description_after_tag description_parts, NAME_R
+          transaction.description = parse_description_after_tag description_parts, REMI_R
         when /SEPA IDEAL/
           if line_86.match /OMSCHRIJVING\:(.+)?/
             transaction.description = $1.strip
