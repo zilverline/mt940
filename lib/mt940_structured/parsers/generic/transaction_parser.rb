@@ -15,7 +15,12 @@ module MT940Structured::Parsers::Generic
   end
       
     def enrich_transaction(transaction, line_86)
-		  transaction
-	   end
+    end
+
+    def enrich_transaction(transaction, line_86)
+      if line_86.match(/^:86:(.*)$/)
+        transaction.description = [transaction.description, $1].join(" ").strip
+      end
+    end
   end
 end
