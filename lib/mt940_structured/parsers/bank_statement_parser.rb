@@ -49,11 +49,17 @@ module MT940Structured::Parsers
     def parse_line_61(line_61)
       @is_structured_format = @transaction_parsers.structured?(line_61) if @transaction_parsers.respond_to?(:structured?)
       @transaction_parser = @transaction_parsers.for_format @is_structured_format
-      transaction = @transaction_parser.parse_transaction(line_61)
-      transaction.bank_account = @bank_statement.bank_account
-      transaction.bank_account_iban = @bank_statement.bank_account_iban
-      transaction.currency = @bank_statement.previous_balance.currency
-      transaction.bank = @bank
+      begin
+        transaction = @transaction_parser.parse_transaction(line_61)
+        transaction.bank_account = @bank_statement.bank_account
+        transaction.bank_account_iban = @bank_statement.bank_account_iban
+        transaction.currency = @bank_statement.previous_balance.currency
+        transaction.bank = @bank
+      rescue
+        err= "Problem parsing a transaction: " + line_61
+        #puts err
+        raise err
+      end
       @bank_statement.transactions << transaction
     end
 
