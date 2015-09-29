@@ -182,4 +182,13 @@ describe "Knab" do
     end
 
   end
+
+  context "invalid file" do
+    let(:file_name) { File.dirname(__FILE__) + '/fixtures/knab/knab_invalid.txt' }
+
+    it 'fails fast' do
+      expect { MT940Structured::Parser.parse_mt940(file_name) }.to raise_exception(MT940Structured::InvalidFileContentError)
+    end
+
+  end
 end
