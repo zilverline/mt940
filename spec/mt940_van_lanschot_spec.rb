@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe "Knab" do
+describe "van Lanschot" do
 
   context "parse whole file" do
     let(:file_name) { File.dirname(__FILE__) + '/fixtures/van_lanschot/van_lanschot.txt' }
