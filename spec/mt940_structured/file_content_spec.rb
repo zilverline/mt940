@@ -6,18 +6,21 @@ describe MT940Structured::FileContent do
 
   context "ignores all lines up to :20:" do
     let(:raw_lines) { [":940:", ":20:940A121001", ":86:2121.21.211EUR"] }
-    its(:size) { should eq 2 }
-    its(:first) { should eq ":20:940A121001" }
-    its(:last) { should eq ":86:2121.21.211EUR" }
+    it 'has the correct size' do
+      expect(subject).to eq [":20:940A121001", ":86:2121.21.211EUR"]
+    end
   end
 
   context "two :86: lines" do
     let(:raw_lines) { [":20:940A121001", ":86:2121.21.211EUR", "belongs to first :86:", ":61:bla"] }
+
     it "groups them" do
       expect(subject[1]).to eq(":86:2121.21.211EUR belongs to first :86:")
     end
 
-    its(:last) { should eq ":61:bla" }
+    it "has the correct closing record" do
+      expect(subject.last).to eq ":61:bla"
+    end
   end
 
   context "multiple :86: lines divided by newline" do
@@ -26,7 +29,9 @@ describe MT940Structured::FileContent do
       expect(subject[1]).to eq(":86:2121.21.211EUR belongs to first :86: also belongs to first :86:")
     end
 
-    its(:last) { should eq ":61:bla" }
+    it "has the correct closing record" do
+      expect(subject.last).to eq ":61:bla"
+    end
   end
 
   context "multiple :86: lines divided by :86:" do
@@ -47,23 +52,31 @@ describe MT940Structured::FileContent do
       expect(subject[5]).to eq(":86:BETALINGSKENM.  490022201282 ARBEIDS ONG. VERZ. 00333333333 PERIODE 06.10.2012 - 06.11.2012")
     end
 
-    its(:last) { should eq ":61:bla" }
+    it "has the correct closing record" do
+      expect(subject.last).to eq ":61:bla"
+    end
 
   end
 
   context "stops at end of file character for ING" do
     let(:raw_lines) { [":20:940A121001", ":86:2121.21.211EUR", "-XXX"] }
-    its(:last) { should eq ":86:2121.21.211EUR" }
+    it "has the correct closing record" do
+      expect(subject.last).to eq ":86:2121.21.211EUR"
+    end
   end
 
   context "stops at end of file character for Rabobank" do
     let(:raw_lines) { [":20:940A121001", ":86:2121.21.211EUR", ":62F:C121031EUR000000006675,99"] }
-    its(:last) { should eq ":62F:C121031EUR000000006675,99" }
+    it "has the correct closing record" do
+      expect(subject.last).to eq ":62F:C121031EUR000000006675,99"
+    end
   end
 
   context "stops at end of file character for Abn Amro" do
     let(:raw_lines) { [":20:940A121001", ":86:2121.21.211EUR", "-"] }
-    its(:last) { should eq ":86:2121.21.211EUR" }
+    it "has the correct closing record" do
+      expect(subject.last).to eq ":86:2121.21.211EUR"
+    end
   end
 
   context "custom grouping divider" do

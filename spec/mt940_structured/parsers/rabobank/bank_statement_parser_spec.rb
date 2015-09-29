@@ -16,11 +16,24 @@ describe MT940Structured::Parsers::BankStatementParser do
           ":62F:C130404EUR000000018846,34"
       ]
     end
-    it { should be_kind_of(MT940::BankStatement) }
-    its(:bank_account) { should eq "123456789" }
-    its(:bank_account_iban) { should eq("NL50RABO0123456789") }
-    its(:previous_balance) { should eq(MT940::Balance.new(1147.95, Date.new(2013, 4, 2), "EUR")) }
-    its(:new_balance) { should eq(MT940::Balance.new(18846.34, Date.new(2013, 4, 4), "EUR")) }
+
+    it { is_expected.to be_kind_of(MT940::BankStatement) }
+
+    it 'has the correct bank account' do
+      expect(subject.bank_account).to eq "123456789"
+    end
+
+    it 'has the correct bank account iban' do
+      expect(subject.bank_account_iban).to eq "NL50RABO0123456789"
+    end
+
+    it 'has the correct previous balance' do
+      expect(subject.previous_balance).to eq MT940::Balance.new(1147.95, Date.new(2013, 4, 2), "EUR")
+    end
+
+    it 'has the correct new balance' do
+      expect(subject.new_balance).to eq MT940::Balance.new(18846.34, Date.new(2013, 4, 4), "EUR")
+    end
 
     it "has 1 transaction" do
       expect(subject.transactions).to have(1).item

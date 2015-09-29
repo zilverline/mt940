@@ -3,7 +3,8 @@ module MT940Structured
     def self.parse_mt940(path, join_lines_by = ' ')
       file_content = FileContent.new(readfile(path), join_lines_by)
       grouped_lines = file_content.group_lines
-      file_content.get_header.parser.transform(grouped_lines)
+      parser = file_content.get_header.parser
+      parser.transform(grouped_lines)
     end
 
     private
