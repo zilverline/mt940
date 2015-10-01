@@ -403,6 +403,25 @@ describe "ING" do
 
   end
 
+  context 'unscructured remi bug' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/unstructured_remi_2.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1231231"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+
+    it "has the correct number of transactions" do
+      expect(@transactions.size).to eq(1)
+    end
+
+    it 'has a description' do
+      expect(@transaction.description).to eq("RC afrekening betalingsverkeer  Factuurnr. 121212 7756           Betreft rekening 33.33.333      Periode: 01-04-201 4/30-06-2014")
+    end
+
+  end
+
   context 'unscructured remi with space in keyword' do
       before :each do
         @file_name = File.dirname(__FILE__) + '/fixtures/ing/unstructured_remi_with_space_in_remi.txt'
