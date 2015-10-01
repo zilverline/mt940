@@ -34,7 +34,7 @@ module MT940Structured::Parsers::Ing
                 transaction.contra_account_owner = $1.strip
                 transaction.description = $2.strip
               else
-                transaction.description = description
+                transaction.description = unstructured_description
               end
             else
               transaction.description = description
