@@ -76,6 +76,14 @@ describe "Sns" do
           expect(transaction.date).to eq(Date.new(2014, 1, 1))
         end
 
+        it 'does not have a bank_reference' do
+          expect(transaction.bank_reference).to eq ''
+        end
+
+        it 'does not have a customer_reference' do
+          expect(transaction.customer_reference).to eq ''
+        end
+
       end
 
       context "Another transaction" do
@@ -117,9 +125,31 @@ describe "Sns" do
           expect(transaction.date).to eq(Date.new(2014, 9, 22))
         end
 
+        it 'does not have a bank_reference' do
+          expect(transaction.bank_reference).to eq ''
+        end
+
+        it 'does not have a customer_reference' do
+          expect(transaction.customer_reference).to eq ''
+        end
+
       end
     end
 
+  end
+
+  context 'parsing references' do
+    let(:file_name) { File.dirname(__FILE__) + '/fixtures/sns/sns_customer_reference.txt' }
+    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name)['112233440'] }
+    let(:transaction) { bank_statements.flat_map(&:transactions).first }
+
+    it 'has a customer reference' do
+      expect(transaction.customer_reference).to eq '0002445588'
+    end
+
+    it 'has a bank reference' do
+      expect(transaction.bank_reference).to eq '1234432112344321'
+    end
   end
 
 
