@@ -423,24 +423,43 @@ describe "ING" do
   end
 
   context 'unscructured remi with space in keyword' do
-      before :each do
-        @file_name = File.dirname(__FILE__) + '/fixtures/ing/unstructured_remi_with_space_in_remi.txt'
-        @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1234567"]
-        @transactions = @bank_statements.flat_map(&:transactions)
-        @transaction = @transactions.first
-      end
-
-      it "has the correct number of transactions" do
-        expect(@transactions.size).to eq(1)
-      end
-
-      it 'has a contra account owner' do
-        expect(@transaction.contra_account_owner).to eq("B ASDGF Netherlands BV")
-      end
-
-      it 'has a description' do
-        expect(@transaction.description).to eq("Factuurnummer 987654321098//PURP/OTHR")
-      end
-
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/unstructured_remi_with_space_in_remi.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1234567"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
     end
+
+    it "has the correct number of transactions" do
+      expect(@transactions.size).to eq(1)
+    end
+
+    it 'has a contra account owner' do
+      expect(@transaction.contra_account_owner).to eq("B ASDGF Netherlands BV")
+    end
+
+    it 'has a description' do
+      expect(@transaction.description).to eq("Factuurnummer 987654321098//PURP/OTHR")
+    end
+
+  end
+
+  context 'references' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/ing_references.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1212121"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it 'has a customer reference' do
+      expect(@transaction.customer_reference).to eq '1234123412341234'
+    end
+
+    it 'has a bank reference' do
+      expect(@transaction.bank_reference).to eq '45674567456745'
+    end
+
+  end
+
 end
