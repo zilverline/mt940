@@ -74,6 +74,14 @@ describe "Knab" do
           expect(transaction.date).to eq(Date.new(2014, 10, 24))
         end
 
+        it 'should have a customer reference' do
+          expect(transaction.customer_reference).to eq 'NONREF'
+        end
+
+        it 'should have a bank reference' do
+          expect(transaction.bank_reference).to eq 'ABC9886658908791'
+        end
+
       end
 
     end
@@ -117,6 +125,7 @@ describe "Knab" do
           expect(balance.date).to eq(Date.new(2014, 10, 23))
           expect(balance.currency).to eq("EUR")
         end
+
         context MT940::Transaction do
           let(:transaction) { bank_statement.transactions.first }
 

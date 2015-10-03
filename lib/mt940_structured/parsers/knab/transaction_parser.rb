@@ -6,7 +6,8 @@ module MT940Structured::Parsers::Knab
     include MT940Structured::Parsers::DefaultLine61Parser
 
     def get_regex_for_line_61
-      /^:61:(\d{6})(\d{4})?(C|D)(\d+),(\d{0,2})/
+      # /^:61:(\d{6})(\d{4})?(C|D)(\d+),(\d{0,2})/
+      /^:61:(\d{6})(\d{4})?(C|D)(\d+),(\d{0,2})N(.{3})([a-zA-Z\d]{1,16}\/\/[a-zA-Z\d]{1,16})?/
     end
 
     def enrich_transaction(transaction, line_86)
