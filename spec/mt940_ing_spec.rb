@@ -417,7 +417,7 @@ describe "ING" do
     end
 
     it 'has a description' do
-      expect(@transaction.description).to eq("RC afrekening betalingsverkeer  Factuurnr. 121212 7756           Betreft rekening 33.33.333      Periode: 01-04-201 4/30-06-2014")
+      expect(@transaction.description).to eq("RC afrekening betalingsverkeer  Factuurnr. 121212 7756           Betreft rekening 33.33.333      Periode: 01-04-201 4 / 30-06-2014")
     end
 
   end
@@ -439,7 +439,7 @@ describe "ING" do
     end
 
     it 'has a description' do
-      expect(@transaction.description).to eq("Factuurnummer 987654321098//PURP/OTHR")
+      expect(@transaction.description).to eq("Factuurnummer 987654321098")
     end
 
   end
@@ -458,6 +458,20 @@ describe "ING" do
 
     it 'has a bank reference' do
       expect(@transaction.bank_reference).to eq '45674567456745'
+    end
+
+  end
+
+  context 'Remove purp from description' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/ing_purp.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)['6868686']
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it 'has a customer reference' do
+      expect(@transaction.description).to eq 'Factuurnummer 858585858585'
     end
 
   end
