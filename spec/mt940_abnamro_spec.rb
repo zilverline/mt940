@@ -4,7 +4,7 @@ describe MT940Structured::Parser do
 
   context 'classic mt940' do
     before :each do
-      @file_name = File.dirname(__FILE__) + '/fixtures/abnamro.txt'
+      @file_name = File.dirname(__FILE__) + '/fixtures/abn/abnamro.txt'
       @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["517852257"]
       @transactions = @bank_statements.flat_map(&:transactions)
       @transaction = @transactions.first
@@ -70,7 +70,7 @@ describe MT940Structured::Parser do
 
   context 'sepa mt940' do
     before :each do
-      @file_name = File.dirname(__FILE__) + '/fixtures/abnamro_structured.txt'
+      @file_name = File.dirname(__FILE__) + '/fixtures/abn/abnamro_structured.txt'
       @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["123212321"]
       @transactions = @bank_statements.flat_map(&:transactions)
     end
