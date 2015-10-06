@@ -2,7 +2,6 @@ module MT940Structured::Parsers::Ing
   class StructuredTransactionParser < TransactionParser
     include MT940Structured::Parsers::DateParser,
             Types,
-            MT940Structured::Parsers::StructuredDescriptionParser,
             MT940Structured::Parsers::IbanSupport
 
     IBAN = %Q{[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{0,30}}
