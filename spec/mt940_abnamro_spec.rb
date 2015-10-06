@@ -72,8 +72,8 @@ describe MT940Structured::Parser do
   end
 
   context 'sepa mt940' do
-    let(:file_name) {'abnamro_structured.txt'}
-    let(:bank_account_number) {'123212321'}
+    let(:file_name) { 'abnamro_structured.txt' }
+    let(:bank_account_number) { '123212321' }
 
     it 'have the correct number of transactions' do
       expect(@transactions.size).to eq(10)
@@ -254,8 +254,8 @@ describe MT940Structured::Parser do
   end
 
   context 'sepa overboeking style 2' do
-    let(:file_name) {'abn_sepa_overboeking.txt'}
-    let(:bank_account_number) {'555555555'}
+    let(:file_name) { 'abn_sepa_overboeking.txt' }
+    let(:bank_account_number) { '555555555' }
 
     it 'has a contra account iban' do
       expect(@transaction.contra_account_iban).to eq 'NL56CHAS0101010101'
@@ -275,8 +275,8 @@ describe MT940Structured::Parser do
   end
 
   context 'SEPA INCASSO ALGEMEEN DOORLOPEND' do
-    let(:file_name) {'abn_sepa_incasso_doorlopend.txt'}
-    let(:bank_account_number) {'555555555'}
+    let(:file_name) { 'abn_sepa_incasso_doorlopend.txt' }
+    let(:bank_account_number) { '555555555' }
 
     it 'has a contra account iban' do
       expect(@transaction.contra_account_iban).to eq 'NL83RABO0353535355'
@@ -297,8 +297,8 @@ describe MT940Structured::Parser do
   end
 
   context 'SEPA PERIODIEKE OVERB' do
-    let(:file_name) {'abn_sepa_periodieke_overboeking.txt'}
-    let(:bank_account_number) {'555555555'}
+    let(:file_name) { 'abn_sepa_periodieke_overboeking.txt' }
+    let(:bank_account_number) { '555555555' }
 
     it 'has a contra account iban' do
       expect(@transaction.contra_account_iban).to eq 'NL52ABNA0777777777'
@@ -319,27 +319,78 @@ describe MT940Structured::Parser do
   end
 
   context 'structured mt940' do
-    let(:file_name) {'abn_structured_sepa_overboeking.txt'}
-    let(:bank_account_number) {'555555555'}
+    let(:bank_account_number) { '555555555' }
 
-    it 'has a contra account iban' do
-      expect(@transaction.contra_account_iban).to eq 'NL57INGB0001212121'
+    context 'sepa overboeking' do
+      let(:file_name) { 'abn_structured_sepa_overboeking.txt' }
+
+      it 'has a contra account iban' do
+        expect(@transaction.contra_account_iban).to eq 'NL57INGB0001212121'
+      end
+
+      it 'has a contra account' do
+        expect(@transaction.contra_account).to eq '1212121'
+      end
+
+      it 'has a contra account owner' do
+        expect(@transaction.contra_account_owner).to eq 'CAFE MON AMI'
+      end
+
+      it 'has a description' do
+        expect(@transaction.description).to eq '897789005'
+      end
+
+      it 'has a eref' do
+        expect(@transaction.eref).to eq 'NOTPROVIDED'
+      end
     end
 
-    it 'has a contra account' do
-      expect(@transaction.contra_account).to eq '1212121'
+    context 'sepa ideal' do
+      let(:file_name) { 'abn_structured_sepa_ideal.txt' }
+
+      it 'has a contra account iban' do
+        expect(@transaction.contra_account_iban).to eq 'NL30ABNA0122365478'
+      end
+
+      it 'has a contra account' do
+        expect(@transaction.contra_account).to eq '122365478'
+      end
+
+      it 'has a contra account owner' do
+        expect(@transaction.contra_account_owner).to eq 'ABC POPPIE KLAMNAET'
+      end
+
+      it 'has a description' do
+        expect(@transaction.description).to eq 'K00023345Mq235234 0045623157461347 FACTUUR 10530 000 848KLAOCFTUIOMFND'
+      end
+
+      it 'has a eref' do
+        expect(@transaction.eref).to eq '11-09-2015 12:00 0045623157461347'
+      end
     end
 
-    it 'has a contra account owner' do
-      expect(@transaction.contra_account_owner).to eq 'CAFE MON AMI'
-    end
+    context 'sepa acceptgiro' do
+      let(:file_name) { 'abn_structured_sepa_acceptgiro.txt' }
 
-    it 'has a description' do
-      expect(@transaction.description).to eq '897789005'
-    end
+      it 'has a contra account iban' do
+        expect(@transaction.contra_account_iban).to eq 'NL86INGB0002445588'
+      end
 
-    it 'has a eref' do
-      expect(@transaction.eref).to eq 'NOTPROVIDED'
+      it 'has a contra account' do
+        expect(@transaction.contra_account).to eq '2445588'
+      end
+
+      it 'has a contra account owner' do
+        expect(@transaction.contra_account_owner).to eq 'BELASTINGDIENST'
+      end
+
+      it 'has a description' do
+        expect(@transaction.description).to eq 'ISSUER: CUR                  REF: 4420 043232693268'
+      end
+
+      it 'has a eref' do
+        expect(@transaction.eref).to eq 'NOTPROVIDED'
+      end
     end
 
   end

@@ -14,7 +14,7 @@ module MT940Structured::Parsers::Abnamro
       transaction.contra_account = "NONREF" #default
       line_86 = line_86.gsub(/:86:/, '')
       case line_86
-        when /\/TRTP\/SEPA/
+        when /\/TRTP\/(?:SEPA|IDEAL|ACCEPTGIRO)/
           parse_result = Line86.parse(line_86)
           transaction.contra_account_iban = parse_result.counter_party.iban
           transaction.contra_account = iban_to_account transaction.contra_account_iban if transaction.contra_account_iban

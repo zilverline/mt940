@@ -50,4 +50,20 @@ describe MT940Structured::Parsers::Abnamro::Line86 do
 
   end
 
+  context 'sepa ideal' do
+    let(:line86) {'/TRTP/IDEAL/IBAN/NL30ABNA0122365478/BIC/ABNANL2A/NAME/ABC POPPIE KLAMNAET/REMI/K00023345Mq235234 0045623157461347 FACTUUR 10530 000 848KLAOCFTUIOMFND/EREF/11-09-2015 12:00 0045623157461347'}
+
+    it 'gets the End to End Reference' do
+      expect(result.eref).to eq '11-09-2015 12:00 0045623157461347'
+    end
+
+    it 'gets the counter party' do
+      expect(result.counter_party).to_not be_nil
+      expect(result.counter_party.name).to eq 'ABC POPPIE KLAMNAET'
+      expect(result.counter_party.iban).to eq 'NL30ABNA0122365478'
+      expect(result.counter_party.bic).to eq 'ABNANL2A'
+      expect(result.counter_party.city).to be_nil
+    end
+  end
+
 end
