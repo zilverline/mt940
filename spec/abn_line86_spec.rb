@@ -48,6 +48,9 @@ describe MT940Structured::Parsers::Abnamro::Line86 do
       expect(result.marf).to eq '1.16677357'
     end
 
+    it 'gets the description' do
+      expect(result.remi).to eq 'FACTUURNUMMER 102354687525'
+    end
   end
 
   context 'sepa ideal' do

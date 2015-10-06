@@ -4,7 +4,7 @@ module MT940Structured::Parsers::Abnamro
   class Line86
     include MT940Structured::Parsers::Constants
 
-    ALL_KEYWORDS_R = /#{BIC}|#{NAME}|#{REMI}|#{EREF}|#{MARF}|#{CSID}|$/
+    ALL_KEYWORDS_R = /#{BIC}|#{NAME}|#{REMI}|#{EREF}|#{MARF}|#{CSID}|#{IBAN}|$/
 
     def self.parse(line_86)
       result = MT940Structured::Parsers::ParseResult.new
