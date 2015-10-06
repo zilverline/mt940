@@ -2,13 +2,16 @@ require_relative 'spec_helper'
 
 describe MT940Structured::Parser do
 
+
+  before :each do
+    @file_name = File.dirname(__FILE__) + "/fixtures/abn/#{file_name}"
+    @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)[bank_account_number]
+    @transactions = @bank_statements.flat_map(&:transactions)
+    @transaction = @transactions.first
+  end
   context 'classic mt940' do
-    before :each do
-      @file_name = File.dirname(__FILE__) + '/fixtures/abn/abnamro.txt'
-      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["517852257"]
-      @transactions = @bank_statements.flat_map(&:transactions)
-      @transaction = @transactions.first
-    end
+    let(:file_name) { 'abnamro.txt' }
+    let(:bank_account_number) { '517852257' }
 
     it 'have the correct number of transactions' do
       expect(@transactions.size).to eq(10)
@@ -69,11 +72,8 @@ describe MT940Structured::Parser do
   end
 
   context 'sepa mt940' do
-    before :each do
-      @file_name = File.dirname(__FILE__) + '/fixtures/abn/abnamro_structured.txt'
-      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["123212321"]
-      @transactions = @bank_statements.flat_map(&:transactions)
-    end
+    let(:file_name) {'abnamro_structured.txt'}
+    let(:bank_account_number) {'123212321'}
 
     it 'have the correct number of transactions' do
       expect(@transactions.size).to eq(10)
@@ -251,6 +251,96 @@ describe MT940Structured::Parser do
 
     end
 
-    skip 'SEPA INCASSO ALGEMEEN DOORLOPEND'
+  end
+
+  context 'sepa overboeking style 2' do
+    let(:file_name) {'abn_sepa_overboeking.txt'}
+    let(:bank_account_number) {'555555555'}
+
+    it 'has a contra account iban' do
+      expect(@transaction.contra_account_iban).to eq 'NL56CHAS0101010101'
+    end
+
+    it 'has a contra account' do
+      expect(@transaction.contra_account).to eq '101010101'
+    end
+
+    it 'has a contra account owner' do
+      expect(@transaction.contra_account_owner).to eq 'AA GHGHGH NETHERLANDS B.V.'
+    end
+
+    it 'has a description' do
+      expect(@transaction.description).to eq '1412DEC 2015 CONSU LTING KENMERK: 7541410'
+    end
+  end
+
+  context 'SEPA INCASSO ALGEMEEN DOORLOPEND' do
+    let(:file_name) {'abn_sepa_incasso_doorlopend.txt'}
+    let(:bank_account_number) {'555555555'}
+
+    it 'has a contra account iban' do
+      expect(@transaction.contra_account_iban).to eq 'NL83RABO0353535355'
+    end
+
+    it 'has a contra account' do
+      expect(@transaction.contra_account).to eq '353535355'
+    end
+
+    it 'has a contra account owner' do
+      expect(@transaction.contra_account_owner).to eq 'BHBBAAA B.V.'
+    end
+
+    it 'has a description' do
+      expect(@transaction.description).to eq 'MAANDTERMIJN JANUA RI'
+    end
+
+  end
+
+  context 'SEPA PERIODIEKE OVERB' do
+    let(:file_name) {'abn_sepa_periodieke_overboeking.txt'}
+    let(:bank_account_number) {'555555555'}
+
+    it 'has a contra account iban' do
+      expect(@transaction.contra_account_iban).to eq 'NL52ABNA0777777777'
+    end
+
+    it 'has a contra account' do
+      expect(@transaction.contra_account).to eq '777777777'
+    end
+
+    it 'has a contra account owner' do
+      expect(@transaction.contra_account_owner).to eq 'B C DE MAN'
+    end
+
+    it 'has a description' do
+      expect(@transaction.description).to eq 'SALARIS G.G. DE MAN'
+    end
+
+  end
+
+  context 'structured mt940' do
+    let(:file_name) {'abn_structured_sepa_overboeking.txt'}
+    let(:bank_account_number) {'555555555'}
+
+    it 'has a contra account iban' do
+      expect(@transaction.contra_account_iban).to eq 'NL57INGB0001212121'
+    end
+
+    it 'has a contra account' do
+      expect(@transaction.contra_account).to eq '1212121'
+    end
+
+    it 'has a contra account owner' do
+      expect(@transaction.contra_account_owner).to eq 'CAFE MON AMI'
+    end
+
+    it 'has a description' do
+      expect(@transaction.description).to eq '897789005'
+    end
+
+    it 'has a eref' do
+      expect(@transaction.eref).to eq 'NOTPROVIDED'
+    end
+
   end
 end
