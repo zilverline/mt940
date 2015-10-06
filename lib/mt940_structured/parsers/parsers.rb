@@ -3,7 +3,6 @@ module MT940Structured
   end
 end
 
-require_relative 'line86'
 require_relative 'balance_parser'
 require_relative 'date_parser'
 require_relative 'iban_support'
