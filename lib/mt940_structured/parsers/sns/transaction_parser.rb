@@ -6,7 +6,7 @@ module MT940Structured::Parsers::Sns
     include MT940Structured::Parsers::DefaultLine61Parser
 
     def get_regex_for_line_61
-      /^:61:(\d{6})(\d{4})?(C|D)(\d+),(\d{0,2})([a-zA-Z]{4})/
+      /^:61:(\d{6})(\d{4})?(C|D)(\d+),(\d{0,2})([a-zA-Z]{4})(.*\/\/\d{1,16})?/
     end
 
 

@@ -2,7 +2,7 @@ require_relative 'spec_helper'
 
 describe "Rabobank" do
 
-  pending "integration" do
+  skip "integration" do
     let(:file_name) { '/Users/lars/Downloads/import-25-06-2014.txt' }
     let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
 
@@ -16,20 +16,20 @@ describe "Rabobank" do
     let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
 
     it "should have the correct number of bank account's" do
-      bank_statements.keys.size.should == 1
+      expect(bank_statements.keys.size).to eq(1)
     end
 
     it "should have the correct number of bank statements per bank account" do
-      bank_statements["212121211"].size.should == 23
+      expect(bank_statements["212121211"].size).to eq(23)
     end
 
     context MT940::BankStatement do
       let(:bank_statements_for_account) { bank_statements["212121211"] }
 
       it "should have the correct number of transactions per bank statement" do
-        bank_statements_for_account[0].transactions.size.should == 1
-        bank_statements_for_account[1].transactions.size.should == 0
-        bank_statements_for_account[10].transactions.size.should == 2
+        expect(bank_statements_for_account[0].transactions.size).to eq(1)
+        expect(bank_statements_for_account[1].transactions.size).to eq(0)
+        expect(bank_statements_for_account[10].transactions.size).to eq(2)
       end
 
       context "single bank statement" do
@@ -37,20 +37,20 @@ describe "Rabobank" do
 
         it "should have a correct previous balance per statement" do
           balance = bank_statement.previous_balance
-          balance.amount.should == 17431.67
-          balance.date.should == Date.new(2012, 9, 28)
-          balance.currency.should == "EUR"
+          expect(balance.amount).to eq(17431.67)
+          expect(balance.date).to eq(Date.new(2012, 9, 28))
+          expect(balance.currency).to eq("EUR")
         end
 
         it "should have a correct next balance per statement" do
           balance = bank_statement.new_balance
-          balance.amount.should == 17381.67
-          balance.date.should == Date.new(2012, 10, 1)
-          balance.currency.should == "EUR"
+          expect(balance.amount).to eq(17381.67)
+          expect(balance.date).to eq(Date.new(2012, 10, 1))
+          expect(balance.currency).to eq("EUR")
         end
 
         it "should have an iban" do
-          bank_statement.bank_account_iban.should be_nil
+          expect(bank_statement.bank_account_iban).to be_nil
         end
 
 
@@ -59,39 +59,39 @@ describe "Rabobank" do
           let(:transaction) { bank_statement.transactions.first }
 
           it "should have the correct amount" do
-            transaction.amount.should == -50
+            expect(transaction.amount).to eq(-50)
           end
 
           it "should have a description" do
-            transaction.description.should == "Incasso deposit Savings Account"
+            expect(transaction.description).to eq("Incasso deposit Savings Account")
           end
 
           it "should have an account number" do
-            transaction.bank_account.should == "212121211"
+            expect(transaction.bank_account).to eq("212121211")
           end
 
           it "should have a contra account number" do
-            transaction.contra_account.should == "1313131319"
+            expect(transaction.contra_account).to eq("1313131319")
           end
 
           it "should have a contra account owner" do
-            transaction.contra_account_owner.should == "J. DOE"
+            expect(transaction.contra_account_owner).to eq("J. DOE")
           end
 
           it "should have a bank" do
-            transaction.bank.should == "Rabobank"
+            expect(transaction.bank).to eq("Rabobank")
           end
 
           it "should have a currency" do
-            transaction.currency.should == "EUR"
+            expect(transaction.currency).to eq("EUR")
           end
 
           it "should have a date" do
-            transaction.date.should == Date.new(2012, 10, 1)
+            expect(transaction.date).to eq(Date.new(2012, 10, 1))
           end
 
           it "should have a type" do
-            transaction.type.should == "Machtiging Rabobank"
+            expect(transaction.type).to eq("Machtiging Rabobank")
           end
 
         end
@@ -102,19 +102,19 @@ describe "Rabobank" do
         let(:transaction) { bank_statements_for_account[12].transactions[1] }
 
         it "should have the correct amount" do
-          transaction.amount.should == 12100.00
+          expect(transaction.amount).to eq(12100.00)
         end
 
         it "should have the correct type" do
-          transaction.type.should == "Bijschrijving betaalopdracht"
+          expect(transaction.type).to eq("Bijschrijving betaalopdracht")
         end
 
         it "should have the correct contra account" do
-          transaction.contra_account.should == "987654321"
+          expect(transaction.contra_account).to eq("987654321")
         end
 
         it "should have the correct contra account owner" do
-          transaction.contra_account_owner.should == "COMPANY B.V."
+          expect(transaction.contra_account_owner).to eq("COMPANY B.V.")
         end
 
       end
@@ -123,11 +123,11 @@ describe "Rabobank" do
         let(:transaction) { bank_statements_for_account[18].transactions.first }
 
         it "should have the correct contra account" do
-          transaction.contra_account.should == "2445588"
+          expect(transaction.contra_account).to eq("2445588")
         end
 
         it "should have the correct contra account owner" do
-          transaction.contra_account_owner.should == "Belastingdienst"
+          expect(transaction.contra_account_owner).to eq("Belastingdienst")
         end
       end
 
@@ -135,15 +135,15 @@ describe "Rabobank" do
         let(:transaction) { bank_statements_for_account[3].transactions.first }
 
         it "should have a NONREF as contra account" do
-          transaction.contra_account.should == "NONREF"
+          expect(transaction.contra_account).to eq("NONREF")
         end
 
         it "should have a contra account owner" do
-          transaction.contra_account_owner.should == "Kosten"
+          expect(transaction.contra_account_owner).to eq("Kosten")
         end
 
         it "should have a type" do
-          transaction.type.should == "Afschrijving rente provisie kosten"
+          expect(transaction.type).to eq("Afschrijving rente provisie kosten")
         end
       end
 
@@ -151,11 +151,11 @@ describe "Rabobank" do
         let(:transaction) { bank_statements_for_account[5].transactions.first }
 
         it "should have the correct description" do
-          transaction.description.should == "BETALINGSKENM.  490022201282 ARBEIDS ONG. VERZ. 00333333333 PERIODE 06.10.2012 - 06.11.2012"
+          expect(transaction.description).to eq("BETALINGSKENM.  490022201282 ARBEIDS ONG. VERZ. 00333333333 PERIODE 06.10.2012 - 06.11.2012")
         end
 
         it "should have a type" do
-          transaction.type.should == "Doorlopende machtiging algemeen"
+          expect(transaction.type).to eq("Doorlopende machtiging algemeen")
         end
       end
     end
@@ -169,8 +169,8 @@ describe "Rabobank" do
     it "should have the correct contra account number" do
       bank_statement = bank_statements["123456789"][0]
       transaction = bank_statement.transactions.first
-      transaction.contra_account.should == "1098765432"
-      transaction.contra_account_iban.should == "NL03RABO1098765432"
+      expect(transaction.contra_account).to eq("1098765432")
+      expect(transaction.contra_account_iban).to eq("NL03RABO1098765432")
     end
 
   end
@@ -180,7 +180,7 @@ describe "Rabobank" do
     let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
 
     it "should have the correct accountnumber" do
-      bank_statements["9123456789"].size.should == 1
+      expect(bank_statements["9123456789"].size).to eq(1)
     end
 
   end
@@ -192,7 +192,7 @@ describe "Rabobank" do
     it "should put a structuted betalingskenmerk in the description" do
       bank_statement = bank_statements["123456789"][0]
       transaction = bank_statement.transactions.first
-      transaction.description.should == "BETALINGSKENMERK 1234567899874563"
+      expect(transaction.description).to eq("BETALINGSKENMERK 1234567899874563")
     end
   end
 
@@ -203,7 +203,7 @@ describe "Rabobank" do
     it "handles multiline in the description" do
       bank_statement = bank_statements["123456789"][0]
       transaction = bank_statement.transactions.first
-      transaction.description.should == "Factuur 20 14-002"
+      expect(transaction.description).to eq("Factuur 20 14-002")
     end
 
   end
@@ -213,19 +213,19 @@ describe "Rabobank" do
     let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
 
     it "should have the correct number of bank account's" do
-      bank_statements.keys.size.should == 1
+      expect(bank_statements.keys.size).to eq(1)
     end
 
     it "should have the correct number of bank statements per bank account" do
-      bank_statements["123456789"].size.should == 2
+      expect(bank_statements["123456789"].size).to eq(2)
     end
 
     context MT940::BankStatement do
       let(:bank_statements_for_account) { bank_statements["123456789"] }
 
       it "should have the correct number of transactions per bank statement" do
-        bank_statements_for_account[0].transactions.size.should == 2
-        bank_statements_for_account[1].transactions.size.should == 7
+        expect(bank_statements_for_account[0].transactions.size).to eq(2)
+        expect(bank_statements_for_account[1].transactions.size).to eq(7)
       end
 
       context "single bank statement" do
@@ -233,20 +233,20 @@ describe "Rabobank" do
 
         it "should have a correct previous balance per statement" do
           balance = bank_statement.previous_balance
-          balance.amount.should == 1147.95
-          balance.date.should == Date.new(2013, 4, 2)
-          balance.currency.should == "EUR"
+          expect(balance.amount).to eq(1147.95)
+          expect(balance.date).to eq(Date.new(2013, 4, 2))
+          expect(balance.currency).to eq("EUR")
         end
 
         it "should have a correct next balance per statement" do
           balance = bank_statement.new_balance
-          balance.amount.should == 1190.35
-          balance.date.should == Date.new(2013, 4, 3)
-          balance.currency.should == "EUR"
+          expect(balance.amount).to eq(1190.35)
+          expect(balance.date).to eq(Date.new(2013, 4, 3))
+          expect(balance.currency).to eq("EUR")
         end
 
         it "should have an iban" do
-          bank_statement.bank_account_iban.should == "NL50RABO0123456789"
+          expect(bank_statement.bank_account_iban).to eq("NL50RABO0123456789")
         end
 
         context "debit transaction" do
@@ -254,47 +254,47 @@ describe "Rabobank" do
           let(:transaction) { bank_statement.transactions.first }
 
           it "should have the correct amount" do
-            transaction.amount.should == -127.5
+            expect(transaction.amount).to eq(-127.5)
           end
 
           it "should have a description" do
-            transaction.description.should == "674725433 1120000153447185 14144467636004962"
+            expect(transaction.description).to eq("674725433 1120000153447185 14144467636004962")
           end
 
           it "should have an account number" do
-            transaction.bank_account.should == "123456789"
+            expect(transaction.bank_account).to eq("123456789")
           end
 
           it "should have an iban number" do
-            transaction.bank_account_iban.should == "NL50RABO0123456789"
+            expect(transaction.bank_account_iban).to eq("NL50RABO0123456789")
           end
 
           it "should have a contra account number" do
-            transaction.contra_account.should == "523149468"
+            expect(transaction.contra_account).to eq("523149468")
           end
 
           it "should have a contra account iban" do
-            transaction.contra_account_iban.should == "NL96RBOS0523149468"
+            expect(transaction.contra_account_iban).to eq("NL96RBOS0523149468")
           end
 
           it "should have a contra account owner" do
-            transaction.contra_account_owner.should == "Nespresso Nede rland B.V."
+            expect(transaction.contra_account_owner).to eq("Nespresso Nede rland B.V.")
           end
 
           it "should have a bank" do
-            transaction.bank.should == "Rabobank"
+            expect(transaction.bank).to eq("Rabobank")
           end
 
           it "should have a currency" do
-            transaction.currency.should == "EUR"
+            expect(transaction.currency).to eq("EUR")
           end
 
           it "should have a date" do
-            transaction.date.should == Date.new(2013, 4, 3)
+            expect(transaction.date).to eq(Date.new(2013, 4, 3))
           end
 
           it "should have a type" do
-            transaction.type.should == "Betaalopdracht iDEAL"
+            expect(transaction.type).to eq("Betaalopdracht iDEAL")
           end
 
         end
@@ -305,23 +305,23 @@ describe "Rabobank" do
         let(:transaction) { bank_statements_for_account[0].transactions[1] }
 
         it "should have the correct amount" do
-          transaction.amount.should == 169.90
+          expect(transaction.amount).to eq(169.90)
         end
 
         it "should have the correct type" do
-          transaction.type.should == "Bijschrijving crediteurenbetaling"
+          expect(transaction.type).to eq("Bijschrijving crediteurenbetaling")
         end
 
         it "should have the correct contra account" do
-          transaction.contra_account.should == "663616476"
+          expect(transaction.contra_account).to eq("663616476")
         end
 
         it "should have the correct contra account iban" do
-          transaction.contra_account_iban.should be_nil
+          expect(transaction.contra_account_iban).to be_nil
         end
 
         it "should have the correct contra account owner" do
-          transaction.contra_account_owner.should == "Bedrijf B.V."
+          expect(transaction.contra_account_owner).to eq("Bedrijf B.V.")
         end
 
       end
@@ -330,15 +330,15 @@ describe "Rabobank" do
         let(:transaction) { bank_statements_for_account[1].transactions.first }
 
         it "should have the correct contra account" do
-          transaction.contra_account.should == "4500018"
+          expect(transaction.contra_account).to eq("4500018")
         end
 
         it "should have the correct contra account iban" do
-          transaction.contra_account_iban.should == nil
+          expect(transaction.contra_account_iban).to eq(nil)
         end
 
         it "should have the correct contra account owner" do
-          transaction.contra_account_owner.should == "DIVV afd parkeergebouwewn"
+          expect(transaction.contra_account_owner).to eq("DIVV afd parkeergebouwewn")
         end
       end
 
@@ -346,15 +346,15 @@ describe "Rabobank" do
         let(:transaction) { bank_statements_for_account[1].transactions[3] }
 
         it "should have a NONREF as contra account" do
-          transaction.contra_account.should == "NONREF"
+          expect(transaction.contra_account).to eq("NONREF")
         end
 
         it "should have a nil as contra account iban" do
-          transaction.contra_account_iban.should be_nil
+          expect(transaction.contra_account_iban).to be_nil
         end
 
         it "should have a type" do
-          transaction.type.should == "Afschrijving rente provisie kosten"
+          expect(transaction.type).to eq("Afschrijving rente provisie kosten")
         end
       end
 
@@ -362,7 +362,7 @@ describe "Rabobank" do
         let(:transaction) { bank_statements_for_account[1].transactions[4] }
 
         it 'should have an empty description' do
-          transaction.description.should == ''
+          expect(transaction.description).to eq('')
         end
       end
 
@@ -373,13 +373,13 @@ describe "Rabobank" do
     debet_file_name = File.dirname(__FILE__) + '/fixtures/rabobank_with_debet_previous_balance.txt'
     bank_statement = MT940Structured::Parser.parse_mt940(debet_file_name)["129199348"].first
 
-    bank_statement.previous_balance.amount.should == -12
-    bank_statement.previous_balance.currency.should == "EUR"
-    bank_statement.previous_balance.date.should == Date.new(2012, 10, 4)
+    expect(bank_statement.previous_balance.amount).to eq(-12)
+    expect(bank_statement.previous_balance.currency).to eq("EUR")
+    expect(bank_statement.previous_balance.date).to eq(Date.new(2012, 10, 4))
 
-    bank_statement.new_balance.amount.should == -12
-    bank_statement.new_balance.currency.should == "EUR"
-    bank_statement.new_balance.date.should == Date.new(2012, 10, 5)
+    expect(bank_statement.new_balance.amount).to eq(-12)
+    expect(bank_statement.new_balance.currency).to eq("EUR")
+    expect(bank_statement.new_balance.date).to eq(Date.new(2012, 10, 5))
   end
 
   context "handle EREF" do
@@ -387,16 +387,16 @@ describe "Rabobank" do
     let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
 
     it "should have the correct number of bank accounts" do
-      bank_statements.keys.size.should == 1
+      expect(bank_statements.keys.size).to eq(1)
     end
 
     it "should have the correct number of bank statements per bank account" do
-      bank_statements["156750961"].size.should == 1
+      expect(bank_statements["156750961"].size).to eq(1)
     end
 
     it "should parse EREF banktransaction" do
-      bank_statements["156750961"][0].transactions[0].contra_account_owner.should == "ECOMMERCE INDUSTRIES INC EUROPE B.V"
-      bank_statements["156750961"][0].transactions[0].eref.should == "201405-258"
+      expect(bank_statements["156750961"][0].transactions[0].contra_account_owner).to eq("ECOMMERCE INDUSTRIES INC EUROPE B.V")
+      expect(bank_statements["156750961"][0].transactions[0].eref).to eq("201405-258")
     end
   end
 

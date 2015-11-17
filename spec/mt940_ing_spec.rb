@@ -11,51 +11,51 @@ describe "ING" do
     end
 
     it 'have the correct number of transactions' do
-      @transactions.size.should == 6
+      expect(@transactions.size).to eq(6)
     end
 
     it 'get the opening balance and date' do
-      @bank_statements.first.previous_balance.amount.should == 0
-      @bank_statements.first.previous_balance.date.should == Date.new(2010, 7, 22)
+      expect(@bank_statements.first.previous_balance.amount).to eq(0)
+      expect(@bank_statements.first.previous_balance.date).to eq(Date.new(2010, 7, 22))
     end
 
     it 'get the closing balance and date' do
-      @bank_statements.last.new_balance.amount.should == 3.47
-      @bank_statements.last.new_balance.date.should == Date.new(2010, 7, 23)
+      expect(@bank_statements.last.new_balance.amount).to eq(3.47)
+      expect(@bank_statements.last.new_balance.date).to eq(Date.new(2010, 7, 23))
     end
 
     context 'Transaction' do
 
       it 'have a bank_account' do
-        @transaction.bank_account.should == '1234567'
+        expect(@transaction.bank_account).to eq('1234567')
       end
 
       it 'have an amount' do
-        @transaction.amount.should == -25.03
+        expect(@transaction.amount).to eq(-25.03)
       end
 
       it 'have a currency' do
-        @transaction.currency.should == 'EUR'
+        expect(@transaction.currency).to eq('EUR')
       end
 
       it 'have a date' do
-        @transaction.date.should == Date.new(2010, 7, 22)
+        expect(@transaction.date).to eq(Date.new(2010, 7, 22))
       end
 
       it 'return its bank' do
-        @transaction.bank.should == 'Ing'
+        expect(@transaction.bank).to eq('Ing')
       end
 
       it "should return the type" do
-        @transaction.type.should == 'Overschrijving'
+        expect(@transaction.type).to eq('Overschrijving')
       end
 
       it 'have a description' do
-        @transactions.last.description.should == 'EJ46GREENP100610T1456 CLIEOP TMG GPHONGKONG AMSTERDAM'
+        expect(@transactions.last.description).to eq('EJ46GREENP100610T1456 CLIEOP TMG GPHONGKONG AMSTERDAM')
       end
 
       it 'return the contra_account' do
-        @transactions.last.contra_account.should == 'NONREF'
+        expect(@transactions.last.contra_account).to eq('NONREF')
       end
 
     end
@@ -72,17 +72,17 @@ describe "ING" do
     end
 
     it 'has the correct number of transactions' do
-      @transactions.size.should == 7
+      expect(@transactions.size).to eq(7)
     end
 
     it 'get the opening balance and date' do
-      @bank_statements.first.previous_balance.amount.should == 500
-      @bank_statements.first.previous_balance.date.should == Date.new(2013, 6, 30)
+      expect(@bank_statements.first.previous_balance.amount).to eq(500)
+      expect(@bank_statements.first.previous_balance.date).to eq(Date.new(2013, 6, 30))
     end
 
     it 'get the closing balance and date' do
-      @bank_statements.last.new_balance.amount.should == 400
-      @bank_statements.last.new_balance.date.should == Date.new(2013, 10, 1)
+      expect(@bank_statements.last.new_balance.amount).to eq(400)
+      expect(@bank_statements.last.new_balance.date).to eq(Date.new(2013, 10, 1))
     end
 
     context 'Transaction' do
@@ -91,35 +91,35 @@ describe "ING" do
       end
 
       it 'have a bank_account' do
-        @transaction.bank_account.should == '1234567'
+        expect(@transaction.bank_account).to eq('1234567')
       end
 
       it 'have an amount' do
-        @transaction.amount.should == 300
+        expect(@transaction.amount).to eq(300)
       end
 
       it 'have a currency' do
-        @transaction.currency.should == 'EUR'
+        expect(@transaction.currency).to eq('EUR')
       end
 
       it 'have a date' do
-        @transaction.date.should == Date.new(2013, 7, 1)
+        expect(@transaction.date).to eq(Date.new(2013, 7, 1))
       end
 
       it 'return its bank' do
-        @transaction.bank.should == 'Ing'
+        expect(@transaction.bank).to eq('Ing')
       end
 
       it "should return the type" do
-        @transaction.type.should == 'Overschrijving'
+        expect(@transaction.type).to eq('Overschrijving')
       end
 
       it 'have a description' do
-        @transaction.description.should == 'VAN Zkl Kwartaal Spaarrekening'
+        expect(@transaction.description).to eq('VAN Zkl Kwartaal Spaarrekening')
       end
 
       it 'return the contra_account' do
-        @transaction.contra_account.should == '1234567'
+        expect(@transaction.contra_account).to eq('1234567')
       end
 
     end
@@ -130,37 +130,37 @@ describe "ING" do
       end
 
       it 'have a bank_account' do
-        @transaction.bank_account.should == '1234567'
+        expect(@transaction.bank_account).to eq('1234567')
       end
 
       it 'have an amount' do
-        @transaction.amount.should == -400
+        expect(@transaction.amount).to eq(-400)
       end
 
       it 'have a currency' do
-        @transaction.currency.should == 'EUR'
+        expect(@transaction.currency).to eq('EUR')
       end
 
       it 'have a date' do
-        @transaction.date.should == Date.new(2013, 7, 1)
+        expect(@transaction.date).to eq(Date.new(2013, 7, 1))
       end
 
       it 'return its bank' do
-        @transaction.bank.should == 'Ing'
+        expect(@transaction.bank).to eq('Ing')
       end
 
       it "should return the type" do
-        @transaction.type.should == 'Internetbankieren'
+        expect(@transaction.type).to eq('Internetbankieren')
       end
 
       it 'have a description' do
-        @transaction.description.should == 'kilometervergoed ing 2e kwartaal 2013'
+        expect(@transaction.description).to eq('kilometervergoed ing 2e kwartaal 2013')
       end
 
       it 'returns the contra_account' do
-        @transaction.contra_account.should == '987654321'
-        @transaction.contra_account_iban.should == 'NL57ABNA0987654321'
-        @transaction.contra_account_owner.should == 'J AAP'
+        expect(@transaction.contra_account).to eq('987654321')
+        expect(@transaction.contra_account_iban).to eq('NL57ABNA0987654321')
+        expect(@transaction.contra_account_owner).to eq('J AAP')
       end
 
     end
@@ -171,17 +171,17 @@ describe "ING" do
       end
 
       it 'have a description' do
-        @transaction.description.should == 'BELASTINGDIENST BTW 2e kwartaal 2013 SCOR/CUR/8850426741301240'
+        expect(@transaction.description).to eq('BELASTINGDIENST BTW 2e kwartaal 2013 SCOR/CUR/8850426741301240')
       end
 
       it 'has an account and iban' do
-        @transaction.contra_account.should == '2445588'
-        @transaction.contra_account_iban.should == 'NL86INGB0002445588'
+        expect(@transaction.contra_account).to eq('2445588')
+        expect(@transaction.contra_account_iban).to eq('NL86INGB0002445588')
       end
 
       it 'is unable to parse the contra account owner' do
 
-        @transaction.contra_account_owner.should be_nil
+        expect(@transaction.contra_account_owner).to be_nil
       end
     end
 
@@ -191,16 +191,16 @@ describe "ING" do
       end
 
       it 'have a description' do
-        @transaction.description.should == 'parkeren'
+        expect(@transaction.description).to eq('parkeren')
       end
 
       it 'has an account and iban' do
-        @transaction.contra_account.should == '987654321'
-        @transaction.contra_account_iban.should == 'NL57ABNA0987654321'
+        expect(@transaction.contra_account).to eq('987654321')
+        expect(@transaction.contra_account_iban).to eq('NL57ABNA0987654321')
       end
 
       it 'has a contra account owner' do
-        @transaction.contra_account_owner.should == 'J AAP / FOO B.V.'
+        expect(@transaction.contra_account_owner).to eq('J AAP / FOO B.V.')
       end
 
     end
@@ -211,16 +211,16 @@ describe "ING" do
       end
 
       it 'have a description' do
-        @transaction.description.should == 'J AAP kilometervergoeding 3e kwart aal'
+        expect(@transaction.description).to eq('J AAP kilometervergoeding 3e kwart aal')
       end
 
       it 'has an account and iban' do
-        @transaction.contra_account.should == '987654321'
-        @transaction.contra_account_iban.should == 'NL57ABNA0987654321'
+        expect(@transaction.contra_account).to eq('987654321')
+        expect(@transaction.contra_account_iban).to eq('NL57ABNA0987654321')
       end
 
       it 'is unable to parse the contra account owner' do
-        @transaction.contra_account_owner.should be_nil
+        expect(@transaction.contra_account_owner).to be_nil
       end
     end
   end
@@ -234,19 +234,19 @@ describe "ING" do
     end
 
     it 'has a description' do
-      @transaction.description.should == 'NL10XXX100020000000 01000 00000000 000000000000-AAAA12345678 Premie xxxxxxxxxxxxxxxxxxxxxxx'
+      expect(@transaction.description).to eq('NL10XXX100020000000 01000 00000000 000000000000-AAAA12345678 Premie xxxxxxxxxxxxxxxxxxxxxxx')
     end
 
     it 'has a contra account' do
-      @transaction.contra_account.should == "3000"
+      expect(@transaction.contra_account).to eq("3000")
     end
 
     it 'has a contra account iban' do
-      @transaction.contra_account_iban.should == "NL58INGB0000003000"
+      expect(@transaction.contra_account_iban).to eq("NL58INGB0000003000")
     end
 
     it 'has a contra account owner' do
-      @transaction.contra_account_owner.should == "JAAPJAAP FIETS PAPIER QWDFDFGGASDFGDSFGS NV"
+      expect(@transaction.contra_account_owner).to eq("JAAPJAAP FIETS PAPIER QWDFDFGGASDFGDSFGS NV")
     end
   end
 
@@ -259,19 +259,19 @@ describe "ING" do
     end
 
     it 'has a description' do
-      @transaction.description.should == 'NL10XXX100020000000 01000 00000000 000000000000-AAAA12345678 Premie xxxxxxxxxxxxxxxxxxxxxxx'
+      expect(@transaction.description).to eq('NL10XXX100020000000 01000 00000000 000000000000-AAAA12345678 Premie xxxxxxxxxxxxxxxxxxxxxxx')
     end
 
     it 'has a contra account' do
-      @transaction.contra_account.should == "3000"
+      expect(@transaction.contra_account).to eq("3000")
     end
 
     it 'has a contra account iban' do
-      @transaction.contra_account_iban.should == "NL58INGB0000003000"
+      expect(@transaction.contra_account_iban).to eq("NL58INGB0000003000")
     end
 
     it 'has a contra account owner' do
-      @transaction.contra_account_owner.should == "JAAPJAAP FIETS PAPIER QWDFDFGGASDFGDSFGS NV"
+      expect(@transaction.contra_account_owner).to eq("JAAPJAAP FIETS PAPIER QWDFDFGGASDFGDSFGS NV")
     end
   end
 
@@ -284,19 +284,19 @@ describe "ING" do
     end
 
     it 'has a description' do
-      @transaction.description.should == 'GB40G01SDDCITI00000011091334 9087653421 NL0 001MKXD ADWORDS:3455667788:NL0001MKXD'
+      expect(@transaction.description).to eq('GB40G01SDDCITI00000011091334 9087653421 NL0 001MKXD ADWORDS:3455667788:NL0001MKXD')
     end
 
     it 'has a contra account' do
-      @transaction.contra_account.should == "BB123456789876567898"
+      expect(@transaction.contra_account).to eq("BB123456789876567898")
     end
 
     it 'has a contra account iban' do
-      @transaction.contra_account_iban.should == "BB123456789876567898"
+      expect(@transaction.contra_account_iban).to eq("BB123456789876567898")
     end
 
     it 'has a contra account owner' do
-      @transaction.contra_account_owner.should == "Google Ireland Limited"
+      expect(@transaction.contra_account_owner).to eq("Google Ireland Limited")
     end
   end
 
@@ -309,19 +309,19 @@ describe "ING" do
     end
 
     it 'has a description' do
-      @transaction.description.should == 'NL72 BOB998877665544 BOB213654789387485940392049 1234567898765432 Kenmerk: 3333.1111.2222.3333 Omschrijving: 987654321 01-01-2012 3 MND 9878878787 Servicecontract'
+      expect(@transaction.description).to eq('NL72 BOB998877665544 BOB213654789387485940392049 1234567898765432 Kenmerk: 3333.1111.2222.3333 Omschrijving: 987654321 01-01-2012 3 MND 9878878787 Servicecontract')
     end
 
     it 'has a contra account' do
-      @transaction.contra_account.should == "123456789"
+      expect(@transaction.contra_account).to eq("123456789")
     end
 
     it 'has a contra account iban' do
-      @transaction.contra_account_iban.should == "NL80RABO0123456789"
+      expect(@transaction.contra_account_iban).to eq("NL80RABO0123456789")
     end
 
     it 'has a contra account owner' do
-      @transaction.contra_account_owner.should == "BOB"
+      expect(@transaction.contra_account_owner).to eq("BOB")
     end
 
   end
@@ -335,32 +335,32 @@ describe "ING" do
     end
 
     it 'has the correct number of transactions' do
-      @transactions.size.should == 21
+      expect(@transactions.size).to eq(21)
     end
 
     it 'has a description' do
-      @transaction.description.should == '22-08 -2014 Omschrijving'
+      expect(@transaction.description).to eq('22-08 -2014 Omschrijving')
     end
 
     it 'has a contra account' do
-      @transaction.contra_account.should == "876543211"
+      expect(@transaction.contra_account).to eq("876543211")
     end
 
     it 'has a contra account iban' do
-      @transaction.contra_account_iban.should == "NL57ABNA0876543211"
+      expect(@transaction.contra_account_iban).to eq("NL57ABNA0876543211")
     end
 
     it 'has a contra account owner' do
-      @transaction.contra_account_owner.should == "B Bert"
+      expect(@transaction.contra_account_owner).to eq("B Bert")
     end
 
     it 'has parses transaction no 19 correclty' do
-      @transactions[18].description.should == "Mijn fee"
+      expect(@transactions[18].description).to eq("Mijn fee")
     end
 
     it 'has parses transaction no 9 correclty' do
-      @transactions[8].description.should == "Factuurnr: 2015/123456789.00. Kijk voor meer informatie op KPN.com of Hi.nl"
-      @transactions[8].contra_account_iban.should == "NL75INGB0000012345"
+      expect(@transactions[8].description).to eq("Factuurnr: 2015/123456789.00. Kijk voor meer informatie op KPN.com of Hi.nl")
+      expect(@transactions[8].contra_account_iban).to eq("NL75INGB0000012345")
     end
 
 
@@ -376,7 +376,7 @@ describe "ING" do
 
 
     it "has the correct number of transactions" do
-      @transactions.size.should == 1
+      expect(@transactions.size).to eq(1)
     end
   end
 
@@ -390,15 +390,88 @@ describe "ING" do
 
 
     it "has the correct number of transactions" do
-      @transactions.size.should == 2
+      expect(@transactions.size).to eq(2)
     end
 
     it 'has a contra account owner' do
-      @transaction.contra_account_owner.should == "Bedrijf Die.Foobar123 AA VBBBBB NLD"
+      expect(@transaction.contra_account_owner).to eq("Bedrijf Die.Foobar123 AA VBBBBB NLD")
     end
 
     it 'has a description' do
-      @transaction.description.should == "13-03-2015 09:47 TERMINALID: AA1001 PASVOLGNR: 001 TRANSACTIENR: 1234F7"
+      expect(@transaction.description).to eq("13-03-2015 09:47 TERMINALID: AA1001 PASVOLGNR: 001 TRANSACTIENR: 1234F7")
+    end
+
+  end
+
+  context 'unscructured remi bug' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/unstructured_remi_2.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1231231"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+
+    it "has the correct number of transactions" do
+      expect(@transactions.size).to eq(1)
+    end
+
+    it 'has a description' do
+      expect(@transaction.description).to eq("RC afrekening betalingsverkeer  Factuurnr. 121212 7756           Betreft rekening 33.33.333      Periode: 01-04-201 4 / 30-06-2014")
+    end
+
+  end
+
+  context 'unscructured remi with space in keyword' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/unstructured_remi_with_space_in_remi.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1234567"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it "has the correct number of transactions" do
+      expect(@transactions.size).to eq(1)
+    end
+
+    it 'has a contra account owner' do
+      expect(@transaction.contra_account_owner).to eq("B ASDGF Netherlands BV")
+    end
+
+    it 'has a description' do
+      expect(@transaction.description).to eq("Factuurnummer 987654321098")
+    end
+
+  end
+
+  context 'references' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/ing_references.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1212121"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it 'has a customer reference' do
+      expect(@transaction.customer_reference).to eq '1234123412341234'
+    end
+
+    it 'has a bank reference' do
+      expect(@transaction.bank_reference).to eq '45674567456745'
+    end
+
+  end
+
+  context 'Remove purp from description' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/ing_purp.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)['6868686']
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it 'has a customer reference' do
+      expect(@transaction.description).to eq 'Factuurnummer 858585858585'
     end
 
   end
