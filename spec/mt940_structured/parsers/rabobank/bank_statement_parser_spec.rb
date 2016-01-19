@@ -9,7 +9,7 @@ describe MT940Structured::Parsers::BankStatementParser do
     let(:lines) do
       [
           ":25:NL50RABO0123456789",
-          ":28C:0",
+          ":28C:160/1",
           ":60F:C130402EUR000000001147,95",
           ":61:130403D000000000127,50N102EREF NL96RBOS0523149468",
           ":86:/EREF/02-04-2013 22:56 1120000153447185/BENM//NAME/Nespresso Nede rland B.V./REMI/674725433 1120000153447185 14144467636004962 /ISDT/2013-04-03",
@@ -21,6 +21,10 @@ describe MT940Structured::Parsers::BankStatementParser do
 
     it 'has the correct bank account' do
       expect(subject.bank_account).to eq "123456789"
+    end
+
+    it 'has the correct page number' do
+      expect(subject.page_number).to eq '160/1'
     end
 
     it 'has the correct bank account iban' do
