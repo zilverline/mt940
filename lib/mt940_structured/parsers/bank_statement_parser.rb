@@ -20,18 +20,18 @@ module MT940Structured::Parsers
     def parse_line_25(line)
       line.gsub!('.', '')
       case line
-        when /^:\d{2}:NL/
-          @bank_statement.bank_account_iban = line[4, 18]
-          @bank_statement.bank_account = iban_to_account(@bank_statement.bank_account_iban)
-          @is_structured_format = true
-        when /^:\d{2}:\d+\/(\d+)$/
-          @bank_statement.bank_account = $1.gsub(/^0+/, '')
-          @is_structured_format = true
-        when /^:\d{2}:\D*(\d*)/
-          @bank_statement.bank_account = $1.gsub(/\D/, '').gsub(/^0+/, '')
-          @is_structured_format = false
-        else
-          raise "Unknown format for tag 25: #{line}"
+      when /^:\d{2}:NL/
+        @bank_statement.bank_account_iban = line[4, 18]
+        @bank_statement.bank_account = iban_to_account(@bank_statement.bank_account_iban)
+        @is_structured_format = true
+      when /^:\d{2}:\d+\/(\d+)$/
+        @bank_statement.bank_account = $1.gsub(/^0+/, '')
+        @is_structured_format = true
+      when /^:\d{2}:\D*(\d*)/
+        @bank_statement.bank_account = $1.gsub(/\D/, '').gsub(/^0+/, '')
+        @is_structured_format = false
+      else
+        raise "Unknown format for tag 25: #{line}"
       end
     end
 
