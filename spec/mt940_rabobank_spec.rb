@@ -2,15 +2,6 @@ require_relative 'spec_helper'
 
 describe "Rabobank" do
 
-  skip "integration" do
-    let(:file_name) { '/Users/lars/Downloads/import-25-06-2014.txt' }
-    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
-
-    it "parses" do
-      pp bank_statements["3462483153"]
-    end
-  end
-
   context "parse whole file" do
     let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank.txt' }
     let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
