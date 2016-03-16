@@ -17,6 +17,12 @@ module MT940Structured::Parsers
       end
     end
 
+    def parse_line_28(line)
+      if line && line.match(/^:28C:(.+)/)
+        @bank_statement.page_number = $1.strip
+      end
+    end
+
     def parse_line_25(line)
 #      puts "Line 25: #{line} -New"
       line.gsub!('.', '')
@@ -38,7 +44,6 @@ module MT940Structured::Parsers
         else
           @bank_statement.bank_account = line[4, 18]
           @is_structured_format = false
-        
       end
     end
 

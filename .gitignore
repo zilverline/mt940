@@ -50,3 +50,5 @@ pkg
 # rvmrc
 .rvmrc
 .idea/
+
+.DS_Store
