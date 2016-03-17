@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mt940 (2.0.1)
+    mt940 (2.0.4)
 
 GEM
   remote: http://rubygems.org/
@@ -34,4 +34,4 @@ DEPENDENCIES
   rspec-collection_matchers
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
