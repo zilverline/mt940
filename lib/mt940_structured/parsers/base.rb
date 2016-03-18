@@ -9,8 +9,7 @@ module MT940Structured::Parsers
     '61' => ['62', '86'],
     '86' => ['61', '62']
   }
-
-  NO_NEXT_LINES = Set.new(['62', '64', '65'])
+  NO_NEXT_LINES = Set.new(['62','64', '65'])
 
   class Base
     def initialize(bank, transaction_parsers, next_lines_for = MT940Structured::Parsers::NEXT_LINES_FOR)
@@ -50,6 +49,8 @@ module MT940Structured::Parsers
       while !lines.empty? do
         start_index = lines.index { |line| line.match(/^:20:/)}
         end_index = lines.index { |line| line.match(/^:62(F|M):/)}
+        optional_avail = lines.index { |line| line.match(/^:64:/)}
+        end_index = optional_avail if optional_avail && optional_avail > end_index
         if start_index && end_index > start_index
           result << lines[start_index..end_index]
           lines = lines.drop(end_index + 1)
