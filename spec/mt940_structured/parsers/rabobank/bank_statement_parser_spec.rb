@@ -39,20 +39,20 @@ describe MT940Structured::Parsers::BankStatementParser do
       expect(subject.new_balance).to eq MT940::Balance.new(18846.34, Date.new(2013, 4, 4), "EUR")
     end
 
-    it "has the available cash bal if present" do
-      linez = [
-          ":25:NL50RABO0123456789",
-          ":28C:160/1",
-          ":60F:C130402EUR000000001147,95",
-          ":61:130403D000000000127,50N102EREF NL96RBOS0523149468",
-          ":86:/EREF/02-04-2013 22:56 1120000153447185/BENM//NAME/Nespresso Nede rland B.V./REMI/674725433 1120000153447185 14144467636004962 /ISDT/2013-04-03",
-          ":62F:C130404EUR000000018846,34",
-          ":64:C130404EUR000000088846,34"
-      ]
-      obj = MT940Structured::Parsers::BankStatementParser.new("Rabobank", transaction_parsers, linez).bank_statement 
-      expect(obj.new_balance).to eq MT940::Balance.new(88846.34, Date.new(2013, 4, 4), "EUR")
+    # it "has the available cash bal if present" do
+    #   linez = [
+    #       ":25:NL50RABO0123456789",
+    #       ":28C:160/1",
+    #       ":60F:C130402EUR000000001147,95",
+    #       ":61:130403D000000000127,50N102EREF NL96RBOS0523149468",
+    #       ":86:/EREF/02-04-2013 22:56 1120000153447185/BENM//NAME/Nespresso Nede rland B.V./REMI/674725433 1120000153447185 14144467636004962 /ISDT/2013-04-03",
+    #       ":62F:C130404EUR000000018846,34",
+    #       ":64:C130404EUR000000088846,34"
+    #   ]
+    #   obj = MT940Structured::Parsers::BankStatementParser.new("Rabobank", transaction_parsers, linez).bank_statement 
+    #   expect(obj.new_balance).to eq MT940::Balance.new(88846.34, Date.new(2013, 4, 4), "EUR")
 
-    end
+    # end
 
     it "has 1 transaction" do
       expect(subject.transactions).to have(1).item
