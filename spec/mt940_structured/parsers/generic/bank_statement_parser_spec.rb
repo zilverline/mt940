@@ -27,8 +27,11 @@ describe MT940Structured::Parsers::BankStatementParser do
     it 'has TEST REF as customer ref' do
     	expect(subject.transactions.first.bank_reference).to eq('TEST SAMPLE')
     end
-	it 'has TEST REF as customer ref when no ref there' do
+	  it 'has TEST REF as customer ref when no ref there' do
     	expect(subject.transactions.last.bank_reference).to eq('')
+    end
+    it 'has the correct type when book date not present' do
+      expect(subject.transactions.last.type).to eq('DR')
     end
   end
 
