@@ -13,8 +13,15 @@ module MT940Structured::Parsers::Generic
         #puts "$3 -- #{$3}"
         type = $3 == 'D' ? -1 : ($3 == 'RC' ? -1 : 1)
         transaction = MT940::Transaction.new(amount: type * ($4 + '.' + $5).to_f)
-        transaction.customer_reference = $7
-        transaction.bank_reference = $8
+        
+        if $7.strip.start_with?("NONREF")
+          transaction.customer_reference = "NONREF"  
+          transaction.bank_reference = ($7+$8).gsub('NONREF','').strip
+        else
+          transaction.customer_reference = $7.strip
+          transaction.bank_reference = $8
+        end
+        
         transaction.date = parse_date($1)
         transaction.date_accounting = $2 ? parse_date($1[0..1] + $2) : transaction.date
         transaction.type = $3
