@@ -16,7 +16,8 @@ module MT940Structured::Parsers::Generic
         
         if $7.strip.start_with?("NONREF")
           transaction.customer_reference = "NONREF"  
-          transaction.bank_reference = ($7+$8).gsub('NONREF','').strip
+          bank_ref = $8.nil? ? '' : $8
+          transaction.bank_reference = ($7+bank_ref).gsub('NONREF','').strip
         else
           transaction.customer_reference = $7.strip
           transaction.bank_reference = $8
