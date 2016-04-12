@@ -33,6 +33,9 @@ describe MT940Structured::Parsers::BankStatementParser do
     it 'has the correct type when book date not present' do
       expect(subject.transactions.last.type).to eq('DR')
     end
+    it 'has the should have a regular date' do
+      expect(subject.transactions.last.date).to_not be_nil
+    end
   end
 
 
