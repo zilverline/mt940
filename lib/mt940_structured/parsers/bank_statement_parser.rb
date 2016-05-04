@@ -26,8 +26,9 @@ module MT940Structured::Parsers
     def parse_line_25(line)
       line.gsub!('.', '')
       case line
-      when /^:\d{2}:NL/
-        @bank_statement.bank_account_iban = line[4, 18]
+      when /^:\d{2}:([a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9\s]{0,30})/
+        # older files have the suffix EUR behind the iban number. We do not use this.
+        @bank_statement.bank_account_iban = $1.gsub(' ', '').gsub(/EUR$/, '')
         @bank_statement.bank_account = iban_to_account(@bank_statement.bank_account_iban)
         @is_structured_format = true
       when /^:\d{2}:\d+\/(\d+)$/
