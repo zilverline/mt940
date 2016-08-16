@@ -24,24 +24,28 @@ module MT940Structured::Parsers
     end
 
     def parse_line_25(line)
-#      puts "Line 25: #{line} -New"
       line.gsub!('.', '')
       case line
         when /^:\d{2}:NL/
+          #puts "B1"
           @bank_statement.bank_account_iban = line[4, 18]
           @bank_statement.bank_account = iban_to_account(@bank_statement.bank_account_iban)
           @is_structured_format = true
         when /^:\d{2}:\d+\/(\d+)$/
+          #puts "B2"
           @bank_statement.bank_account = $1.gsub(/^0+/, '')
           @is_structured_format = true
         when /^:\d{2}:\D*(\d*)/
-          @bank_statement.bank_account = $1.gsub(/\D/, '').gsub(/^0+/, '')
+          #puts "B3 - #{line} --- #{$1}"
+          @bank_statement.bank_account = line[4 .. -1]
           @is_structured_format = false
         when /^:\d{2}:IE/
+          #puts "B4"
           @bank_statement.bank_account_iban = line[4, 18]
           @bank_statement.bank_account = iban_to_account(@bank_statement.bank_account_iban)
           @is_structured_format = true          
         else
+          #puts "B5"
           @bank_statement.bank_account = line[4, 18]
           @is_structured_format = false
       end

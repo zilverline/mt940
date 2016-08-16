@@ -10,7 +10,7 @@ module MT940Structured::Parsers::Generic
 
     def parse_transaction(line_61)
       if line_61.match(get_regex_for_line_61)
-        #puts "$3 -- #{$3}"
+        
         
         type = $3 == 'D' ? -1 : ($3 == 'RC' ? -1 : 1)
         transaction = MT940::Transaction.new(amount: type * ($4 + '.' + $5).to_f)
@@ -29,10 +29,11 @@ module MT940Structured::Parsers::Generic
       end
     end
 
-    def parse_line_25(line)
-      line.gsub!('.', '')
-      @bank_statement.bank_account = line.gsub(/\D/, '').gsub(/^0+/, '')
-    end
+    # def parse_line_25(line)
+    #   puts "25-----> " + line
+    #   line.gsub!('.', '')
+    #   @bank_statement.bank_account = line.gsub(/\D/, '').gsub(/^0+/, '')
+    # end
 
     def enrich_transaction(transaction, line_86)
       if line_86.match(/^:86:(.*)$/)
