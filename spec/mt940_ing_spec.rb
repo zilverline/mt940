@@ -388,7 +388,6 @@ describe "ING" do
       @transaction = @transactions.first
     end
 
-
     it "has the correct number of transactions" do
       expect(@transactions.size).to eq(2)
     end

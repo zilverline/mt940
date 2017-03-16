@@ -4,7 +4,7 @@ class MT940Structured::FileContent
   R_EOF_TRIODOS = /^-$/
 
   def initialize(raw_lines, join_lines_by = ' ')
-    @raw_lines = raw_lines.map{|line|line.strip}
+    @raw_lines = raw_lines.map { |line| line.strip }
     @join_lines_by = join_lines_by
   end
 
@@ -31,6 +31,8 @@ class MT940Structured::FileContent
       end
     end
     grouped_lines
+  rescue => e
+    raise MT940Structured::InvalidFileContentError.new(e)
   end
 
   private
