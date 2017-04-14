@@ -461,6 +461,20 @@ describe "ING" do
 
   end
 
+  context 'references fix' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/ing_references_fix.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1212121"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it 'has a bank reference' do
+      expect(@transaction.bank_reference).to eq '56565656565656'
+    end
+
+  end
+
   context 'Remove purp from description' do
     before :each do
       @file_name = File.dirname(__FILE__) + '/fixtures/ing/ing_purp.txt'
