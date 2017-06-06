@@ -486,7 +486,19 @@ describe "ING" do
     it 'has a customer reference' do
       expect(@transaction.description).to eq 'Factuurnummer 858585858585'
     end
+  end
 
+  context ':00:00' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/ing_00_00.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)['1212121']
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it 'has a customer reference' do
+      expect(@transaction.description).to eq 'KASSA VERZAMELFACTUUR DINSDAG 2 ABC-654321 05/31/2017 00 :00:00'
+    end
   end
 
 end
