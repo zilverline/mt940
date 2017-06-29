@@ -27,6 +27,19 @@ module MT940Structured::Parsers::Rabobank
       description = line_86[4..-1]
       transaction.description = ""
       keywords = ["BENM", "NAME", "ISDT", "REMI", "CSID", "MARF", "EREF", "ORDP", "ADDR", "CDTRREF", "CDTRREFTP"]
+
+      # Sometimes Rabobank send the keyword /REMI/ twice.
+      # The spec (https://www.rabobank.nl/images/rib-formaatbeschrijving-swift-mt940s_29888655.pdf)
+      # is unclear if this is allowed or not, but it is probably a bug.
+      #
+      # Since it is unlikely they will fix it within a day, we will fix it for them
+      # You're welcome Rabobank.
+      #
+      # So if this happens we can safely remove the empty /REMI/
+      if description.scan(/\/REMI\//).count > 1
+        description = description.sub(/\/REMI\/\//, "/")
+      end
+
       keywords.each do |keyword|
         keyword_with_slashes = "/" + keyword + "/"
         parts = description.split(keyword_with_slashes)
