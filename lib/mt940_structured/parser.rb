@@ -2,12 +2,16 @@ module MT940Structured
   class Parser
     def self.parse_mt940(path, join_lines_by = ' ')
       file_content = FileContent.new(readfile(path), join_lines_by)
-      grouped_lines = file_content.group_lines
       parser = file_content.get_header.parser
+      grouped_lines = file_content.group_lines
       parser.transform(grouped_lines)
     end
 
-    private
+    def self.bank_name(path, join_lines_by = ' ')
+      file_content = FileContent.new(readfile(path), join_lines_by)
+      file_content.get_header.parser.bank
+    end
+
     def self.readfile(path)
       File.open(path).readlines.map do |line|
         line
