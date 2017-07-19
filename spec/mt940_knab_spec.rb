@@ -285,7 +285,14 @@ describe "Knab" do
     it 'fails fast' do
       expect { MT940Structured::Parser.parse_mt940(file_name) }.to raise_exception(MT940Structured::InvalidFileContentError)
     end
+  end
 
+  context "empty file" do
+    let(:file_name) { File.dirname(__FILE__) + '/fixtures/knab/knab_empty.txt' }
+
+    it 'fails fast' do
+      expect(MT940Structured::Parser.bank_name(file_name)).to eq 'Knab'
+    end
   end
 
   context "sepa overboeking" do
