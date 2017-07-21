@@ -35,7 +35,9 @@ module MT940Structured::Parsers
         @bank_statement.bank_account = $1.gsub(/^0+/, '')
         @is_structured_format = true
       when /^:\d{2}:\D*(\d*)/
-        @bank_statement.bank_account = $1.gsub(/\D/, '').gsub(/^0+/, '')
+        # Rolled back to previous as the account number was getting truncated when it had a - 
+        # @bank_statement.bank_account = $1.gsub(/\D/, '').gsub(/^0+/, '')
+        @bank_statement.bank_account = line[4 .. -1]
         @is_structured_format = false
        when /^:\d{2}:IE/
           #puts "B4"
