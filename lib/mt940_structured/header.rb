@@ -8,6 +8,7 @@ module MT940Structured
     R_KNAB = /KNABNL/
     R_VAN_LANSCHOT = /FVLBNL/
     R_SNS = /SNSBNL/
+    R_NEDBANK = /^Nedcor Nedbank/
 
     def initialize(raw_lines)
       @raw_lines = raw_lines
@@ -30,6 +31,8 @@ module MT940Structured
         MT940Structured::Parsers::VanLanschot::Parser.new
       elsif @raw_lines[0].match(R_SNS)
         MT940Structured::Parsers::Sns::Parser.new
+      elsif @raw_lines[0].match(R_NEDBANK)
+        MT940Structured::Parsers::Nedbank::Parser.new
       else
          MT940Structured::Parsers::Generic::Parser.new
         #raise UnsupportedBankError.new
