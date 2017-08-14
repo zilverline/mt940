@@ -13,6 +13,7 @@ module MT940Structured::Parsers::Nedbank
         transaction.type = $2
         transaction.customer_reference = $6
         transaction.bank_reference = $7
+        transaction.description = $6
         transaction.date = parse_date($1)
         transaction
       end
