@@ -391,10 +391,10 @@ describe "Rabobank" do
     end
   end
 
-  context "handle duplicate occurnce of REMI" do
+  context "handle duplicate occurrence of REMI" do
     let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank/fix_rabo_twice_remi.txt' }
     let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
-    let(:transaction) {bank_statements['1212121212'][0].transactions[0]}
+    let(:transaction) { bank_statements['1212121212'][0].transactions[0] }
 
     it "should have the correct number of bank accounts" do
       expect(bank_statements.keys.size).to eq(1)
@@ -422,6 +422,40 @@ describe "Rabobank" do
 
     it "should have the correct description" do
       expect(transaction.description).to eq("AFR EK. BETAALAUTOMAAT MaestroREFNR. H6MJV5DAT. 20170601 AANT. 11")
+    end
+  end
+
+  context "handle linebreack in keyword REMI" do
+    let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank/line_break_in_remi.txt' }
+    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
+    let(:transaction) { bank_statements['1212121212'][0].transactions[0] }
+
+    it "should have the correct number of bank accounts" do
+      expect(bank_statements.keys.size).to eq(1)
+    end
+
+    it "should have the correct amount" do
+      expect(transaction.amount).to eq(1000.0)
+    end
+
+    it "should have the correct type" do
+      expect(transaction.type).to eq("541")
+    end
+
+    it "should have the correct contra account" do
+      expect(transaction.contra_account).to eq("O044444444")
+    end
+
+    it "should have the correct contra account iban" do
+      expect(transaction.contra_account_iban).to eq "NL55RABO044444444"
+    end
+
+    it "should have the correct contra account owner" do
+      expect(transaction.contra_account_owner).to eq("AAAAAA RRRRRRRRRRR BBBBB DFDFDFDFDFDFDF CCC")
+    end
+
+    it "should have the correct description" do
+      expect(transaction.description).to eq("BETALINGSKENM.: 342157/DEC- 16, ONZE REF.: 12345678, TOELICHTIN B: Gruitjes")
     end
   end
 
