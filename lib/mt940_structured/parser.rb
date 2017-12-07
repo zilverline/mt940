@@ -1,22 +1,61 @@
 module MT940Structured
   class Parser
+    def self.streaming_mt940_parser(io, handler, join_lines_by = ' ')
+      MT940Structured::StreamingParser.new(io, handler, join_lines_by)
+    end
+
+    def self.parse_mt940_io(io, join_lines_by = ' ')
+      handler = DefaultHandler.new
+      MT940Structured::StreamingParser.new(io, handler, join_lines_by)
+      handler.bank_statements
+    end
+
     def self.parse_mt940(path, join_lines_by = ' ')
-      file_content = FileContent.new(readfile(path), join_lines_by)
-      grouped_lines = file_content.group_lines
-      parser = file_content.get_header.parser
-      parser.transform(grouped_lines)
+      parse_mt940_io(File.open(path), join_lines_by)
+    end
+
+    def self.bank_name_io(io, join_lines_by = ' ')
+      handler = NameHandler.new
+      catch(:got_name) do
+        MT940Structured::StreamingParser.new(io, handler, join_lines_by)
+      end
+      handler._bank_name
     end
 
     def self.bank_name(path, join_lines_by = ' ')
-      file_content = FileContent.new(readfile(path), join_lines_by)
-      file_content.get_header.parser.bank
+      bank_name_io(File.open(path), join_lines_by)
     end
 
-    def self.readfile(path)
-      File.open(path).readlines.map do |line|
-        line
-          .encode('UTF-8', 'binary', :invalid => :replace, :undef => :replace) # remove other obscure chars. god knows what people upload.
-          .gsub(/\u001A/, '') # remove eof chars in the middle of the string... yes it happens :-(
+    class NameHandler
+      attr_reader :_bank_name
+      def end_bank_statement(_stmt)
+      end
+      def transaction(_tx)
+      end
+      def bank_name(bank_name)
+        @_bank_name = bank_name
+        throw :got_name
+      end
+    end
+
+    class DefaultHandler
+      attr_reader :bank_statements
+      def initialize
+        @bank_statements = Hash.new { |h, k| h[k] = [] }
+        @transactions = []
+      end
+
+      def bank_name(_bank_name)
+      end
+
+      def end_bank_statement(stmt)
+        stmt.transactions = @transactions
+        @bank_statements[stmt.bank_account] << stmt
+        @transactions = []
+      end
+
+      def transaction(tx)
+        @transactions << tx
       end
     end
   end

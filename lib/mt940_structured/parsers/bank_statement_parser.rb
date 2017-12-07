@@ -1,19 +1,33 @@
 module MT940Structured::Parsers
   class BankStatementParser
     include DateParser, BalanceParser, IbanSupport
-    attr_reader :bank_statement
-
-    def initialize(bank, transaction_parsers, lines)
+    def initialize(bank, transaction_parsers, &completed_transaction_callback)
       @bank = bank
       @transaction_parsers = transaction_parsers
+      @empty_statement = true
+      @current_transaction = nil
       @bank_statement = MT940::BankStatement.new([])
-      lines.each do |line|
-        if line.match /^:(\d{2})(F|C|M)?:/
-          parse_method = "parse_line_#{$1}".to_sym
-          send(parse_method, line) if respond_to? parse_method
-        else
-          raise "nyi '#{$1}' - line #{line}"
-        end
+      @completed_transaction_callback = completed_transaction_callback
+    end
+
+    def reset
+      @empty_statement = true
+      @current_transaction = nil
+      @bank_statement = MT940::BankStatement.new([])
+    end
+
+    def bank_statement
+      return nil unless @bank_statement.bank_account
+      @bank_statement unless @empty_statement
+    end
+
+    def parse_line(line)
+      if line.match /^:(\d{2})(F|C|M)?:/
+        @empty_statement = false
+        parse_method = "parse_line_#{$1}".to_sym
+        send(parse_method, line) if respond_to? parse_method
+      else
+        raise "nyi '#{$1}' - line #{line}"
       end
     end
 
@@ -46,7 +60,14 @@ module MT940Structured::Parsers
       @bank_statement.previous_balance = parse_balance(line)
     end
 
+    def flush_transaction
+      @completed_transaction_callback.call(@current_transaction) if @current_transaction
+      @current_transaction = nil
+    end
+
     def parse_line_61(line_61)
+      flush_transaction()
+
       @is_structured_format = @transaction_parsers.structured?(line_61) if @transaction_parsers.respond_to?(:structured?)
       @transaction_parser = @transaction_parsers.for_format @is_structured_format
       transaction = @transaction_parser.parse_transaction(line_61)
@@ -54,16 +75,15 @@ module MT940Structured::Parsers
       transaction.bank_account_iban = @bank_statement.bank_account_iban
       transaction.currency = @bank_statement.previous_balance.currency
       transaction.bank = @bank
-      @bank_statement.transactions << transaction
+      @current_transaction = transaction
     end
 
     def parse_line_86(line)
-      @transaction_parser.enrich_transaction(@bank_statement.transactions.last, line)
+      @transaction_parser.enrich_transaction(@current_transaction, line) if @current_transaction
     end
 
     def parse_line_62(line)
       @bank_statement.new_balance = parse_balance(line)
     end
   end
-
 end

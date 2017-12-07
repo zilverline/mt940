@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 describe MT940Structured::Header do
-
-  subject { MT940Structured::Header.new(lines).parser }
+  subject { lines.map { |line| MT940Structured::Header.parser(line) }.compact.first }
 
   context "Rabobank" do
     let(:lines) { [":940:", ":20:940A121001", ":25:2121.21.211EUR"] }
@@ -26,7 +25,6 @@ describe MT940Structured::Header do
 
   context "Unknown bank" do
     let(:lines) { ["kjdshfgkljdsfg"] }
-    it { expect { subject }.to raise_error(MT940Structured::UnsupportedBankError) }
+    it { is_expected.to be_nil }
   end
-
 end

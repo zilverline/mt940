@@ -9,7 +9,6 @@ module MT940Structured::Parsers::Sns
       /^:61:(\d{6})(\d{4})?(C|D)(\d+),(\d{0,2})([a-zA-Z]{4})(.*\/\/\d{1,16})?/
     end
 
-
     def enrich_transaction(transaction, line_86)
       transaction.contra_account = "NONREF" unless transaction.contra_account
       line_86 = line_86.gsub(/:86:/, '')

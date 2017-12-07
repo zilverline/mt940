@@ -13,7 +13,7 @@ module MT940Structured::Parsers
   NO_NEXT_LINES = Set.new(['62', '64', '65'])
 
   class Base
-    attr_reader :bank
+    attr_reader :bank, :transaction_parsers, :next_lines_for
 
     def initialize(bank, transaction_parsers, next_lines_for = MT940Structured::Parsers::NEXT_LINES_FOR)
       @bank = bank
@@ -33,6 +33,7 @@ module MT940Structured::Parsers
     end
 
     protected
+
     def validate_grouped_lines(lines)
       lines.each_with_index do |current_line, index|
         if index < (lines.length - 1)
