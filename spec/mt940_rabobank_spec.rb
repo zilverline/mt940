@@ -459,4 +459,18 @@ describe "Rabobank" do
     end
   end
 
+  context 'handles end of file sign as first char of line' do
+    let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank/dash_as_start_of_line.txt' }
+    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
+    let(:transaction) { bank_statements['1212121212'][0].transactions[0] }
+
+    it 'parses' do
+      expect(bank_statements.keys.size).to eq(1)
+    end
+
+    it "should have the correct amount" do
+      expect(transaction.amount).to eq(1000.0)
+    end
+  end
+
 end
