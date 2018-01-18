@@ -42,7 +42,14 @@ class MT940Structured::FileContent
   end
 
   def end_index
+    return 0 unless check_eol_char?
+
     @raw_lines.rindex { |line| line.match(R_EOF_ING) || line.match(R_EOF_ABN_AMRO) ||line.match(R_EOF_TRIODOS) } || 0
   end
 
+  def check_eol_char?
+    %w(Ing Abnamro Triodos).include?(get_header.parser.bank)
+  rescue
+    true # if parsing the header fails then regard this as true
+  end
 end
