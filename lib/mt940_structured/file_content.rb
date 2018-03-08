@@ -17,13 +17,13 @@ class MT940Structured::FileContent
     grouped_lines = []
     previous_tag = nil
     body_lines.each do |line|
-      mt940_line = line.match /^(:\d{2}[D|C|F|M|P]?:)/
-      # don't group transaction lines
-      if mt940_line && (previous_tag != $1 || $1 == ":61:") 
+      mt940_line = line.match /^(:(?:20|25|28|60|61|86|62|64|65|86)[D|C|F|M|P]?:)/
+      #if mt940_line && (previous_tag != $1 || $1 == ":61:")
+      if mt940_line && previous_tag != $1
         previous_tag = $1
         grouped_lines << line
       else
-        next_line = if line.match /^(:\d{2}[D|C|F|M|P]?:)(.*)/
+        next_line = if line.match /^(:(?:20|25|28|60|61|86|62|64|65|86)[D|C|F|M|P]?:)(.*)/
                       $2
                     else
                       line
@@ -43,7 +43,14 @@ class MT940Structured::FileContent
   end
 
   def end_index
+    return 0 unless check_eol_char?
+
     @raw_lines.rindex { |line| line.match(R_EOF_ING) || line.match(R_EOF_ABN_AMRO) ||line.match(R_EOF_TRIODOS) } || 0
   end
 
+  def check_eol_char?
+    %w(Ing Abnamro Triodos).include?(get_header.parser.bank)
+  rescue
+    true # if parsing the header fails then regard this as true
+  end
 end

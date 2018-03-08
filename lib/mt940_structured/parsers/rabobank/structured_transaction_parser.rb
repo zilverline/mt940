@@ -26,22 +26,34 @@ module MT940Structured::Parsers::Rabobank
     def enrich_transaction(transaction, line_86)
       description = line_86[4..-1]
       transaction.description = ""
-      keywords = ["BENM", "NAME", "ISDT", "REMI", "CSID", "MARF", "EREF", "ORDP", "ADDR", "CDTRREF", "CDTRREFTP"]
+      keywords = ["BENM", "NAME", "ISDT", "REMI", "CSID", "MARF", "EREF", "ORDP", "ADDR", "CDTRREF", "CDTRREFTP"].map{|k|k.scan(/.{1}|.+/).join("\\s?")}
+      # Sometimes Rabobank send the keyword /REMI/ twice.
+      # The spec (https://www.rabobank.nl/images/rib-formaatbeschrijving-swift-mt940s_29888655.pdf)
+      # is unclear if this is allowed or not, but it is probably a bug.
+      #
+      # Since it is unlikely they will fix it within a day, we will fix it for them
+      # You're welcome Rabobank.
+      #
+      # So if this happens we can safely remove the empty /REMI/
+      if description.scan(/\/REMI\//).count > 1
+        description = description.sub(/\/REMI\/\//, "/")
+      end
+
       keywords.each do |keyword|
         keyword_with_slashes = "/" + keyword + "/"
-        parts = description.split(keyword_with_slashes)
+        parts = description.split(Regexp.new(keyword_with_slashes))
         if parts.length > 1
-          part = parts[1].split(/\/BENM\/|\/NAME\/|\/ISDT\/|\/REMI\/|\/CSID\/|\/MARF\/|\/EREF\/|\/ORDP\/|\/ADDR\/|\/CDTRREF\/|\/CDTRREFTP\//)
+          part = parts[1].split(Regexp.new(keywords.map{|k|"/#{k}/"}.join("|")))
           info = part[0].strip.gsub(/\r|\n/, '')
           if info.length > 0
             case keyword
-              when "REMI"
+              when "REMI".scan(/.{1}|.+/).join("\\s?")
                 transaction.description = info
-              when "NAME"
+              when "NAME".scan(/.{1}|.+/).join("\\s?")
                 transaction.contra_account_owner = info
-              when "EREF"
+              when "EREF".scan(/.{1}|.+/).join("\\s?")
                 transaction.eref = info
-              when "CDTRREF"
+              when "CDTRREF".scan(/.{1}|.+/).join("\\s?")
                 transaction.description = "BETALINGSKENMERK #{info}" if transaction.description == ''
             end
           end

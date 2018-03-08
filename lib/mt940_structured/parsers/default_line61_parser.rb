@@ -25,13 +25,30 @@ module MT940Structured::Parsers
         transaction.customer_reference = references[:customer]
         transaction.bank_reference = references[:bank]
         transaction.date = parse_date($1)
-        transaction.date_accounting = $2 ? parse_date($1[0..1] + $2) : transaction.date
+        #transaction.date_accounting = $2 ? parse_date($1[0..1] + $2) : transaction.date
         transaction.type = $3
+        transaction.date_accounting = date_accounting(transaction.date, $2)
         transaction
       end
     end
 
     private
+    # Case line 61 ":61:1401011229"
+    #
+    # At the end of the year date accounting can be in the previous year.
+    # Since the MT940 "standard" does not provide the year in date accounting
+    # we need to calculate it ourselves.
+    def date_accounting(date, date_accounting)
+      return date unless date_accounting
+
+      if date.month == 1 && date_accounting[0..1] == "12"
+        year = date.year - 1
+      else
+        year = date.year
+      end
+
+      parse_date(year.to_s[2..3] + date_accounting)
+    end
 
     def extract_references(string)
       references = string ? string.split('//') : []

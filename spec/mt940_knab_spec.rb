@@ -285,7 +285,14 @@ describe "Knab" do
     it 'fails fast' do
       expect { MT940Structured::Parser.parse_mt940(file_name) }.to raise_exception(MT940Structured::InvalidFileContentError)
     end
+  end
 
+  context "empty file" do
+    let(:file_name) { File.dirname(__FILE__) + '/fixtures/knab/knab_empty.txt' }
+
+    it 'fails fast' do
+      expect(MT940Structured::Parser.bank_name(file_name)).to eq 'Knab'
+    end
   end
 
   context "sepa overboeking" do
@@ -555,6 +562,59 @@ describe "Knab" do
             expect(transaction.date).to eq(Date.new(2016, 04, 25))
           end
 
+        end
+      end
+    end
+  end
+
+  context "pin transactions" do
+    let(:file_name) { File.dirname(__FILE__) + '/fixtures/knab/knab_pin.txt' }
+    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
+
+    context MT940::BankStatement do
+      let(:bank_statements_for_account) { bank_statements["123456789"] }
+
+      context "first statement" do
+
+        let(:bank_statement) { bank_statements_for_account[0] }
+
+        context MT940::Transaction do
+          let(:transaction) { bank_statement.transactions.first }
+
+          it "should have the correct amount" do
+            expect(transaction.amount).to eq(-1010)
+          end
+
+          it "should have a description" do
+            expect(transaction.description).to eq("DERTGA FF ASR 01-01-2018 12:12 PAS: 1111")
+          end
+
+          it "should have a contra account owner" do
+            expect(transaction.contra_account_owner).to eq("JAAPAAPJE FREKEL & J")
+          end
+        end
+      end
+    end
+  end
+
+  context "date and accounting date different year" do
+    let(:file_name) { File.dirname(__FILE__) + '/fixtures/knab/knab_date_and_accounting_date_different_year.txt' }
+    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
+
+    context MT940::BankStatement do
+      let(:bank_statements_for_account) { bank_statements["123456789"] }
+
+      context "first statement" do
+
+        let(:bank_statement) { bank_statements_for_account[0] }
+
+        context MT940::Transaction do
+          let(:transaction) { bank_statement.transactions.first }
+
+          it "should have the dates" do
+            expect(transaction.date).to eq(Date.new(2014, 1, 1))
+            expect(transaction.date_accounting).to eq(Date.new(2013, 12, 29))
+          end
         end
       end
     end

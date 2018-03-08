@@ -13,6 +13,8 @@ module MT940Structured::Parsers
   NO_NEXT_LINES = Set.new(['62','64', '65'])
 
   class Base
+    attr_reader :bank
+
     def initialize(bank, transaction_parsers, next_lines_for = MT940Structured::Parsers::NEXT_LINES_FOR)
       @bank = bank
       @transaction_parsers = transaction_parsers

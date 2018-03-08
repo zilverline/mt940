@@ -461,6 +461,20 @@ describe "ING" do
 
   end
 
+  context 'references fix' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/ing_references_fix.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1212121"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it 'has a bank reference' do
+      expect(@transaction.bank_reference).to eq '56565656565656'
+    end
+
+  end
+
   context 'Remove purp from description' do
     before :each do
       @file_name = File.dirname(__FILE__) + '/fixtures/ing/ing_purp.txt'
@@ -471,6 +485,32 @@ describe "ING" do
 
     it 'has a customer reference' do
       expect(@transaction.description).to eq 'Factuurnummer 858585858585'
+    end
+  end
+
+  context ':00:00' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/ing_00_00.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)['1212121']
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it 'has a description reference' do
+      expect(@transaction.description).to eq 'KASSA VERZAMELFACTUUR DINSDAG 2 ABC-654321 05/31/2017 00 :00:00'
+    end
+  end
+
+  context 'dash in customer reference' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/ing/ing_dash_in_customer_reference.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)['1212121']
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it 'has a bank reference' do
+      expect(@transaction.bank_reference).to eq '45674567456745'
     end
 
   end
