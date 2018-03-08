@@ -18,8 +18,7 @@ class MT940Structured::FileContent
     previous_tag = nil
     body_lines.each do |line|
       mt940_line = line.match /^(:(?:20|25|28|60|61|86|62|64|65|86)[D|C|F|M|P]?:)/
-      #if mt940_line && (previous_tag != $1 || $1 == ":61:")
-      if mt940_line && previous_tag != $1
+      if mt940_line && (previous_tag != $1 || $1 == ":61:")
         previous_tag = $1
         grouped_lines << line
       else
