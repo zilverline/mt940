@@ -2,7 +2,6 @@ require_relative 'spec_helper'
 
 describe "Triodos" do
 
-
   context 'mt940' do
     before :each do
       @file_name = File.dirname(__FILE__) + '/fixtures/triodos.txt'
@@ -44,7 +43,7 @@ describe "Triodos" do
       end
 
       it 'have a date' do
-        expect(@transaction.date).to eq(Date.new(2011,1,1))
+        expect(@transaction.date).to eq(Date.new(2011, 1, 1))
       end
 
       it 'return its bank' do
@@ -100,7 +99,7 @@ describe "Triodos" do
       end
 
       it 'have a date' do
-        expect(@transaction.date).to eq(Date.new(2013,10,7))
+        expect(@transaction.date).to eq(Date.new(2013, 10, 7))
       end
 
       it 'has a bank' do
@@ -122,7 +121,7 @@ describe "Triodos" do
     end
 
     context 'pin transactions' do
-      let(:pin_transaction) {@transactions.last}
+      let(:pin_transaction) { @transactions.last }
       it 'have a bank_account' do
         expect(pin_transaction.bank_account).to eq('454545454')
       end
@@ -140,7 +139,7 @@ describe "Triodos" do
       end
 
       it 'have a date' do
-        expect(pin_transaction.date).to eq(Date.new(2013,10,25))
+        expect(pin_transaction.date).to eq(Date.new(2013, 10, 25))
       end
 
       it 'has a bank' do
@@ -160,8 +159,99 @@ describe "Triodos" do
       end
 
     end
-
-
   end
 
+  context 'yet another iban format' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/triodos_iban_2.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["7878788778"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it 'have the correct number of transactions' do
+      expect(@transactions.size).to eq(4)
+    end
+
+    it 'get the opening balance and date' do
+      expect(@bank_statements.first.previous_balance.amount).to eq(0)
+      expect(@bank_statements.first.previous_balance.date).to eq(Date.new(2018, 2, 22))
+    end
+
+    it 'get the closing balance and date' do
+      expect(@bank_statements.first.new_balance.amount).to eq(7728.78)
+      expect(@bank_statements.first.new_balance.date).to eq(Date.new(2018, 2, 28))
+    end
+
+    context 'iban transaction' do
+
+      it 'have a bank_account' do
+        expect(@transaction.bank_account).to eq('7878788778')
+      end
+
+      it 'have an amount' do
+        expect(@transaction.amount).to eq(4383.23)
+      end
+
+      it 'have a currency' do
+        expect(@transaction.currency).to eq('EUR')
+      end
+
+      it 'have a description' do
+        expect(@transaction.description).to eq('201801001')
+      end
+
+      it 'have a date' do
+        expect(@transaction.date).to eq(Date.new(2018, 2, 22))
+      end
+
+      it 'has a bank' do
+        expect(@transaction.bank).to eq('Triodos')
+      end
+
+      it 'has a contra account owner' do
+        expect(@transaction.contra_account_owner).to eq 'G-AAAAA N.V.'
+      end
+
+      it 'has a contra_account iban' do
+        expect(@transaction.contra_account_iban).to eq('NL21RABO0999999999')
+      end
+
+      it 'has a contra_account' do
+        expect(@transaction.contra_account).to eq('999999999')
+      end
+
+    end
+
+    context 'keyword over multiple lines' do
+      let(:transaction_2) { @transactions[1] }
+
+      it 'has the correct description' do
+        expect(transaction_2.description).to eq('Factuurnummer 201801-00 1')
+      end
+    end
+
+    context 'CNTP with only IBAN' do
+      let(:transaction_3) { @transactions[2] }
+
+      it 'has no contra account owner' do
+
+        expect(transaction_3.contra_account_owner).to eq ''
+      end
+    end
+
+    context 'CNTP without IBAN' do
+      let(:transaction_4) { @transactions[3] }
+
+      it 'has no contra account owner' do
+
+        expect(transaction_4.contra_account_iban).to be_nil
+      end
+
+      it 'uses the full description' do
+        expect(transaction_4.description).to eq('/CNTP////EREF/27 02-18 23:52 000000000000003//REMI/USTD//Ordernummer WERTY33   T ransactienummer 000000000000003   27-02-18 23:52   Tommy INV0282 8401 verwerkt door Tommy Baat/')
+      end
+    end
+
+  end
 end
