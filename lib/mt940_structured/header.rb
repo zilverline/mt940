@@ -2,7 +2,7 @@ module MT940Structured
   class Header
     R_RABOBANK = /^:940:/
     R_ABN_AMRO = /ABNANL/
-    R_TRIODOS = /^:25:TRIODOSBANK/
+    R_TRIODOS = /^:25:TRIODOSBANK|^:25:NL\d{2}TRIO/
     R_ING = /INGBNL/
     R_DEUTSCHE_BANK = /:20:DEUTDE/
     R_KNAB = /KNABNL/
