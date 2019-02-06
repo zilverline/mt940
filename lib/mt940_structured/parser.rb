@@ -8,7 +8,11 @@ module MT940Structured
     end
 
     def self.parse_mt940_temp_file(stream, join_lines_by = ' ')
-      file_content = FileContent.new(readstreamfile(stream.tempfile.open), join_lines_by)
+      if stream.instance_of?(String)
+        file_content = FileContent.new(readstreamfile(StringIO.new(stream)), join_lines_by)
+      else
+        file_content = FileContent.new(readstreamfile(stream.tempfile.open), join_lines_by)
+      end
       grouped_lines = file_content.group_lines
       parser = file_content.get_header.parser
       parser.transform(grouped_lines)
