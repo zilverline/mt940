@@ -1,7 +1,7 @@
 module MT940Structured::Parsers::Abnamro
   class Parser < MT940Structured::Parsers::Base
-    def initialize
-      super "Abnamro", TransactionParsers.new
+    def initialize(bank_name = "Abnamro")
+      super bank_name, TransactionParsers.new
     end
   end
 
