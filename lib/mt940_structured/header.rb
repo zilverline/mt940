@@ -10,6 +10,7 @@ module MT940Structured
     R_SNS = /SNSBNL/
     R_ASN = /ASNBNL/
     R_REGIO_BANK = /RBRBNL/
+    R_MONEYOU = /MOYONL21/
 
     def initialize(raw_lines)
       @raw_lines = raw_lines
@@ -20,6 +21,8 @@ module MT940Structured
         MT940Structured::Parsers::Rabobank::Parser.new
       elsif @raw_lines[0].match(R_ABN_AMRO)
         MT940Structured::Parsers::Abnamro::Parser.new
+      elsif @raw_lines[0].match(R_MONEYOU)
+        MT940Structured::Parsers::Abnamro::Parser.new("Moneyou")
       elsif @raw_lines[1] && @raw_lines[1].match(R_TRIODOS)
         MT940Structured::Parsers::Triodos::Parser.new
       elsif @raw_lines[0].match(R_ING)
