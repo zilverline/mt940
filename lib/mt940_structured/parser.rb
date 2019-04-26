@@ -2,7 +2,7 @@
 module MT940Structured
   class Parser
     def self.parse_mt940(path, join_lines_by = ' ')
-      file_content = FileContent.new(readfile(File.open(path)), join_lines_by)
+      file_content = FileContent.new(readfile(path), join_lines_by)
       grouped_lines = file_content.group_lines
       file_content.get_header.parser.transform(grouped_lines)
     end
@@ -20,9 +20,10 @@ module MT940Structured
 
 private
     def self.readstreamfile(stringio)
+      puts "\n\n\n\n\nWITH BOM REMOVE STREAM 2"
       stringio.readlines.map do |line|
+        line.sub!("\xEF\xBB\xBF", '')
         line
-          .encode('UTF-8', 'binary', :invalid => :replace, :undef => :replace) # remove other obscure chars. god knows what people upload.
           .gsub(/\u001A/, '') # remove eof chars in the middle of the string... yes it happens :-(
       end
     end
@@ -32,11 +33,19 @@ private
     end
 
     def self.readfile(path)
-      File.open(path).readlines.map do |line|
+      puts "\n\n\n\n\nWITH BOM REMOVE 2"
+      File.open(path, 'r:bom|utf-8').readlines.map do |line|
+        puts line
         line
-          .encode('UTF-8', 'binary', :invalid => :replace, :undef => :replace) # remove other obscure chars. god knows what people upload.
           .gsub(/\u001A/, '') # remove eof chars in the middle of the string... yes it happens :-(
       end
+    end
+
+    def self.source_encode(string)
+      if string.encoding.to_s=='UTF-8'
+        return 'UTF-8'
+      end
+      return 'binary'
     end
   end
 end
