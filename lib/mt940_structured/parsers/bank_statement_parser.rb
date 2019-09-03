@@ -78,6 +78,8 @@ module MT940Structured::Parsers
     end
 
     def parse_line_86(line)
+      #Test to see if this is a line 86 after a balance. We disregard
+      return if @transaction_parser.nil?
       @transaction_parser.enrich_transaction(@bank_statement.transactions.last, line)
     end
 
