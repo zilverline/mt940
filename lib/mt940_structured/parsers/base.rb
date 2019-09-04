@@ -50,13 +50,14 @@ module MT940Structured::Parsers
     def group_lines_by_tag(lines)
       result = []
       while !lines.empty? do
-        start_index = lines.index { |line| line.match(/^:20:/)}
-        end_index = lines.index { |line| line.match(/^:62(F|M):/)}
-        optional_avail = lines.index { |line| line.match(/^:64:/)}
+        start_index = lines.index { |line| line.match(/^:20:/)} || 0
+        end_index = lines.index { |line| line.match(/^:62(F|M):/)} || 0
+        optional_avail = lines.index { |line| line.match(/^:64:/)} 
         if optional_avail
           has_new_statement = lines[(start_index + 1)..optional_avail].index { |line| line.match(/^:20:/)}
           optional_avail = nil if has_new_statement
         end
+        return result if start_index==0 && end_index==0
         end_index = optional_avail if optional_avail && optional_avail > end_index
         if start_index && end_index > start_index
           result << lines[start_index..end_index]
