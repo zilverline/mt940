@@ -507,6 +507,10 @@ describe "Knab" do
             expect(transaction.date).to eq(Date.new(2016, 04, 25))
           end
 
+          it "should have a eref" do
+            expect(transaction.eref).to eq('6767676767676766')
+          end
+
         end
       end
     end
