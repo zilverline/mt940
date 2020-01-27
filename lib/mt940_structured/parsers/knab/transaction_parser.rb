@@ -29,6 +29,7 @@ module MT940Structured::Parsers::Knab
         transaction.contra_account = iban_to_account transaction.contra_account_iban
         transaction.contra_account_owner = parse_description_after_tag description_parts, NAME_R
         transaction.description = parse_description_after_tag description_parts, REMI_R
+        transaction.eref = parse_description_after_tag description_parts, EREF_R
       end
     end
   end
