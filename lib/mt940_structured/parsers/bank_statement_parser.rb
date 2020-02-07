@@ -87,9 +87,9 @@ module MT940Structured::Parsers
       @bank_statement.new_balance = parse_balance(line)
     end
 
-    # def parse_line_64(line)
-    #   @bank_statement.new_balance = parse_balance(line,-1)
-    # end
+    def parse_line_64(line)
+       @bank_statement.available_balance = parse_balance(line,-1)
+    end
   end
 
 end

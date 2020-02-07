@@ -2,7 +2,7 @@ module MT940Structured
   class Header
     R_RABOBANK = /^:940:/
     R_ABN_AMRO = /ABNANL/
-    R_TRIODOS = /^:25:TRIODOSBANK/
+    R_TRIODOS = /^:25:TRIODOSBANK|^:25:NL\d{2}TRIO/
     R_ING = /INGBNL/
     R_DEUTSCHE_BANK = /:20:DEUTDE/
     R_KNAB = /KNABNL/
@@ -11,6 +11,7 @@ module MT940Structured
     R_NEDBANK = /^Nedcor Nedbank/
     R_ASN = /ASNBNL/
     R_REGIO_BANK = /RBRBNL/
+    R_MONEYOU = /MOYONL21/
 
     def initialize(raw_lines)
       @raw_lines = raw_lines
@@ -21,6 +22,8 @@ module MT940Structured
         MT940Structured::Parsers::Rabobank::Parser.new
       elsif @raw_lines[0].match(R_ABN_AMRO)
         MT940Structured::Parsers::Abnamro::Parser.new
+      elsif @raw_lines[0].match(R_MONEYOU)
+        MT940Structured::Parsers::Abnamro::Parser.new("Moneyou")
       elsif @raw_lines[1] && @raw_lines[1].match(R_TRIODOS)
         MT940Structured::Parsers::Triodos::Parser.new
       elsif @raw_lines[0].match(R_ING)
