@@ -43,6 +43,8 @@ module MT940Structured::Parsers
 
       if date.month == 1 && date_accounting[0..1] == "12"
         year = date.year - 1
+      elsif date.month == 12 && date_accounting[0..1] == "01"
+        year = date.year + 1        
       else
         year = date.year
       end
