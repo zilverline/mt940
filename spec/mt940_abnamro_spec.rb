@@ -2,7 +2,6 @@ require_relative 'spec_helper'
 
 describe MT940Structured::Parser do
 
-
   before :each do
     @file_name = File.dirname(__FILE__) + "/fixtures/abn/#{file_name}"
     @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)[bank_account_number]
@@ -249,6 +248,49 @@ describe MT940Structured::Parser do
         expect(transaction.contra_account_owner).to eq('BELASTINGDIENST')
       end
 
+    end
+
+  end
+
+  context 'sepa overboeking belastingdienst' do
+    let(:file_name) { 'anb_sepa_overboeking_belastingdienst.txt' }
+    let(:bank_account_number) { '123456789' }
+    let(:transaction) { @transactions[1] }
+
+    it 'have a bank_account' do
+      expect(transaction.bank_account).to eq('123456789')
+    end
+
+    it 'have an amount' do
+      expect(transaction.amount).to eq(-500)
+    end
+
+    it 'have the correct description in case of a regular bank' do
+      expect(transaction.description).to eq("BETALINGSKENM.: 1234123412345678")
+    end
+
+    it 'have a date' do
+      expect(transaction.date).to eq(Date.new(2020, 5, 4))
+    end
+
+    it 'return its bank' do
+      expect(transaction.bank).to eq('Abnamro')
+    end
+
+    it 'have a currency' do
+      expect(transaction.currency).to eq('EUR')
+    end
+
+    it 'has a contra account' do
+      expect(transaction.contra_account).to eq('2445588')
+    end
+
+    it 'has a contra account iban' do
+      expect(transaction.contra_account_iban).to eq('NL86INGB0002445588')
+    end
+
+    it 'has a contra account owner' do
+      expect(transaction.contra_account_owner).to eq('BELASTINGDIENST APELDOORN')
     end
 
   end
