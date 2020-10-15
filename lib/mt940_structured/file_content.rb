@@ -3,8 +3,8 @@ class MT940Structured::FileContent
   R_EOF_ABN_AMRO = /^-$/
   R_EOF_TRIODOS = /^-$/
 
-  def initialize(raw_lines, join_lines_by = ' ')
-    @raw_lines = raw_lines.map { |line| line.strip }
+  def initialize(raw_lines, join_lines_by = "\n")
+    @raw_lines = raw_lines
     @join_lines_by = join_lines_by
   end
 
@@ -22,12 +22,11 @@ class MT940Structured::FileContent
         previous_tag = $1
         grouped_lines << line
       else
-        next_line = if line.match /^(:(?:20|25|28|60|61|86|62|64|65|86)[D|C|F|M]?:)(.*)/
-                      $2
-                    else
-                      line
-                    end
-        grouped_lines[-1] = [grouped_lines.last, @join_lines_by, next_line].join
+        if line.match /^(:(?:20|25|28|60|61|86|62|64|65|86)[D|C|F|M]?:)(.*)/
+          grouped_lines[-1] = [grouped_lines.last, @join_lines_by, $2].join
+        else
+          grouped_lines[-1] = [grouped_lines.last, '', line].join
+        end
       end
     end
     grouped_lines
