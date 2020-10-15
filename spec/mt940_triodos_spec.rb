@@ -39,7 +39,7 @@ describe "Triodos" do
       end
 
       it 'have a description' do
-        expect(@transaction.description).to eq('ALGEMENE TUSSENREKENING KOSTEN VAN 01-10-2010 TOT EN M ET 31-12-20100390123456')
+        expect(@transaction.description).to eq('ALGEMENE TUSSENREKENING KOSTEN VAN 01-10-2010 TOT EN MET 31-12-20100390123456')
       end
 
       it 'have a date' do
@@ -135,7 +135,7 @@ describe "Triodos" do
       end
 
       it 'have a description' do
-        expect(pin_transaction.description).to eq('NS-DKDKDKFJFJFLS 201 \KLKLKLFOOBAR \ BETAALAUTOMAAT 22- 09-14 12:00 PASNR. 009')
+        expect(pin_transaction.description).to eq('NS-DKDKDKFJFJFLS 201 \KLKLKLFOOBAR \ BETAALAUTOMAAT 22-09-14 12:00 PASNR. 009')
       end
 
       it 'have a date' do
@@ -227,7 +227,7 @@ describe "Triodos" do
       let(:transaction_2) { @transactions[1] }
 
       it 'has the correct description' do
-        expect(transaction_2.description).to eq('Factuurnummer 201801-00 1')
+        expect(transaction_2.description).to eq('Factuurnummer 201801-001')
       end
     end
 
@@ -249,7 +249,7 @@ describe "Triodos" do
       end
 
       it 'uses the full description' do
-        expect(transaction_4.description).to eq('/CNTP////EREF/27 02-18 23:52 000000000000003//REMI/USTD//Ordernummer WERTY33   T ransactienummer 000000000000003   27-02-18 23:52   Tommy INV0282 8401 verwerkt door Tommy Baat/')
+        expect(transaction_4.description).to eq('/CNTP////EREF/27 02-18 23:52 000000000000003//REMI/USTD//Ordernummer WERTY33   Transactienummer 000000000000003   27-02-18 23:52   Tommy INV02828401 verwerkt door Tommy Baat/')
       end
     end
 

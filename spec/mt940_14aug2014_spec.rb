@@ -27,7 +27,7 @@ describe "Rabobank" do
 
         it "should have a correct previous balance per statement" do
           expect(transaction.contra_account_owner).to eq "COMPANY B V"
-          expect(transaction.description).to eq "2037 201407-323/201407-322/201407 -3 27/201406-309/201406-310"
+          expect(transaction.description).to eq "2037 201407-323/201407-322/201407-3 27/201406-309/201406-310"
         end
 
       end

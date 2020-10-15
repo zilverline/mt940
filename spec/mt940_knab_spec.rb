@@ -220,7 +220,7 @@ describe "Knab" do
             end
 
             it "should have a description" do
-              expect(transaction.description).to eq("AAAAA BDBDNDKDKASDF, BETALINGSKENMERK: 00111111111, REFERENTI BC0101111111, 22-10-2014 15:01 REK: 90000014/NAAM: KNAB")
+              expect(transaction.description).to eq("AAAAA BDBDNDKDKASDF, BETALINGSKENMERK: 00111111111, REFERENTIBC0101111111, 22-10-2014 15:01REK: 90000014/NAAM: KNAB")
             end
 
             it "should have an account number" do
@@ -340,7 +340,7 @@ describe "Knab" do
           end
 
           it "should have a description" do
-            expect(transaction.description).to eq("201604-00 5")
+            expect(transaction.description).to eq("201604-005")
           end
 
           it "should have an account number" do
@@ -421,7 +421,7 @@ describe "Knab" do
           end
 
           it "should have a description" do
-            expect(transaction.description).to eq("ABLAS:9999999999, FAC TUURNUMMER:88888888")
+            expect(transaction.description).to eq("ABLAS:9999999999, FACTUURNUMMER:88888888")
           end
 
           it "should have an account number" do
@@ -476,7 +476,7 @@ describe "Knab" do
           end
 
           it "should have a description" do
-            expect(transaction.description).to eq("AANGIFTE LOONHEF FINGEN APRIL 1234 5678 1234 5678 6767676767676766")
+            expect(transaction.description).to eq("AANGIFTE LOONHEFFINGEN APRIL 1234 5678 1234 5678                                 6767676767676766")
           end
 
           it "should have an account number" do
@@ -535,7 +535,7 @@ describe "Knab" do
           end
 
           it "should have a description" do
-            expect(transaction.description).to eq("1717171717171711 6868686868686868 FHFHA-XXXXXXXX AREWERT - DD 1234 GHAKDLLLA4AAA")
+            expect(transaction.description).to eq("1717171717171711 6868686868686868 FHFHA-XXXXXXXXAREWERT - DD 1234 GHAKDLLLA4AAA")
           end
 
           it "should have an account number" do
