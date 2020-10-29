@@ -95,7 +95,7 @@ describe "Triodos" do
       end
 
       it 'have a description' do
-        expect(@transaction.description).to eq('METSELAARBAASIK PAARDENA POSTBUS 969 8888BB UTRETRECH NEDERLAND STORTING AANDELENKAPITAAL ZAAK NR 40000')
+        expect(@transaction.description).to eq('METSELAARBAASIK PAARDENA POSTBUS 969 8888BB UTRETRECHNEDERLAND STORTING AANDELENKAPITAAL ZAAK NR 40000')
       end
 
       it 'have a date' do

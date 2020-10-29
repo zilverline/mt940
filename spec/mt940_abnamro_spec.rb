@@ -180,7 +180,7 @@ describe MT940Structured::Parser do
       end
 
       it 'have the correct description in case of a regular bank' do
-        expect(transaction.description).to eq(%Q{4851430136 0030000 735822580 NS E-TICKET(S) KENMERK: 26-01-2014 18:14 003000 0735822580})
+        expect(transaction.description).to eq(%Q{4851430136 0030000 735822580 NS E-TICKET(S)KENMERK: 26-01-2014 18:14 003000 0735822580})
       end
 
       it 'have a date' do
@@ -312,7 +312,7 @@ describe MT940Structured::Parser do
     end
 
     it 'has a description' do
-      expect(@transaction.description).to eq '1412DEC 2015 CONSU LTING KENMERK: 7541410'
+      expect(@transaction.description).to eq '1412DEC 2015 CONSU LTINGKENMERK: 7541410'
     end
   end
 

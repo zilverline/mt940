@@ -2,9 +2,12 @@ class MT940Structured::FileContent
   R_EOF_ING = /^-XXX$/
   R_EOF_ABN_AMRO = /^-$/
   R_EOF_TRIODOS = /^-$/
+  IBAN_LINE = /^\w{2}\d{2}\w{4}\d{6,}$/
+  BANK_NUMBER_LINE = /^\d{6,}$/
+  GIRO_NUMBER_LINE = /^P\d{6,}$/
 
   def initialize(raw_lines, join_lines_by = "\n")
-    @raw_lines = raw_lines
+    @raw_lines = raw_lines.map(&:rstrip)
     @join_lines_by = join_lines_by
   end
 
@@ -17,16 +20,18 @@ class MT940Structured::FileContent
     grouped_lines = []
     previous_tag = nil
     body_lines.each do |line|
-      mt940_line = line.match /^(:(?:20|25|28|60|61|86|62|64|65|86)[D|C|F|M]?:)/
+      mt940_line = line.match(/^(:(?:20|25|28|60|61|62|64|65|86)[D|C|F|M]?:)/)
       if mt940_line && previous_tag != $1
         previous_tag = $1
         grouped_lines << line
+      elsif line.match(/^(:(?:20|25|28|60|61|62|64|65|86)[D|C|F|M]?:)(.*)/)
+        grouped_lines[-1] = [grouped_lines.last, $2].join(@join_lines_by)
+      elsif line.match(IBAN_LINE) || line.match(BANK_NUMBER_LINE) || line.match(GIRO_NUMBER_LINE)
+        grouped_lines[-1] = [grouped_lines.last, line].join(@join_lines_by)
+      elsif get_header.parser.bank === 'Sns' && line.empty?
+        grouped_lines[-1] = [grouped_lines.last, line].join(@join_lines_by)
       else
-        if line.match /^(:(?:20|25|28|60|61|86|62|64|65|86)[D|C|F|M]?:)(.*)/
-          grouped_lines[-1] = [grouped_lines.last, @join_lines_by, $2].join
-        else
-          grouped_lines[-1] = [grouped_lines.last, '', line].join
-        end
+        grouped_lines[-1] = [grouped_lines.last, line].join
       end
     end
     grouped_lines

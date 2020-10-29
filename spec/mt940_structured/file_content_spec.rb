@@ -12,7 +12,7 @@ describe MT940Structured::FileContent do
   end
 
   context "two :86: lines" do
-    let(:raw_lines) { [":20:940A121001", ":86:2121.21.211EUR", "belongs to first :86:", ":61:bla"] }
+    let(:raw_lines) { [":940:", ":20:940A121001", ":86:2121.21.211EUR", "belongs to first :86:", ":61:bla"] }
 
     it "groups them" do
       expect(subject[1]).to eq(":86:2121.21.211EURbelongs to first :86:")
@@ -24,7 +24,7 @@ describe MT940Structured::FileContent do
   end
 
   context "multiple :86: lines divided by newline" do
-    let(:raw_lines) { [":20:940A121001", ":86:2121.21.211EUR", "belongs to first :86:", "also belongs to first :86:", ":61:bla"] }
+    let(:raw_lines) { [":940:", ":20:940A121001", ":86:2121.21.211EUR", "belongs to first :86:", "also belongs to first :86:", ":61:bla"] }
     it "groups them" do
       expect(subject[1]).to eq(":86:2121.21.211EURbelongs to first :86:also belongs to first :86:")
     end

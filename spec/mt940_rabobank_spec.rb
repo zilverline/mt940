@@ -142,7 +142,7 @@ describe "Rabobank" do
         let(:transaction) { bank_statements_for_account[5].transactions.first }
 
         it "should have the correct description" do
-          expect(transaction.description).to eq("BETALINGSKENM.  490022201282 ARBEIDS ONG. VERZ. 00333333333 PERIODE 06.10.2012 - 06.11.2012")
+          expect(transaction.description).to eq("BETALINGSKENM.  490022201282\nARBEIDS ONG. VERZ. 00333333333\nPERIODE 06.10.2012 - 06.11.2012")
         end
 
         it "should have a type" do
@@ -470,15 +470,6 @@ describe "Rabobank" do
 
     it "should have the correct amount" do
       expect(transaction.amount).to eq(1000.0)
-    end
-  end
-
-  context do
-    let(:file_name) { File.dirname(__FILE__) + '/fixtures/rabobank/adf21b34-4db2-41c9-9c9b-758d4c6a6bc4.txt' }
-    let(:bank_statements) { MT940Structured::Parser.parse_mt940(file_name) }
-
-    it 'parses' do
-      expect(bank_statements.values[1][0].transactions[0].contra_account_owner).to eq('Meubelhallen Kolham B.V.')
     end
   end
 end
