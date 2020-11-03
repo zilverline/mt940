@@ -19,8 +19,8 @@ module MT940Structured::Parsers::Knab
         transaction.contra_account=iban?(account) ? iban_to_account(account) : account
         transaction.contra_account_iban = account if iban?(account)
         transaction.contra_account_owner = contra_parts.last.strip if contra_parts.length == 2
-      elsif line_86.match /PAS:.*\sNAAM:/
-        parts = line_86.split(/\sNAAM:/)
+      elsif line_86.match /PAS:\s.*NAAM:\s/
+        parts = line_86.split(/NAAM:\s/)
         transaction.description = parts.first.strip
         transaction.contra_account_owner = parts.last.strip
       else

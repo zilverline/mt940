@@ -20,10 +20,9 @@ module MT940Structured::Parsers::Rabobank
     end
 
     def enrich_transaction(transaction, line_86)
-      if line_86.match(/^:86:(.*)$/)
+      if line_86.match(/^:86:(.*)/m)
         transaction.description = [transaction.description, $1].join(" ").strip
       end
     end
-
   end
 end

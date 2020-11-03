@@ -12,8 +12,8 @@ module MT940Structured::Parsers::Sns
 
     def enrich_transaction(transaction, line_86)
       transaction.contra_account = "NONREF" unless transaction.contra_account
-      line_86 = line_86.gsub(/:86:/, '')
-      if line_86.match /^([a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{0,30})(.*?)\s\s(.*)/
+      line_86 = line_86.gsub(/:86:/m, '')
+      if line_86.match /^([a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{0,30})(.*?)\n(.*)/
         transaction.contra_account_iban = $1.strip
         transaction.contra_account_owner = $2.strip
         transaction.contra_account = iban_to_account(transaction.contra_account_iban)

@@ -142,7 +142,7 @@ describe "Rabobank" do
         let(:transaction) { bank_statements_for_account[5].transactions.first }
 
         it "should have the correct description" do
-          expect(transaction.description).to eq("BETALINGSKENM.  490022201282 ARBEIDS ONG. VERZ. 00333333333 PERIODE 06.10.2012 - 06.11.2012")
+          expect(transaction.description).to eq("BETALINGSKENM.  490022201282\nARBEIDS ONG. VERZ. 00333333333\nPERIODE 06.10.2012 - 06.11.2012")
         end
 
         it "should have a type" do
@@ -194,7 +194,7 @@ describe "Rabobank" do
     it "handles multiline in the description" do
       bank_statement = bank_statements["123456789"][0]
       transaction = bank_statement.transactions.first
-      expect(transaction.description).to eq("Factuur 20 14-002")
+      expect(transaction.description).to eq("Factuur 2014-002")
     end
 
   end
@@ -269,7 +269,7 @@ describe "Rabobank" do
           end
 
           it "should have a contra account owner" do
-            expect(transaction.contra_account_owner).to eq("Nespresso Nede rland B.V.")
+            expect(transaction.contra_account_owner).to eq("Nespresso Nederland B.V.")
           end
 
           it "should have a bank" do
@@ -421,7 +421,7 @@ describe "Rabobank" do
     end
 
     it "should have the correct description" do
-      expect(transaction.description).to eq("AFR EK. BETAALAUTOMAAT MaestroREFNR. H6MJV5DAT. 20170601 AANT. 11")
+      expect(transaction.description).to eq("AFREK. BETAALAUTOMAAT MaestroREFNR. H6MJV5DAT. 20170601 AANT. 11")
     end
   end
 
@@ -451,11 +451,11 @@ describe "Rabobank" do
     end
 
     it "should have the correct contra account owner" do
-      expect(transaction.contra_account_owner).to eq("AAAAAA RRRRRRRRRRR BBBBB DFDFDFDFDFDFDF CCC")
+      expect(transaction.contra_account_owner).to eq("AAAAAA RRRRRRRRRRRBBBBB DFDFDFDFDFDFDF CCC")
     end
 
     it "should have the correct description" do
-      expect(transaction.description).to eq("BETALINGSKENM.: 342157/DEC- 16, ONZE REF.: 12345678, TOELICHTIN B: Gruitjes")
+      expect(transaction.description).to eq("BETALINGSKENM.: 342157/DEC- 16, ONZE REF.: 12345678, TOELICHTINB: Gruitjes")
     end
   end
 
@@ -472,5 +472,4 @@ describe "Rabobank" do
       expect(transaction.amount).to eq(1000.0)
     end
   end
-
 end

@@ -34,7 +34,7 @@ module MT940Structured::Parsers::Abnamro
 
     def enrich_transaction(transaction, line_86)
       transaction.contra_account = "NONREF" #default
-      line_86 = line_86.gsub(/:86:/, '')
+      line_86 = line_86.gsub(/:86:/m, '')
       case line_86
       when /\/TRTP\/(?:SEPA|IDEAL|ACCEPTGIRO)/
         parse_result = Line86.parse(line_86)

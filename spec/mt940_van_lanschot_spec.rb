@@ -155,7 +155,7 @@ describe "van Lanschot" do
           let(:transaction) { bank_statement.transactions.first }
 
           it "should have a description" do
-            expect(transaction.description).to eq("Ke nmerk: 1234.4321.0000.5555 Omschrijving: 123123444 01-01-2014  3 MND 8888888888 Servicecontract")
+            expect(transaction.description).to eq("Kenmerk: 1234.4321.0000.5555 Omschrijving: 123123444 01-01-2014  3 MND 8888888888 Servicecontract")
           end
 
           it "should have an account number" do
@@ -287,7 +287,7 @@ describe "van Lanschot" do
           let(:transaction) { bank_statement.transactions.first }
 
           it "should have a description" do
-            expect(transaction.description).to eq("AAAAAAAAA SFDADSFG         asdfASDFASDF     ASDFASFAS ERIODE: 01-01-2014 / 31-03-2014")
+            expect(transaction.description).to eq("AAAAAAAAA SFDADSFG         asdfASDFASDF     ASDFASFASERIODE: 01-01-2014 / 31-03-2014")
           end
 
           it "should have an account number" do

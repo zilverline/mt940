@@ -12,10 +12,10 @@ describe MT940Structured::FileContent do
   end
 
   context "two :86: lines" do
-    let(:raw_lines) { [":20:940A121001", ":86:2121.21.211EUR", "belongs to first :86:", ":61:bla"] }
+    let(:raw_lines) { [":940:", ":20:940A121001", ":86:2121.21.211EUR", "belongs to first :86:", ":61:bla"] }
 
     it "groups them" do
-      expect(subject[1]).to eq(":86:2121.21.211EUR belongs to first :86:")
+      expect(subject[1]).to eq(":86:2121.21.211EURbelongs to first :86:")
     end
 
     it "has the correct closing record" do
@@ -24,9 +24,9 @@ describe MT940Structured::FileContent do
   end
 
   context "multiple :86: lines divided by newline" do
-    let(:raw_lines) { [":20:940A121001", ":86:2121.21.211EUR", "belongs to first :86:", "also belongs to first :86:", ":61:bla"] }
+    let(:raw_lines) { [":940:", ":20:940A121001", ":86:2121.21.211EUR", "belongs to first :86:", "also belongs to first :86:", ":61:bla"] }
     it "groups them" do
-      expect(subject[1]).to eq(":86:2121.21.211EUR belongs to first :86: also belongs to first :86:")
+      expect(subject[1]).to eq(":86:2121.21.211EURbelongs to first :86:also belongs to first :86:")
     end
 
     it "has the correct closing record" do
@@ -48,12 +48,21 @@ describe MT940Structured::FileContent do
           ":61:bla"
       ]
     end
+
     it "groups them" do
-      expect(subject[5]).to eq(":86:BETALINGSKENM.  490022201282 ARBEIDS ONG. VERZ. 00333333333 PERIODE 06.10.2012 - 06.11.2012")
+      expect(subject[5]).to eq(":86:BETALINGSKENM.  490022201282\nARBEIDS ONG. VERZ. 00333333333\nPERIODE 06.10.2012 - 06.11.2012")
     end
 
     it "has the correct closing record" do
       expect(subject.last).to eq ":61:bla"
+    end
+
+    context 'and a custom grouping string' do
+      subject { MT940Structured::FileContent.new(raw_lines, " <XXX> ").group_lines }
+
+      it "groups by that string" do
+        expect(subject[5]).to eq(":86:BETALINGSKENM.  490022201282 <XXX> ARBEIDS ONG. VERZ. 00333333333 <XXX> PERIODE 06.10.2012 - 06.11.2012")
+      end
     end
 
   end
@@ -78,13 +87,4 @@ describe MT940Structured::FileContent do
       expect(subject.last).to eq ":86:2121.21.211EUR"
     end
   end
-
-  context "custom grouping divider" do
-    let(:raw_lines) { [":20:940A121001", ":86:2121.21.211EUR", "belongs to first :86:", ":61:bla"] }
-    it "groups them using the custom divider" do
-      custom = MT940Structured::FileContent.new(raw_lines, "\n").group_lines
-      expect(custom[1]).to eq(":86:2121.21.211EUR\nbelongs to first :86:")
-    end
-  end
-
 end
