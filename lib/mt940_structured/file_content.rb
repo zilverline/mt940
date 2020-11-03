@@ -7,7 +7,7 @@ class MT940Structured::FileContent
   GIRO_NUMBER_LINE = /^P\d{6,}$/
 
   def initialize(raw_lines, join_lines_by = "\n")
-    @raw_lines = raw_lines.map(&:rstrip)
+    @raw_lines = raw_lines
     @join_lines_by = join_lines_by
   end
 
@@ -25,10 +25,10 @@ class MT940Structured::FileContent
         previous_tag = $1
         grouped_lines << line
       elsif line.match(/^(:(?:20|25|28|60|61|62|64|65|86)[D|C|F|M]?:)(.*)/)
-        grouped_lines[-1] = [grouped_lines.last, $2].join(@join_lines_by)
+        grouped_lines[-1] = [grouped_lines.last.rstrip, $2].join(@join_lines_by)
       elsif line.match(IBAN_LINE) || line.match(BANK_NUMBER_LINE) || line.match(GIRO_NUMBER_LINE)
         grouped_lines[-1] = [grouped_lines.last, line].join(@join_lines_by)
-      elsif get_header.parser.bank === 'Sns' && line.empty?
+      elsif get_header.parser.bank === 'Sns' && line.strip.empty?
         grouped_lines[-1] = [grouped_lines.last, line].join(@join_lines_by)
       else
         grouped_lines[-1] = [grouped_lines.last, line].join

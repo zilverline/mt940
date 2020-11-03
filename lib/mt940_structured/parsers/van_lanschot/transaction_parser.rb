@@ -18,7 +18,7 @@ module MT940Structured::Parsers::VanLanschot
           transaction.contra_account= description[0..9].gsub(/^0+/, '')
           transaction.description = description[10..-1].strip
         else
-          transaction.description = description
+          transaction.description = description.strip
         end
       else
 

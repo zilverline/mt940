@@ -155,7 +155,7 @@ describe "van Lanschot" do
           let(:transaction) { bank_statement.transactions.first }
 
           it "should have a description" do
-            expect(transaction.description).to eq("Kenmerk: 1234.4321.0000.5555 Omschrijving: 123123444 01-01-2014  3MND 8888888888 Servicecontract")
+            expect(transaction.description).to eq("Kenmerk: 1234.4321.0000.5555 Omschrijving: 123123444 01-01-2014  3 MND 8888888888 Servicecontract")
           end
 
           it "should have an account number" do
