@@ -254,4 +254,21 @@ describe "Triodos" do
     end
 
   end
+
+  context 'multiline description with period after separator' do
+    before :each do
+      @file_name = File.dirname(__FILE__) + '/fixtures/triodos_multiline_bug.txt'
+      @bank_statements = MT940Structured::Parser.parse_mt940(@file_name)["1234567890"]
+      @transactions = @bank_statements.flat_map(&:transactions)
+      @transaction = @transactions.first
+    end
+
+    it 'have the correct number of transactions' do
+      expect(@transactions.size).to eq(1)
+    end
+
+    it 'have a description' do
+      expect(@transaction.description).to eq('RABO BETAALVERZOEK ORDERNUMMER NL26RABO1234567890 / TRANSACTIENUMMER 0012345678903456 / 16-11-20 19:02 / T.P. DEN EO X. TUI-SXDCF:VOORGESCH:')
+    end
+  end
 end

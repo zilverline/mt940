@@ -58,7 +58,7 @@ module MT940Structured::Parsers::Triodos
     # Value 22
     # etc
     def structured_parts(line_86)
-      line_86.split(/(>\d{2}\.*)/)
+      line_86.split(/(>\d{2})/)
     end
 
     def description_from(parts, start_at)
