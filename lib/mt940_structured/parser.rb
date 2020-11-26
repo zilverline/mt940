@@ -2,21 +2,11 @@
 module MT940Structured
   class Parser
     def self.parse_mt940(path, join_lines_by = ' ')
-      file_content = FileContent.new(readfile(path), join_lines_by)
+      file_content = FileContent.new(readstreamfile(StringIO.new(force_encoding(path))), join_lines_by)
       grouped_lines = file_content.group_lines
       file_content.get_header.parser.transform(grouped_lines)
     end
 
-    def self.parse_mt940_temp_file(stream, join_lines_by = ' ')
-      if stream.instance_of?(String)
-        file_content = FileContent.new(readstreamfile(StringIO.new(stream)), join_lines_by)
-      else
-        file_content = FileContent.new(readstreamfile(stream.tempfile.open), join_lines_by)
-      end
-      grouped_lines = file_content.group_lines
-      parser = file_content.get_header.parser
-      parser.transform(grouped_lines)
-    end
 
 private
     def self.readstreamfile(stringio)
@@ -44,6 +34,21 @@ private
         return 'UTF-8'
       end
       return 'binary'
+    end
+
+    def self.force_encoding(file)
+      if file.is_a?(StringIO)
+        txt = file.read
+      elsif file.respond_to?(:path)
+        txt = File.read(file.path)
+      elsif file.is_a?(String)
+        txt = File.read(file)
+      else
+        raise 'Error reading file'
+      end
+      txt = txt.force_encoding('iso-8859-1').encode('utf-8') 
+      txt.scrub!
+
     end
   end
 end
