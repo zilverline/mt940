@@ -4,7 +4,7 @@ module MT940Structured::Parsers::Generic
     include MT940Structured::Parsers::DefaultLine61Parser
     include MT940Structured::Parsers::IbanSupport
     def get_regex_for_line_61
-      /^:61:(\d{6})(\d{4})?(DD|CD|RC|RD|CR|DR|C|D)[A-Z]?(\d+),(\d{0,2})(.{4})([\p{L}\d\s\d_,';.+\s?]{1,16})(\/?\/?[\p{L}\d\s_,;().'+?]{1,40})?/
+      /^:61:(\d{6})(\d{4})?(DD|CD|RC|RD|CR|DR|C|D)[A-Z]?(\d+),(\d{0,2})(.{4})([\p{L}\d\s\d_,';\-.\/+\s?]{1,16})(\/?\/?[\p{L}\d\s_,;().-\/'+?]{1,40})?/
     end
 
     def parse_transaction(line_61)
