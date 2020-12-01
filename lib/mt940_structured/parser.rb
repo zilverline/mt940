@@ -60,7 +60,8 @@ private
     end
 
     def self.force_string_encoding(txt)
-      txt = txt.force_encoding('iso-8859-1').encode('utf-8') 
+      chardet = CharDet.detect(txt)
+      txt = txt.force_encoding('iso-8859-1').encode('utf-8') unless chardet['encoding'] == 'utf-8'
       txt.scrub!
     end
   end
